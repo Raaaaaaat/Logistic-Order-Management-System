@@ -1,0 +1,131 @@
+{% extends 'order/base.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title" style="display: inline-block;" id="title_info">Create Order</h4>
+                        <p class="category" id="note">请输入供应商信息</p>
+                    </div>
+                    <div class="card-content">
+                        <form class="form" enctype="multipart/form-data" id="supplier_info_form" onsubmit="return false;">
+                            {% csrf_token %}
+                            <div class="col-sm-12">
+                                <div class="input-group" title="联系人姓名">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">account_box</i>
+                                    </span>
+                                    <select id="client_id" class="form-control" style="width: 50%"></select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group" title="起运城市">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">group</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="起运城市" name="dep_city">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="input-group" title="起运地">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">stay_primary_portrait</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="起运地" name="dep_place">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group" title="目的城市">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">group</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="目的城市" name="des_city">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="input-group" title="目的地">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">stay_primary_portrait</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="目的地" name="des_place">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group" title="货物名称">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">group</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="货物名称" name="cargo_name">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group" title="货物重量">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">group</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="货物重量" name="cargo_weight">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group" title="货物数量">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">group</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="货物数量" name="cargo_quantity">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group" title="备注">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">group</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="备注" name="note">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="submit_button" style="float:right;">提交</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="tablecase"></table>
+
+{% endblock %}
+
+{% block jscode %}
+    <script>
+        $(function(){
+            $("#client_id").select2({
+                ajax: {
+                    url: "{% url 'get_client_options' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.data
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0,
+            });
+
+        });
+
+        $("#submit_button").click(function(){
+            // 按照这样的方式可以传输json格式的数据
+            $.StandardPost('{% url "ope_edit_order" %}',{"path": JSON.stringify(["a",[4,5,6]])});
+        });
+    </script>
+{% endblock %}

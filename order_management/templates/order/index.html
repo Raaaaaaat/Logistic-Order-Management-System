@@ -1,0 +1,149 @@
+{% extends 'order/base.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header" data-background-color="purple">
+                            <h4 class="title" style="display: inline-block;">Order List</h4>
+                            <li class="active" style="display: inline-block; float:right; margin-right: 20px">
+                                <a href="/order_add">
+                                    <i class="material-icons">note_add</i>
+                                    添加
+                                    <div class="ripple-container"></div></a>
+                            </li>
+                        </div>
+                        <div class="card-content table-responsive">
+                            <div class="col-sm-12" style ="display: flex;align-items:Center;">
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">search</i>
+                                        </span>
+                                        <input type="text" class="form-control" placeholder="搜索编号或名称" id="search_input_info" value="{{ contact_tel }}">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
+                                <div class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="is_show_detail">
+                                            展示细节
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="tablecase" style=" table-layout: fixed;"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block jscode %}
+<script>
+    $('#tablecase').bootstrapTable({
+        url: "{% url 'order_index' %}",    //请求数据的地址
+        method: 'post',
+        //是否显示行间隔色
+        striped: true,
+        //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        cache: false,
+        //是否显示分页（*）
+        pagination: true,
+        //是否启用排序
+        sortable: false,
+        //排序方式
+        sortOrder: "desc",
+        pageNumber:1,
+        //每页的记录行数（*）
+        pageSize: 10,
+        //可供选择的每页的行数（*）
+        pageList: [10, 25, 50, 100],
+        //分页方式：client客户端分页，server服务端分页（*）
+        sidePagination: "server",
+        queryParams: function(params){
+
+            var search = $('#search_input_info').val();
+            params.search = search;
+            //console.log(params);
+            return params;
+        },
+        contentType: 'application/json',
+        resizable: true,
+        //Indicate which field is an identity field.
+        idField : "id",
+
+            columns: [{
+                field: 'No',
+                title: '编号',
+                align: 'center',
+                width: 50,
+            }, {
+                field: 'client',
+                title: '客户名称',
+                align: 'center',
+                width: 100,
+            }, {
+                field: 'dep_place',
+                title: '起运地',
+                align: 'right',
+                halign:'center',
+                width: 120,
+            },  {
+                field: 'dep_city',
+                title: '起运城市',
+                align: 'center',
+                halign:'center',
+                width: 90,
+            },  {
+                field: 'des_place',
+                title: '目的地',
+                align: 'right',
+                halign:'center',
+                width: 120,
+            },  {
+                field: 'des_city',
+                title: '目的城市',
+                align: 'right',
+                halign:'center',
+                width: 90,
+            }, {
+                field: 'cargo_name',
+                title: '货物名称',
+                align: 'left',
+                halign:'center',
+                width: 160,
+           },  {
+                field: 'cargo_weight',
+                title: '货物重量',
+                align: 'right',
+                halign:'center',
+                width: 80,
+            },  {
+                field: 'cargo_quantity',
+                title: '货物数量',
+                align: 'right',
+                halign:'center',
+                width: 80,
+            },  {
+                field: 'note',
+                title: '备注',
+                align: 'left',
+                halign:'center',
+                width: 160,
+            }, {
+                title: '-',
+            }],
+        onPostBody: function(){
+            //更新浮动title标签
+            $('#tablecase').find('span').tooltip();
+        },
+    });
+</script>
+{% endblock %}

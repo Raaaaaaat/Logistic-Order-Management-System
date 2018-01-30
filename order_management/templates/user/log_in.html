@@ -1,0 +1,52 @@
+{% extends 'user/base.html' %}
+
+{% block jscode %}
+    <script>
+        $.ajaxSetup({   //没有这个会有csrf漏洞，系统报错
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+
+        //定义登录动作函数
+        function log_in(){
+            var info = $('#info_form').serializeArray();
+            var name = info[0].value
+            var password = info[1].value
+
+            if(name.length==0){
+                $('#note').html("Please Input Username")
+            }
+            else{
+                if(password.length==0){
+                    $('#note').html("Please Input Password")
+                }
+                else{
+                     $.ajax({
+                        type: "POST",
+                        url: "{% url 'ajax_log_in_check' %}",
+                        data: {username: name, password: password},
+                        datatype: "html",
+                        success: function (data) {  //这里检查data.info的值，如果登录成功就为1，否则为0，在这里做一样的判断
+                            //console.log(data.info)
+                            if(data.info==1){
+                                window.location.href="/client"    //这里跳转到正式界面
+                            }else{
+                                $('#note').html("Wrong Username or Password")
+                            }
+                        },
+                     });
+                }
+            }
+
+
+
+        }
+
+        $('#log_in_button').click(log_in);  //绑定登录动作按钮
+        $(document).keyup(function (e) {//捕获文档对象的按键弹起事件
+            if (e.keyCode == 13) {//用户敲回车
+                log_in();
+            }
+        });
+    </script>
+
+{% endblock %}

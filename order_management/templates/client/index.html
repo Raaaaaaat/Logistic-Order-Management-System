@@ -1,0 +1,291 @@
+{% extends 'client/base.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header" data-background-color="purple">
+                            <h4 class="title" style="display: inline-block;">Client List</h4>
+                            <li class="active" style="display: inline-block; float:right; margin-right: 20px">
+                                <a href="/client_add">
+                                    <i class="material-icons">note_add</i>
+                                    添加
+                                    <div class="ripple-container"></div></a>
+                            </li>
+                        </div>
+                        <div class="card-content table-responsive">
+                            <div class="col-sm-12" style ="display: flex;align-items:Center;">
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">search</i>
+                                        </span>
+                                        <input type="text" class="form-control" placeholder="搜索编号或名称" id="search_input_info" value="{{ contact_tel }}">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
+                                <div class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="is_show_detail">
+                                            展示细节
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="tablecase" style=" table-layout: fixed;"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block jscode %}
+<script>
+
+
+function operation_formatter(index, row){
+    //console.log(row);
+    return '<a class="edit_button"   data-no="'+row.No+'"><i class="fa fa-pencil"></i></a>' +
+           '<a class="delete_button" data-no="'+row.No+'" style="margin-left: 10px;"><i class="fa fa-trash"></i></a>';
+};
+function type_formatter(index, row){
+    if(row.type=="0")
+        return "公司客户";
+    else
+        return "个人客户";
+}
+function file_formatter(index, row){
+    if(row.contract_file != "")
+        return '<i class="fa fa-file-text"></i><a href="'+row.contract_file+'" download> 附件</a>';
+    else
+        return '';
+}
+function co_name_formatter(index, row){
+    return '<span rel="tooltip" title="'+row.co_name+'">'+row.co_name+'</span>';
+}
+function co_addr_formatter(index, row){
+    return '<span rel="tooltip" title="'+row.co_addr+'">'+row.co_addr+'</span>';
+}
+function account_owner_formatter(index, row){
+    return '<span rel="tooltip" title="'+row.account_owner+'">'+row.account_owner+'</span>';
+}
+
+$(function(){
+    $('#tablecase').bootstrapTable({
+        url: "{% url 'ajax_get_client' %}",    //请求数据的地址
+        method: 'get',
+        //是否显示行间隔色
+        striped: true,
+        //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        cache: false,
+        //是否显示分页（*）
+        pagination: true,
+        //是否启用排序
+        sortable: false,
+        //排序方式
+        sortOrder: "desc",
+        pageNumber:1,
+        //每页的记录行数（*）
+        pageSize: 10,
+        //可供选择的每页的行数（*）
+        pageList: [10, 25, 50, 100],
+        //分页方式：client客户端分页，server服务端分页（*）
+        sidePagination: "server",
+        queryParams: function(params){
+            //params.csrfmiddlewaretoken = '{{ csrf_token }}';
+            console.log(params);
+            var search = $('#search_input_info').val();
+            params.search = search;
+            console.log(params);
+            return params;
+        },
+        contentType: 'application/json',
+        resizable: true,
+        //Indicate which field is an identity field.
+        idField : "id",
+
+            columns: [{
+                field: 'No',
+                title: '编号',
+                align: 'center',
+                width: 50,
+            }, {
+                field: 'type',
+                title: '类型',
+                formatter: type_formatter,
+                align: 'center',
+                width: 80,
+            }, {
+                field: 'co_name',
+                title: '公司名称',
+                align: 'center',
+                width: 150,
+                formatter: co_name_formatter,
+            }, {
+                field: 'contact_name',
+                title: '联系人姓名',
+                align: 'center',
+                width: 100,
+                titleTooltip: "asdfasdf",
+            },  {
+                field: 'contact_tel',
+                title: '联系人电话',
+                align: 'center',
+                halign:'center',
+                width: 100,
+            },  {
+                field: 'contact_role',
+                title: '联系人职位',
+                align: 'center',
+                width: 110,
+            },  {
+                field: 'co_addr',
+                title: '公司地址',
+                align: 'right',
+                halign:'center',
+                width: 150,
+                formatter: co_addr_formatter,
+            }, {
+                field: 'tax_id',
+                title: '公司税号',
+                align: 'right',
+                halign:'center',
+                width: 160,
+           },  {
+                field: 'co_tel',
+                title: '公司电话',
+                align: 'center',
+                halign:'center',
+                width: 120,
+            },  {
+                field: 'account_owner',
+                title: '银行用户名',
+                align: 'center',
+                width: 100,
+                formatter: account_owner_formatter,
+                visible: false,
+            },  {
+                field: 'account_number',
+                title: '银行账号',
+                align: 'right',
+                halign:'center',
+                width: 160,
+                visible: false,
+            },  {
+                field: 'account_bank',
+                title: '开户行',
+                align: 'right',
+                halign:'center',
+                width: 150,
+                visible: false,
+            },  {
+                field: 'contract_start',
+                title: '合同起始时间',
+                align: 'center',
+                width: 100,
+                visible: false,
+            },  {
+                field: 'contract_end',
+                title: '合同截至日期',
+                align: 'center',
+                width: 100,
+                visible: false,
+            },  {
+                field: 'contract_file',
+                title: '合同文件',
+                formatter: file_formatter,
+                align: 'center',
+                width: 80,
+                visible: false,
+            },  {
+                title: '操作',
+                formatter: operation_formatter,
+                align: 'center',
+                width: 80,
+            },{
+                title: '-',
+            }],
+        onPostBody: function(){
+            //更新浮动title标签
+            $('#tablecase').find('span').tooltip();
+        },
+    });
+
+    //绑定编辑按钮动作事件
+    $('body').on('click', '.edit_button', function(){
+        //使用 $('.edit_button').click(function(){})这样的绑定方法无效因为绑事件的语句执行的时候该div还没有生成，所以只能全局绑定
+        $.StandardPost('{% url "client_edit" %}',{No: $(this).data('no')});
+    });
+
+    //绑定删除按钮动作事件
+    $('body').on('click', '.delete_button', function(){
+        var No = $(this).data('no');
+        myConfirm("是否确定删除？",function(){
+            //alert("deleteIng"+No);
+            $.ajax({
+                type: "POST",
+                url: "{% url 'ajax_delete_client' %}",
+                data: {No: No},
+                datatype: "html",
+                success: function (data) {//这里检查data.info的值，如果删除成功就为1，否则为0，2代表没有权限，在这里做一样的判断
+                    //console.log(data);
+                    if(data.info==1){
+                        toastr.success('删除成功');
+                        location.reload();
+                    }else if(data.info==0){
+                        toastr.error('删除失败');
+                    }else if(data.info==2){
+                        toastr.info('没有删除权限，请联系管理员');
+                    }else{}
+                },
+            });
+        });
+    });
+
+    //设置隐藏属性按钮事件
+    $('#is_show_detail').click(function(){
+        var if_checked = $('#is_show_detail').prop('checked');
+
+        if(if_checked){
+            //展示细节
+            $('#tablecase').bootstrapTable('showColumn','account_owner');
+            $('#tablecase').bootstrapTable('showColumn','account_number');
+            $('#tablecase').bootstrapTable('showColumn','account_bank');
+            $('#tablecase').bootstrapTable('showColumn','contract_start');
+            $('#tablecase').bootstrapTable('showColumn','contract_end');
+            $('#tablecase').bootstrapTable('showColumn','contract_file');
+        }else{
+            //隐藏细节
+            $('#tablecase').bootstrapTable('hideColumn','account_owner');
+            $('#tablecase').bootstrapTable('hideColumn','account_number');
+            $('#tablecase').bootstrapTable('hideColumn','account_bank');
+            $('#tablecase').bootstrapTable('hideColumn','contract_start');
+            $('#tablecase').bootstrapTable('hideColumn','contract_end');
+            $('#tablecase').bootstrapTable('hideColumn','contract_file');
+        }
+    });
+
+    //搜索提交
+    $('#submit_button').click(function(){
+        //首先检查内容是否符合规定
+        var containSpecial = RegExp(/[(\ )(\~)(\!)(\@)(\#)(\$)(\%)(\^)(\&)(\*)(\()(\))(\-)(\_)(\+)(\=)(\[)(\])(\{)(\})(\|)(\\)(\;)(\:)(\')(\")(\,)(\.)(\/)(\<)(\>)(\?)(\)]+/);
+        var input_content = $('#search_input_info').val();
+        if(containSpecial.test(input_content)){
+            toastr.info('查询内容包含特殊字符');
+        }else{
+            toastr.success('刷新成功');
+            $('#tablecase').bootstrapTable('refresh');
+        }
+
+    });
+})
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,264 @@
+{% extends 'client/base.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title" style="display: inline-block;" id="title_info">Create Client</h4>
+                        <p class="category" id="note">请输入客户信息</p>
+                    </div>
+                    <div class="card-content">
+                        <form class="form" enctype="multipart/form-data" action="{% url 'ajax_edit_client' %}" id="client_info_form" method="post" onsubmit="return check();">
+                            {% csrf_token %}
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="radio" style="display: inline-block">
+                                        <label>
+                                            <input type="radio" name="type" checked="true" value=0>
+                                            公司客户
+                                        </label>
+                                    </div>
+                                    <div class="radio" style="display: inline-block">
+                                        <label>
+                                            <input type="radio" name="type" value=1>
+                                            个人客户
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 to_fade">
+                                <div class="input-group"  title="公司名称">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">home</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="公司名称" name="co_name" value="{{ co_name }}">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 to_fade">
+                                <div class="input-group" title="公司电话">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">local_phone</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="公司电话" name="co_tel" value="{{ co_tel }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-6 to_fade fade_perm_tax">
+                                <div class="input-group" title="公司税号">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">euro_symbol</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="公司税号" name="tax_id" value="{{ tax_id }}" >
+                                </div>
+                            </div>
+                            <div class="col-sm-6 to_fade">
+                                <div class="input-group" title="公司地址">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">location_on</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="公司地址" name="co_addr" value="{{ co_addr }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4 to_fade">
+                                <div class="input-group" title="银行用户名">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">account_balance</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="银行用户名" name="account_owner" value="{{ account_owner }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4 to_fade">
+                                <div class="input-group" title="银行用户名">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">chat</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="银行账号" name="account_number" value="{{ account_number }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4 to_fade">
+                                <div class="input-group" title="开户行">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">business_center</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="开户行" name="account_bank" value="{{ account_bank }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group" title="联系人姓名">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">account_box</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="联系人姓名" name="contact_name" value="{{ contact_name }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group" title="联系人电话">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">stay_primary_portrait</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="联系人电话" name="contact_tel" value="{{ contact_tel }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group" title="联系人职位">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">group</i>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="联系人职位" name="contact_role" value="{{ contact_role }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-6 to_fade fade_perm_contract">
+                                <div class="input-group" title="合同开始日期">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">date_range</i>
+                                    </span>
+                                    <input class="datepicker form-control" type="text" placeholder="合同开始日期" name="contract_start" readonly="readonly" value="{{ contract_start }}">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 to_fade fade_perm_contract">
+                                <div class="input-group" title="合同结束日期">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">arrow_forward</i>
+                                    </span>
+                                    <input class="datepicker form-control" type="text" placeholder="合同结束日期" name="contract_end" readonly="readonly" value="{{ contract_end }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 to_fade fade_perm_contract" style="margin-top: 20px;">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        合同附件:
+                                    </span>
+                                    <input type="file" name="contract_file"  id = "file_div" style="display: inline-block"/>
+                                    <div id = "refile_div" style="display: inline-block">
+                                        已附合同文件 <a id="refile_btn"><i class="fa fa-trash"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="text" class="fade" name="if_edit"   id = "if_edit"   value="0">
+                            <input type="text" class="fade" name="if_refile" id = "if_refile" value="0">
+                            <button class="btn btn-primary" id="submit_button" style="float:right;">提交</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="tablecase"></table>
+
+{% endblock %}
+
+{% block jscode %}
+    <script>
+        $('.datepicker').datepicker({
+            weekStart:1, //1代表从一周周一开始，0代表从周天开始
+        });
+
+        function check(){
+            //在这个函数里面对于输入内容进行检查，如果没有问题返回true，否则返回false
+            var type = $('input[name=type]:checked').val();
+            var info = "";
+            if (type == "0"){   //公司客户
+                if($('#client_info_form input[name=co_name]').val().length == 0){
+                    info = "请输入公司名称";
+                }else if($('#client_info_form input[name=co_tel]').val().length == 0){
+                    info = "请输入公司电话";
+                }else if($('#client_info_form input[name=tax_id]').val().length == 0){
+                    info = "请输入公司税号";
+                }else if($('#client_info_form input[name=co_addr]').val().length == 0){
+                    info = "请输入公司地址";
+                }else if($('#client_info_form input[name=account_owner]').val().length == 0){
+                    info = "请输入银行用户名";
+                }else if($('#client_info_form input[name=account_number]').val().length == 0){
+                    info = "请输入银行账号";
+                }else if($('#client_info_form input[name=account_bank]').val().length == 0){
+                    info = "请输入开户行";
+                }else if($('#client_info_form input[name=contact_name]').val().length == 0){
+                    info = "请输入联系人姓名";
+                }else if($('#client_info_form input[name=contact_tel]').val().length == 0){
+                    info = "请输入联系人电话";
+                }else if($('#client_info_form input[name=contact_role]').val().length == 0){
+                    info = "请输入联系人职位";
+                }else if($('#client_info_form input[name=contract_start]').val().length == 0){
+                    info = "请输入合同开始日期";
+                }else if($('#client_info_form input[name=contract_end]').val().length == 0){
+                    info = "请输入合同结束日期";
+                }
+            }else{              //个人客户
+                if($('#client_info_form input[name=contact_name]').val().length == 0){
+                    info = "请输入联系人姓名";
+                }else if($('#client_info_form input[name=contact_tel]').val().length == 0){
+                    info = "请输入联系人电话";
+                }else if($('#client_info_form input[name=contact_role]').val().length == 0){
+                    info = "请输入联系人职位";
+                }
+            }
+
+
+            if(info.length ==0){
+                return true;
+            }else{
+                toastr.info(info);
+                return false;
+            }
+
+        }
+
+        $('input[type=radio][name=type]').change(function() {
+            if (this.value == 0) {
+                $('.to_fade').show(); //这里设置了一个to_fade 标签类，都是公司客户与个人客户有所区别的内容
+            }
+            else if (this.value == 1) {
+                $('.to_fade').hide();
+            }
+        });
+        $(function(){
+            if("{{ type }}" != ""){             //模拟对应客户类型的点击，确保修改个人用户的时候进去是修改用户的界面
+                if("{{ type }}"=="0"){
+                    $('input[name=type]').eq(0).click()
+                }else{
+                    $('input[name=type]').eq(1).click()
+                }
+            }else{
+                $('input[name=type]').eq(0).click()
+            }
+
+
+            $('#refile_btn').click(function(){  //删除按钮被点击 则需要覆盖之前旧的文件
+                $('#file_div').show();
+                $('#refile_div').hide();
+                $('#if_refile').val("1");
+            });
+
+            if("{{ No }}" != ""){   //代表现在是编辑模式
+                $('#title_info').html('Edit Client');
+                $('input[name=type]').attr('disabled',true); //不允许在编辑模式修改客户类型
+                if("{{ contract_file }}"!=""){  //如果已经选择过文件就说明已经选择过了
+                    $('#file_div').hide();
+                    $('#refile_div').show();
+                }else{
+                    $('#file_div').show();
+                    $('#refile_div').hide();
+                }
+                $("#if_edit").val("{{ No }}");         //这句话告诉控制器下面要进行的是编辑模式,然后所传递的信息就是这个客户的编号
+
+                //检查权限
+                if("{{ perm_tax }}" == "False"){
+                    $('.fade_perm_tax').hide();
+                }
+                if("{{ perm_contract }}" == "False"){
+                    $('.fade_perm_contract').hide();
+                }
+            }else{
+                $('#refile_div').hide();
+            }
+
+
+        });
+    </script>
+{% endblock %}
