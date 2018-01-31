@@ -26,14 +26,7 @@
                                     </div>
                                 </div>
                                 <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
-                                <div class="col-sm-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="is_show_detail">
-                                            展示细节
-                                        </label>
-                                    </div>
-                                </div>
+
                             </div>
                             <table id="tablecase" style=" table-layout: fixed;"></table>
                         </div>
@@ -107,6 +100,7 @@ $(function(){
         },
         contentType: 'application/json',
         resizable: true,
+        showColumns: true,
         //Indicate which field is an identity field.
         idField : "id",
 
@@ -248,28 +242,6 @@ $(function(){
         });
     });
 
-    //设置隐藏属性按钮事件
-    $('#is_show_detail').click(function(){
-        var if_checked = $('#is_show_detail').prop('checked');
-
-        if(if_checked){
-            //展示细节
-            $('#tablecase').bootstrapTable('showColumn','account_owner');
-            $('#tablecase').bootstrapTable('showColumn','account_number');
-            $('#tablecase').bootstrapTable('showColumn','account_bank');
-            $('#tablecase').bootstrapTable('showColumn','contract_start');
-            $('#tablecase').bootstrapTable('showColumn','contract_end');
-            $('#tablecase').bootstrapTable('showColumn','contract_file');
-        }else{
-            //隐藏细节
-            $('#tablecase').bootstrapTable('hideColumn','account_owner');
-            $('#tablecase').bootstrapTable('hideColumn','account_number');
-            $('#tablecase').bootstrapTable('hideColumn','account_bank');
-            $('#tablecase').bootstrapTable('hideColumn','contract_start');
-            $('#tablecase').bootstrapTable('hideColumn','contract_end');
-            $('#tablecase').bootstrapTable('hideColumn','contract_file');
-        }
-    });
 
     //搜索提交
     $('#submit_button').click(function(){

@@ -43,6 +43,8 @@ urlpatterns = [
     path('supplier_edit/',        tmr_views.supplier_edit,       name = 'supplier_edit'),
     path('ajax_edit_supplier/',   tmr_views.ope_edit_supplier,   name = 'ajax_edit_supplier'),
     path('ajax_delete_supplier/', tmr_views.ope_delete_supplier, name = 'ajax_delete_supplier'),
+    path('get_supplier_options/', tmr_views.get_supplier_options,name = 'get_supplier_options'),
+    path('get_sup_ope_options/',  tmr_views.get_sup_ope_options, name='get_sup_ope_options'),
 
     #order part
     path('order/',             tmr_views.order_index,      name = 'order_index'),

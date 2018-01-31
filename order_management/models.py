@@ -57,18 +57,18 @@ class ORDER(models.Model):
     No        = models.CharField(max_length=12, unique=True)
     status    = models.SmallIntegerField() #6个状态 用数字代替
     client_id = models.IntegerField()
-    dep_place = models.CharField(max_length=200),
-    dep_city  = models.CharField(max_length=50),
-    des_place = models.CharField(max_length=200),
-    des_city  = models.CharField(max_length=50),
-    cargo_name     = models.CharField(max_length=100),
-    cargo_weight   = models.FloatField(max_length=100),
+    dep_place = models.CharField(max_length=200)
+    dep_city  = models.CharField(max_length=50)
+    des_place = models.CharField(max_length=200)
+    des_city  = models.CharField(max_length=50)
+    cargo_name     = models.CharField(max_length=100)
+    cargo_weight   = models.FloatField(max_length=100)
     cargo_quantity = models.IntegerField()
-    note           = models.CharField(max_length=500, null=True),
+    note           = models.CharField(max_length=500, null=True)
     receiveables   = models.FloatField(null=True)
     received       = models.FloatField(null=True)
-    create_time    = models.DateField(null=True)
-    clear_time     = models.DateField(null=True)
+    create_time    = models.DateTimeField(auto_now_add=True)
+    clear_time     = models.DateTimeField(null=True)
     if_delete      = models.SmallIntegerField()
     class Meta:
         permissions=(
@@ -87,5 +87,5 @@ class ORDER_SUP_ALLO(models.Model):
     payables    = models.FloatField(null=True)
     paid_cash   = models.FloatField(null=True)
     paid_oil    = models.FloatField(null=True)
-    create_time = models.DateField(null=True)
-    clear_time  = models.DateField(null=True)
+    create_time = models.DateTimeField(auto_now_add=True)
+    clear_time  = models.DateTimeField(null=True)

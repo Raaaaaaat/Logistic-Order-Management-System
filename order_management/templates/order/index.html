@@ -47,6 +47,7 @@
 
 {% block jscode %}
 <script>
+    $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
     $('#tablecase').bootstrapTable({
         url: "{% url 'order_index' %}",    //请求数据的地址
         method: 'post',

@@ -27,7 +27,7 @@
                                     <span class="input-group-addon">
                                         <i class="material-icons">group</i>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="起运城市" name="dep_city">
+                                    <input type="text" class="form-control" placeholder="起运城市" id="dep_city">
                                 </div>
                             </div>
                             <div class="col-sm-8">
@@ -35,7 +35,7 @@
                                     <span class="input-group-addon">
                                         <i class="material-icons">stay_primary_portrait</i>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="起运地" name="dep_place">
+                                    <input type="text" class="form-control" placeholder="起运地" id="dep_place">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -43,7 +43,7 @@
                                     <span class="input-group-addon">
                                         <i class="material-icons">group</i>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="目的城市" name="des_city">
+                                    <input type="text" class="form-control" placeholder="目的城市" id="des_city">
                                 </div>
                             </div>
                             <div class="col-sm-8">
@@ -51,7 +51,7 @@
                                     <span class="input-group-addon">
                                         <i class="material-icons">stay_primary_portrait</i>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="目的地" name="des_place">
+                                    <input type="text" class="form-control" placeholder="目的地" id="des_place">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -59,7 +59,7 @@
                                     <span class="input-group-addon">
                                         <i class="material-icons">group</i>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="货物名称" name="cargo_name">
+                                    <input type="text" class="form-control" placeholder="货物名称" id="cargo_name">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -67,7 +67,7 @@
                                     <span class="input-group-addon">
                                         <i class="material-icons">group</i>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="货物重量" name="cargo_weight">
+                                    <input type="text" class="form-control" placeholder="货物重量" id="cargo_weight">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -75,7 +75,7 @@
                                     <span class="input-group-addon">
                                         <i class="material-icons">group</i>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="货物数量" name="cargo_quantity">
+                                    <input type="text" class="form-control" placeholder="货物数量" id="cargo_quantity">
                                 </div>
                             </div>
                             <div class="col-sm-12">
@@ -83,11 +83,18 @@
                                     <span class="input-group-addon">
                                         <i class="material-icons">group</i>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="备注" name="note">
+                                    <input type="text" class="form-control" placeholder="备注" id="remark">
                                 </div>
                             </div>
                             <button class="btn btn-primary" id="submit_button" style="float:right;">提交</button>
                         </form>
+
+                        <div id="table_toolbar" class="btn-group">
+                            <button id="btn_add" type="button" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+                            </button>
+                        </div>
+                        <table id="table_sup_des" style=" table-layout: fixed;"></table>
                     </div>
                 </div>
             </div>
@@ -124,8 +131,143 @@
         });
 
         $("#submit_button").click(function(){
+            var table_data = [];
+            $("#table_sup_des tbody tr").each(function() {
+                    var $line = $(this).find("td");
+                    if($line.length==1) //如果没有数据则bootstrap table也会加入一行数据显示为没有相关记录
+                        return;
+                    var ope = $line.eq(0).find("select").val();
+                    var sup = $line.eq(1).find("select").val();
+                    var pri = $line.eq(2).find("a").editable("getValue");
+                    table_data.push({
+                        operation: ope,
+                        supplier: sup,
+                        price: pri.price,
+                    });
+                }
+            );
+
+            var data = {
+                if_edit: "0",
+                client_id: $("#client_id").val(),
+                dep_city:  $("#dep_city").val(),
+                dep_place: $("#dep_place").val(),
+                des_city:  $("#des_city").val(),
+                des_place: $("#des_place").val(),
+                cargo_name:     $("#cargo_name").val(),
+                cargo_weight:   $("#cargo_weight").val(),
+                cargo_quantity: $("#cargo_quantity").val(),
+                note:           $("#remark").val(),
+                supplier_allo:   JSON.stringify(table_data),
+            };
+            console.log(data);
             // 按照这样的方式可以传输json格式的数据
-            $.StandardPost('{% url "ope_edit_order" %}',{"path": JSON.stringify(["a",[4,5,6]])});
+            $.StandardPost('{% url "ope_edit_order" %}',data);
+        });
+        var ope_selects = [];
+        var sup_selects = [];
+        $("#table_sup_des").bootstrapTable({
+            showColumns: true,
+            toolbar: "#table_toolbar",
+            columns: [{
+                field: 'operation',
+                title: '操作环节',
+                align: 'center',
+                formatter: function(index, row){
+                    return "<select class='ope_select_options' style='width: 80%'></select>";
+                },
+            }, {
+                field: 'supplier',
+                title: '供应商',
+                align: 'center',
+                formatter: function(index, row){
+                    return "<select class='sup_select_options' style='width: 80%'></select>";
+                },
+            }, {
+                field: 'price',
+                title: '价格',
+                editable: {
+                    type: 'text',
+                    title: 'dd',
+                    emptytext: "Empty",
+                    display: function(value, sourceData){
+                        if(value.length >10){
+                            $(this).editable('setValue',"0.00");
+                            $(this).html("0.00");
+                        }
+                        else
+                            $(this).html(value);
+                    },
+                },
+                align: 'center',
+            }],
+
+            onPostBody: function(){
+                $(".sup_select_options").select2({
+                    ajax: {
+                        url: "{% url 'get_supplier_options' %}",
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                            };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: data.data
+                            };
+                        },
+                        cache: true
+                    },
+                    minimumInputLength: 0,
+                });
+                $(".ope_select_options").select2({
+                    ajax: {
+                        url: "{% url 'get_sup_ope_options' %}",
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                            };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: data.data
+                            };
+                        },
+                        cache: true
+                    },
+                    minimumInputLength: 0,
+                });
+                //填充表格刷新前的保留数据
+                for (i=0;i<ope_selects.length;i++){
+                    var option = new Option(ope_selects[i][1], ope_selects[i][0], true, true);
+                    $('.ope_select_options').eq(i).append(option).trigger('change');
+                }
+                for (i=0;i<sup_selects.length;i++){
+                    var option = new Option(sup_selects[i][1], sup_selects[i][0], true, true);
+                    $('.sup_select_options').eq(i).append(option).trigger('change');
+                }
+            },
+        });
+        $("#btn_add").click(function(){
+            ope_selects = [];
+            sup_selects = [];
+            //新增行会刷新表格，之前输入的内容会被刷新，所以在此对于旧的数据进行提取，getData方法无法使用因为只能获取val不能获取text
+            $('.ope_select_options').each(function(){
+                var text = ($(this).find('option').last().html());
+                var value = $(this).val();
+                ope_selects.push([value,text]);
+            });
+            $('.sup_select_options').each(function(){
+                var text = ($(this).find('option').last().html());
+                var value = $(this).val();
+                sup_selects.push([value,text]);
+            });
+
+            $("#table_sup_des").bootstrapTable("append",[{
+                price: "0.00"
+            }]); //插入空行
         });
     </script>
 {% endblock %}
