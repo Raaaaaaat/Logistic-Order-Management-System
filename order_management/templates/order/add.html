@@ -25,7 +25,7 @@
                             <div class="col-sm-4">
                                 <div class="input-group" title="起运城市">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">group</i>
+                                        <i class="material-icons">location_city</i>
                                     </span>
                                     <input type="text" class="form-control" placeholder="起运城市" id="dep_city">
                                 </div>
@@ -33,7 +33,7 @@
                             <div class="col-sm-8">
                                 <div class="input-group" title="起运地">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">stay_primary_portrait</i>
+                                        <i class="material-icons">place</i>
                                     </span>
                                     <input type="text" class="form-control" placeholder="起运地" id="dep_place">
                                 </div>
@@ -41,7 +41,7 @@
                             <div class="col-sm-4">
                                 <div class="input-group" title="目的城市">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">group</i>
+                                        <i class="material-icons">location_city</i>
                                     </span>
                                     <input type="text" class="form-control" placeholder="目的城市" id="des_city">
                                 </div>
@@ -49,7 +49,7 @@
                             <div class="col-sm-8">
                                 <div class="input-group" title="目的地">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">stay_primary_portrait</i>
+                                        <i class="material-icons">place</i>
                                     </span>
                                     <input type="text" class="form-control" placeholder="目的地" id="des_place">
                                 </div>
@@ -57,7 +57,7 @@
                             <div class="col-sm-4">
                                 <div class="input-group" title="货物名称">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">group</i>
+                                        <i class="material-icons">local_shipping</i>
                                     </span>
                                     <input type="text" class="form-control" placeholder="货物名称" id="cargo_name">
                                 </div>
@@ -65,7 +65,7 @@
                             <div class="col-sm-4">
                                 <div class="input-group" title="货物重量">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">group</i>
+                                        <i class="material-icons">fitness_center</i>
                                     </span>
                                     <input type="text" class="form-control" placeholder="货物重量" id="cargo_weight">
                                 </div>
@@ -73,7 +73,7 @@
                             <div class="col-sm-4">
                                 <div class="input-group" title="货物数量">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">group</i>
+                                        <i class="material-icons">sort</i>
                                     </span>
                                     <input type="text" class="form-control" placeholder="货物数量" id="cargo_quantity">
                                 </div>
@@ -81,7 +81,7 @@
                             <div class="col-sm-12">
                                 <div class="input-group" title="备注">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">group</i>
+                                        <i class="material-icons">message</i>
                                     </span>
                                     <input type="text" class="form-control" placeholder="备注" id="remark">
                                 </div>
@@ -109,10 +109,10 @@
     <script>
         $(function(){
             $("#client_id").select2({
+                placeholder: "请选择客户...",
                 ajax: {
                     url: "{% url 'get_client_options' %}",
                     dataType: 'json',
-                    delay: 250,
                     data: function (params) {
                         return {
                             q: params.term,
@@ -132,32 +132,79 @@
 
         $("#submit_button").click(function(){
             var table_data = [];
+            var if_valid = true; //如果有问题就修改这个变量
+
+            var client_id     = $("#client_id").val();
+            var dep_city      = $("#dep_city").val();
+            var dep_place     = $("#dep_place").val();
+            var des_city      = $("#des_city").val();
+            var des_place     = $("#des_place").val();
+            var cargo_name    = $("#cargo_name").val();
+            var cargo_weight  = $("#cargo_weight").val();
+            var cargo_quantity= $("#cargo_quantity").val();
+            var remark        = $("#remark").val();
+            if(client_id==null){
+                toastr.error("请选择客户");
+                if_valid = false;
+            }
+            if(dep_city=="" || dep_place==""){
+                toastr.error("请输入出发地信息");
+                if_valid = false;
+            }
+            if(des_city=="" || des_place==""){
+                toastr.error("请输入目的地信息");
+                if_valid = false;
+            }
+            if(cargo_name==""){
+                toastr.error("请输入货物名称");
+                if_valid = false;
+            }
+            if(cargo_weight=="" || isNaN(cargo_weight)){
+                toastr.error("请输入正确的货物重量");
+                if_valid = false;
+            }
+            if(cargo_quantity=="" || isNaN(cargo_quantity) || Number(cargo_quantity)%1 !== 0){
+                toastr.error("请输入货物数量并且货物数量必须为整数");
+                if_valid = false;
+            }
+            if(remark.length > 500){
+                toastr.error("备注长度不能超过500");
+                if_valid = false;
+            }
+
             $("#table_sup_des tbody tr").each(function() {
-                    var $line = $(this).find("td");
-                    if($line.length==1) //如果没有数据则bootstrap table也会加入一行数据显示为没有相关记录
-                        return;
-                    var ope = $line.eq(0).find("select").val();
-                    var sup = $line.eq(1).find("select").val();
-                    var pri = $line.eq(2).find("a").editable("getValue");
-                    table_data.push({
-                        operation: ope,
-                        supplier: sup,
-                        price: pri.price,
-                    });
+                var $line = $(this).find("td");
+                if($line.length==1) //如果没有数据则bootstrap table也会加入一行数据显示为没有相关记录
+                    return;
+                var ope = $line.eq(0).find("select").val();
+                var sup = $line.eq(1).find("select").val();
+                if(ope == null || sup==null){
+                    toastr.error("请填入正确的供应商信息");
+                    if_valid = false;
                 }
-            );
+                var pri = $line.eq(2).find("a").html();
+                table_data.push({
+                    operation: ope,
+                    supplier: sup,
+                    price: pri,
+                });
+            });
+            if(table_data.length==0){
+                toastr.error("至少请选择一家供应商");
+                if_valid = false;
+            }
 
             var data = {
                 if_edit: "0",
-                client_id: $("#client_id").val(),
-                dep_city:  $("#dep_city").val(),
-                dep_place: $("#dep_place").val(),
-                des_city:  $("#des_city").val(),
-                des_place: $("#des_place").val(),
-                cargo_name:     $("#cargo_name").val(),
-                cargo_weight:   $("#cargo_weight").val(),
-                cargo_quantity: $("#cargo_quantity").val(),
-                note:           $("#remark").val(),
+                client_id: client_id,
+                dep_city:  dep_city,
+                dep_place: dep_place,
+                des_city:  des_city,
+                des_place: des_place,
+                cargo_name:     cargo_name,
+                cargo_weight:   Number(cargo_weight),
+                cargo_quantity: Number(cargo_quantity),
+                note:           remark,
                 supplier_allo:   JSON.stringify(table_data),
             };
             console.log(data);
@@ -167,7 +214,6 @@
         var ope_selects = [];
         var sup_selects = [];
         $("#table_sup_des").bootstrapTable({
-            showColumns: true,
             toolbar: "#table_toolbar",
             columns: [{
                 field: 'operation',
@@ -191,13 +237,18 @@
                     title: 'dd',
                     emptytext: "Empty",
                     display: function(value, sourceData){
-                        if(value.length >10){
-                            $(this).editable('setValue',"0.00");
-                            $(this).html("0.00");
-                        }
-                        else
-                            $(this).html(value);
+                        var val = Number(value);
+                        val = val.toFixed(2);
+
+                        $(this).html(val.toString());
+
+
                     },
+                    validate: function(value){
+                        //对于输入进行有效性验证
+                        if(isNaN(value))
+                            return "请输入有效数字";
+                    }
                 },
                 align: 'center',
             }],
