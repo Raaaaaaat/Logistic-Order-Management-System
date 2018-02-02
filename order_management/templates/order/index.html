@@ -9,6 +9,10 @@
                         <div class="card-header" data-background-color="purple">
                             <h4 class="title" style="display: inline-block;">Order List</h4>
                             <li class="active" style="display: inline-block; float:right; margin-right: 20px">
+                                <a id="advanced_filter_collapse_btn">
+                                    <i class="material-icons">zoom_in</i>
+                                    高级筛选
+                                    <div class="ripple-container"></div></a>
                                 <a href="/order_add">
                                     <i class="material-icons">note_add</i>
                                     添加
@@ -16,24 +20,92 @@
                             </li>
                         </div>
                         <div class="card-content table-responsive">
-                            <div class="col-sm-12" style ="display: flex;align-items:Center;">
-                                <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="material-icons">search</i>
-                                        </span>
-                                        <input type="text" class="form-control" placeholder="搜索编号或名称" id="search_input_info" value="{{ contact_tel }}">
+                            <div class="collapse in">
+                                <div class = "row">
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">search</i>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="按单号进行搜索" id="filter_No">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group" title="按客户进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">account_box</i>
+                                            </span>
+                                            <select id="filter_client" class="form-control" style="width: 100%"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group" title="按供应商进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">account_box</i>
+                                            </span>
+                                            <select id="filter_supplier" class="form-control" style="width: 100%;"></select>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class = "row">
+                                    <div class="col-sm-4 to_fade fade_perm_contract">
+                                        <div class="input-group" title="开始日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">date_range</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="开始日期" id="filter_start_time">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4 to_fade fade_perm_contract">
+                                        <div class="input-group" title="结束日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">arrow_forward</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="结束日期" id="filter_end_time">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group" title="按付款状态搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">account_box</i>
+                                            </span>
+                                            <select id="filter_pay_status" class="form-control" style="width: 100%"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class = "row">
+
+                                    <div class="col-sm-12">
+                                        <div class="input-group" title="按订单状态进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">account_box</i>
+                                            </span>
+                                            <select id="filter_status" class="form-control" style="width: 100%" multiple="multiple"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class = "row">
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">search</i>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="按起运地进行搜索" id="filter_dep_city">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">search</i>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="按目的地进行搜索" id="filter_des_city">
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
-                                <div class="col-sm-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="is_show_detail">
-                                            展示细节
-                                        </label>
-                                    </div>
-                                </div>
+
                             </div>
                             <table id="tablecase" style=" table-layout: fixed;"></table>
                         </div>
@@ -48,9 +120,84 @@
 {% block jscode %}
 <script>
     $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+    $(function(){
+        //筛选多选项下拉框初始化
+        $("#filter_client").select2({
+            placeholder: "按客户进行筛选",
+            allowClear: true,
+            ajax: {
+                url: "{% url 'get_client_options' %}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 0,
+        });
+        $("#filter_supplier").select2({
+            placeholder: "按供应商进行筛选",
+            allowClear: true,
+            ajax: {
+                url: "{% url 'get_supplier_options' %}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 0,
+        });
+        $("#filter_pay_status").select2({
+            minimumResultsForSearch: Infinity,
+            allowClear: true,
+            placeholder: "按付款状态搜索",
+            data: [{ id: 0,  text: "未付款"},
+                   { id: 1,  text: "已付款"}],
+        });
+        $("#filter_pay_status").val(null).trigger("change");
+        $("#filter_status").select2({
+            placeholder: "按订单状态进行筛选",
+            allowClear: true,
+            data: [{ id: 1,  text: "未发货"},
+                   { id: 2,  text: "已提货"},
+                   { id: 3,  text: "在途中"},
+                   { id: 4,  text: "已签收"},
+                   { id: 5,  text: "已出票"},
+                   { id: 6,  text: "已完成"}],
+        });
+        //时间选择器初始化
+        $('.datepicker').datepicker({
+            weekStart:1, //1代表从一周周一开始，0代表从周天开始
+        });
+
+        $('#submit_button').click(function(){
+                toastr.success('刷新成功');
+                $('#tablecase').bootstrapTable('refresh');
+
+        });
+    });
+
+    $("#filter_client")
+
     $('#tablecase').bootstrapTable({
         url: "{% url 'order_index' %}",    //请求数据的地址
         method: 'post',
+
         //是否显示行间隔色
         striped: true,
         //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -69,10 +216,47 @@
         //分页方式：client客户端分页，server服务端分页（*）
         sidePagination: "server",
         queryParams: function(params){
+            console.log(params);
+            var filter_end_time = $("#filter_end_time").val();
+            params.filter_end_time = "";
+            if(filter_end_time!=""){
+                if(/^\d\d\/\d\d\/\d\d\d\d$/.test(filter_end_time))
+                    params.filter_end_time = filter_end_time;
+                else{
+                    toastr.info("结束日期格式有误");
+                }
 
-            var search = $('#search_input_info').val();
-            params.search = search;
-            //console.log(params);
+            }
+            var filter_start_time = $("#filter_start_time").val();
+            params.filter_start_time = "";
+            if(filter_start_time!=""){
+                if(/^\d\d\/\d\d\/\d\d\d\d$/.test(filter_start_time))
+                    params.filter_start_time = filter_start_time;
+                else{
+                    toastr.info("开始日期格式有误");
+                }
+            }
+
+            if($("#filter_client").val()!=null)
+                params.filter_client     = $("#filter_client").val();
+            else
+                params.filter_client     = "";
+            if($("#filter_supplier").val()!=null)
+                params.filter_supplier   = $("#filter_supplier").val();
+            else
+                params.filter_supplier   = "";
+            if($("#filter_status").val()!=null)
+                params.filter_status     = JSON.stringify($("#filter_status").val());
+            else
+                params.filter_status     = JSON.stringify([]);
+            if($("#filter_pay_status").val()!=null)
+                params.filter_pay_status = $("#filter_pay_status").val();
+            else
+                params.filter_pay_status = "";
+            params.filter_No             = $("#filter_No").val();
+            params.filter_dep_city       = $("#filter_dep_city").val();
+            params.filter_des_city       = $("#filter_des_city").val();
+            console.log(params);
             return params;
         },
         contentType: 'application/json',
@@ -86,7 +270,7 @@
                 align: 'center',
                 width: 50,
             }, {
-                field: 'client',
+                field: 'client_id',
                 title: '客户名称',
                 align: 'center',
                 width: 100,
@@ -145,6 +329,9 @@
             //更新浮动title标签
             $('#tablecase').find('span').tooltip();
         },
+    });
+    $("#advanced_filter_collapse_btn").click(function(){
+        $('.collapse').collapse("toggle");
     });
 </script>
 {% endblock %}
