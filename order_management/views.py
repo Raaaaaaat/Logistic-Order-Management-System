@@ -26,3 +26,4 @@ from order_management.views_order.order_index import *
 from order_management.views_order.order_add import *
 from order_management.views_order.order_edit import *
 from order_management.views_order.ope_edit_order import *
+from order_management.views_order.order_detail import *

@@ -19,6 +19,8 @@ def ope_edit_order(request):
         note           = request.POST.get("note")
         supplier_allo  = request.POST.get("supplier_allo")
         supplier_allo  = json.loads(supplier_allo)
+        rec_name       = request.POST.get("rec_name", "")
+        rec_tel        = request.POST.get("rec_tel", "")
         if_edit        = request.POST.get("if_edit")
 
         if if_edit=="0": #添加模式
@@ -39,7 +41,7 @@ def ope_edit_order(request):
                                  des_city=des_city, des_place=des_place,
                                  cargo_name=cargo_name, cargo_weight=cargo_weight,
                                  cargo_quantity=cargo_quantity, if_delete=0,
-                                 note=note,)
+                                 note=note, rec_name=rec_name, rec_tel=rec_tel)
             id = obj.id
             #下面对于供应商分配方案进行添加
             for line in supplier_allo:

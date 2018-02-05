@@ -1,0 +1,73 @@
+{% extends 'order/base.html' %}
+
+{% block style %}
+    <style>
+
+    .table_div{
+        border:solid purple; border-width:1px 0px 0px 1px; overflow: hidden;
+    }
+    .td_div{
+        border:solid purple; border-width:0px 1px 1px 0px; padding:5px 5px; margin-left:0px; float:left; height:30px;
+    }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header" data-background-color="purple">
+                            <h4 class="title" style="display: inline-block;">Order List</h4>
+                            <li class="active" style="display: inline-block; float:right; margin-right: 20px">
+                                <a id="advanced_filter_collapse_btn">
+                                    <i class="material-icons">zoom_in</i>
+                                    高级筛选
+                                    <div class="ripple-container"></div></a>
+                                <a href="/order_add">
+                                    <i class="material-icons">note_add</i>
+                                    添加
+                                    <div class="ripple-container"></div></a>
+                            </li>
+                        </div>
+                        <div class="card-content">
+                            <div style="align:right; width:100%;">单号：</div>
+                            <div class="table_div">
+
+                                <div class="td_div" style="width:10%; display:inline">托运日期</div>
+                                <div class="td_div" style="width:40%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">运行区间</div>
+                                <div class="td_div" style="width:40%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">托运人</div>
+                                <div class="td_div" style="width:40%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">联系方式</div>
+                                <div class="td_div" style="width:40%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">收货人</div>
+                                <div class="td_div" style="width:40%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">联系方式</div>
+                                <div class="td_div" style="width:40%; display:inline"></div>
+
+                                <div class="td_div" style="width:10%; display:inline">起运地址</div>
+                                <div class="td_div" style="width:90%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">目的地址</div>
+                                <div class="td_div" style="width:90%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">货物名称</div>
+                                <div class="td_div" style="width:30%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">货物重量</div>
+                                <div class="td_div" style="width:20%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">货物数量</div>
+                                <div class="td_div" style="width:20%; display:inline"></div>
+                                <div class="td_div" style="width:10%; display:inline">备注</div>
+                                <div class="td_div" style="width:90%; display:inline"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

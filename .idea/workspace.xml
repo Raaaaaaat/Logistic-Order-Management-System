@@ -2,13 +2,21 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/order_management/views_client/client_edit.py" line="12" />
-    <bookmark url="file://$PROJECT_DIR$/order_management/views_order/order_index.py" line="36" />
-    <bookmark url="file://$PROJECT_DIR$/order_management/views_order/order_index.py" line="29" />
+    <bookmark url="file://$PROJECT_DIR$/order_management/views_order/order_index.py" line="37" />
+    <bookmark url="file://$PROJECT_DIR$/order_management/views_order/order_index.py" line="30" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="147a764d-af0d-4325-8f5e-c3cdd6992ac5" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/order_management/templates/order/detail.html" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/order_management/views_order/order_detail.py" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/order_management/models.py" afterPath="$PROJECT_DIR$/order_management/models.py" />
+      <change beforePath="$PROJECT_DIR$/order_management/templates/base.html" afterPath="$PROJECT_DIR$/order_management/templates/base.html" />
       <change beforePath="$PROJECT_DIR$/order_management/templates/order/index.html" afterPath="$PROJECT_DIR$/order_management/templates/order/index.html" />
+      <change beforePath="$PROJECT_DIR$/order_management/views.py" afterPath="$PROJECT_DIR$/order_management/views.py" />
+      <change beforePath="$PROJECT_DIR$/order_management/views_order/ope_edit_order.py" afterPath="$PROJECT_DIR$/order_management/views_order/ope_edit_order.py" />
       <change beforePath="$PROJECT_DIR$/order_management/views_order/order_index.py" afterPath="$PROJECT_DIR$/order_management/views_order/order_index.py" />
+      <change beforePath="$PROJECT_DIR$/tmr/urls.py" afterPath="$PROJECT_DIR$/tmr/urls.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,25 +30,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="add.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/templates/order/add.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="127">
-              <caret line="150" column="41" lean-forward="true" selection-start-line="150" selection-start-column="41" selection-end-line="150" selection-end-column="41" />
-              <folding>
-                <element signature="e#1099#1117#0#HTML" expanded="true" />
-                <element signature="e#5281#5301#0#HTML" expanded="true" />
-                <element signature="e#5721#5750#0#HTML" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/order_management/templates/order/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1602">
-              <caret line="75" column="38" lean-forward="false" selection-start-line="75" selection-start-column="38" selection-end-line="75" selection-end-column="38" />
+            <state relative-caret-position="72">
+              <caret line="269" column="32" lean-forward="true" selection-start-line="269" selection-start-column="32" selection-end-line="269" selection-end-column="32" />
               <folding>
                 <element signature="e#447#509#0#HTML" expanded="true" />
                 <element signature="e#2260#2279#0#HTML" expanded="true" />
@@ -53,31 +47,79 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/templates/client/index.html">
+      <file leaf-file-name="order_detail.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/order_management/views_order/order_detail.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="33" column="22" lean-forward="true" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
+            <state relative-caret-position="108">
+              <caret line="6" column="56" lean-forward="false" selection-start-line="6" selection-start-column="56" selection-end-line="6" selection-end-column="56" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="client_index.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/views_client/client_index.py">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="428">
+              <caret line="28" column="55" lean-forward="false" selection-start-line="28" selection-start-column="55" selection-end-line="28" selection-end-column="55" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tmr/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="417">
+              <caret line="52" column="59" lean-forward="false" selection-start-line="52" selection-start-column="59" selection-end-line="52" selection-end-column="59" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="client_get_table_data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/views_client/client_get_table_data.py">
+      <file leaf-file-name="detail.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/templates/order/detail.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+            <state relative-caret-position="104">
+              <caret line="48" column="71" lean-forward="true" selection-start-line="48" selection-start-column="71" selection-end-line="48" selection-end-column="71" />
+              <folding>
+                <element signature="e#744#806#0#HTML" expanded="true" />
+                <element signature="e#1464#1496#0#HTML" expanded="true" />
+                <element signature="e#1612#1645#0#HTML" expanded="true" />
+                <element signature="e#1709#1742#0#HTML" expanded="true" />
+                <element signature="e#1802#1835#0#HTML" expanded="true" />
+                <element signature="e#1899#1932#0#HTML" expanded="true" />
+                <element signature="e#1992#2025#0#HTML" expanded="true" />
+                <element signature="e#2088#2121#0#HTML" expanded="true" />
+                <element signature="e#2181#2214#0#HTML" expanded="true" />
+                <element signature="e#2278#2311#0#HTML" expanded="true" />
+                <element signature="e#2371#2404#0#HTML" expanded="true" />
+                <element signature="e#2467#2500#0#HTML" expanded="true" />
+                <element signature="e#2657#2690#0#HTML" expanded="true" />
+                <element signature="e#2751#2784#0#HTML" expanded="true" />
+                <element signature="e#2848#2881#0#HTML" expanded="true" />
+                <element signature="e#2941#2974#0#HTML" expanded="true" />
+                <element signature="e#3038#3071#0#HTML" expanded="true" />
+                <element signature="e#3131#3164#0#HTML" expanded="true" />
+                <element signature="e#3228#3261#0#HTML" expanded="true" />
+                <element signature="e#3321#3354#0#HTML" expanded="true" />
+                <element signature="e#3418#3451#0#HTML" expanded="true" />
+                <element signature="e#3511#3544#0#HTML" expanded="true" />
+                <element signature="e#3608#3641#0#HTML" expanded="true" />
+                <element signature="e#3701#3734#0#HTML" expanded="true" />
+                <element signature="e#3796#3829#0#HTML" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="64" column="57" lean-forward="false" selection-start-line="64" selection-start-column="57" selection-end-line="64" selection-end-column="57" />
               <folding />
             </state>
           </provider>
@@ -86,8 +128,8 @@
       <file leaf-file-name="ope_edit_order.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/order_management/views_order/ope_edit_order.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="447">
-              <caret line="44" column="38" lean-forward="true" selection-start-line="44" selection-start-column="38" selection-end-line="44" selection-end-column="38" />
+            <state relative-caret-position="284">
+              <caret line="43" column="78" lean-forward="false" selection-start-line="43" selection-start-column="78" selection-end-line="43" selection-end-column="78" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -95,44 +137,34 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/views.py">
+      <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/templates/order/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+            <state relative-caret-position="-256">
+              <caret line="4" column="12" lean-forward="false" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="order_index.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/templates/base.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="230">
+              <caret line="33" column="14" lean-forward="true" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="order_index.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/order_management/views_order/order_index.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="523">
-              <caret line="65" column="72" lean-forward="false" selection-start-line="65" selection-start-column="72" selection-end-line="65" selection-end-column="72" />
+            <state relative-caret-position="-1223">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="35" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="exception.py" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python3.4/dist-packages/django/core/handlers/exception.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="30" column="7" lean-forward="true" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="658">
-              <caret line="83" column="36" lean-forward="true" selection-start-line="83" selection-start-column="36" selection-end-line="83" selection-end-column="36" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -143,8 +175,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -178,8 +210,8 @@
       <find>search</find>
       <find>submit_button</find>
       <find>supplier</find>
-      <find>len</find>
       <find>json.</find>
+      <find>len</find>
     </findStrings>
     <replaceStrings>
       <replace>&quot;text&quot;:</replace>
@@ -191,8 +223,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/order_management/templates/user/log_in.html" />
-        <option value="$PROJECT_DIR$/order_management/static/modal.js" />
         <option value="$PROJECT_DIR$/order_management/user_views/log_in_index.py" />
         <option value="$PROJECT_DIR$/order_management/client_views/edit_client.py" />
         <option value="$PROJECT_DIR$/order_management/client_views/delete_client.py" />
@@ -230,18 +260,20 @@
         <option value="$PROJECT_DIR$/order_management/views_client/get_client_option.py" />
         <option value="$PROJECT_DIR$/order_management/views_client/client_get_table_data.py" />
         <option value="$PROJECT_DIR$/order_management/views_client/get_client_options.py" />
-        <option value="$PROJECT_DIR$/tmr/urls.py" />
-        <option value="$PROJECT_DIR$/order_management/views.py" />
         <option value="$PROJECT_DIR$/order_management/views_supplier/get_supplier_options.py" />
         <option value="$PROJECT_DIR$/order_management/views_supplier/get_sup_ope_options.py" />
         <option value="$PROJECT_DIR$/order_management/templates/client/index.html" />
         <option value="$PROJECT_DIR$/order_management/templates/supplier/index.html" />
+        <option value="$PROJECT_DIR$/order_management/templates/order/add.html" />
+        <option value="$PROJECT_DIR$/order_management/views_order/order_index.py" />
+        <option value="$PROJECT_DIR$/order_management/views.py" />
+        <option value="$PROJECT_DIR$/tmr/urls.py" />
+        <option value="$PROJECT_DIR$/order_management/templates/order/index.html" />
+        <option value="$PROJECT_DIR$/order_management/views_order/order_detail.py" />
         <option value="$PROJECT_DIR$/order_management/templates/base.html" />
+        <option value="$PROJECT_DIR$/order_management/templates/order/detail.html" />
         <option value="$PROJECT_DIR$/order_management/views_order/ope_edit_order.py" />
         <option value="$PROJECT_DIR$/order_management/models.py" />
-        <option value="$PROJECT_DIR$/order_management/templates/order/add.html" />
-        <option value="$PROJECT_DIR$/order_management/templates/order/index.html" />
-        <option value="$PROJECT_DIR$/order_management/views_order/order_index.py" />
       </list>
     </option>
   </component>
@@ -252,10 +284,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="65" />
-    <option name="y" value="-4" />
-    <option name="width" value="1855" />
-    <option name="height" value="1084" />
+    <option name="x" value="1716" />
+    <option name="y" value="24" />
+    <option name="width" value="1761" />
+    <option name="height" value="1000" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -336,6 +368,12 @@
             <path>
               <item name="tmr" type="b2602c69:ProjectViewProjectNode" />
               <item name="tmr" type="462c0819:PsiDirectoryNode" />
+              <item name="order_management" type="462c0819:PsiDirectoryNode" />
+              <item name="views_supplier" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tmr" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tmr" type="462c0819:PsiDirectoryNode" />
               <item name="tmr" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -411,7 +449,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
+    <frame x="1985" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -472,28 +510,20 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/order_management/views_order/ope_edit_order.py</url>
-          <line>44</line>
+          <line>46</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/order_management/views_order/ope_edit_order.py</url>
-          <line>50</line>
+          <line>52</line>
           <option name="timeStamp" value="41" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="48" />
+      <option name="time" value="51" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/lib/python3.4/xml/dom/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="93" column="6" lean-forward="false" selection-start-line="93" selection-start-column="6" selection-end-line="93" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/user_views/user_operation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
@@ -788,26 +818,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tmr/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="51" column="55" lean-forward="false" selection-start-line="51" selection-start-column="55" selection-end-line="51" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/add.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="16" column="34" lean-forward="false" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="151" column="7" lean-forward="true" selection-start-line="151" selection-start-column="7" selection-end-line="153" selection-end-column="11" />
           <folding />
         </state>
       </provider>
@@ -820,14 +834,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/order/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="4" column="12" lean-forward="false" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1386">
@@ -836,36 +842,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/views_order/ope_edit_order.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="447">
-          <caret line="44" column="38" lean-forward="true" selection-start-line="44" selection-start-column="38" selection-end-line="44" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python3.4/dist-packages/django/core/handlers/exception.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="30" column="7" lean-forward="true" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="658">
-          <caret line="83" column="36" lean-forward="true" selection-start-line="83" selection-start-column="36" selection-end-line="83" selection-end-column="36" />
           <folding />
         </state>
       </provider>
@@ -890,29 +870,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/order/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1602">
-          <caret line="75" column="38" lean-forward="false" selection-start-line="75" selection-start-column="38" selection-end-line="75" selection-end-column="38" />
-          <folding>
-            <element signature="e#447#509#0#HTML" expanded="true" />
-            <element signature="e#2260#2279#0#HTML" expanded="true" />
-            <element signature="e#2835#2855#0#HTML" expanded="true" />
-            <element signature="e#4727#4746#0#HTML" expanded="true" />
-            <element signature="e#5394#5413#0#HTML" expanded="true" />
-            <element signature="e#7013#7042#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/client/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="33" column="22" lean-forward="true" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/views_client/client_index.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -929,13 +886,130 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/views_order/order_index.py">
+    <entry file="file://$PROJECT_DIR$/order_management/templates/client/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="65" column="72" lean-forward="false" selection-start-line="65" selection-start-column="72" selection-end-line="65" selection-end-column="72" />
+        <state relative-caret-position="270">
+          <caret line="61" column="37" lean-forward="false" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="428">
+          <caret line="28" column="55" lean-forward="false" selection-start-line="28" selection-start-column="55" selection-end-line="28" selection-end-column="55" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tmr/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="417">
+          <caret line="52" column="59" lean-forward="false" selection-start-line="52" selection-start-column="59" selection-end-line="52" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/order/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="269" column="32" lean-forward="true" selection-start-line="269" selection-start-column="32" selection-end-line="269" selection-end-column="32" />
+          <folding>
+            <element signature="e#447#509#0#HTML" expanded="true" />
+            <element signature="e#2260#2279#0#HTML" expanded="true" />
+            <element signature="e#2835#2855#0#HTML" expanded="true" />
+            <element signature="e#4727#4746#0#HTML" expanded="true" />
+            <element signature="e#5394#5413#0#HTML" expanded="true" />
+            <element signature="e#7013#7042#0#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/views_order/order_index.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1223">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/order/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-256">
+          <caret line="4" column="12" lean-forward="false" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="33" column="14" lean-forward="true" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/order/detail.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="104">
+          <caret line="48" column="71" lean-forward="true" selection-start-line="48" selection-start-column="71" selection-end-line="48" selection-end-column="71" />
+          <folding>
+            <element signature="e#744#806#0#HTML" expanded="true" />
+            <element signature="e#1464#1496#0#HTML" expanded="true" />
+            <element signature="e#1612#1645#0#HTML" expanded="true" />
+            <element signature="e#1709#1742#0#HTML" expanded="true" />
+            <element signature="e#1802#1835#0#HTML" expanded="true" />
+            <element signature="e#1899#1932#0#HTML" expanded="true" />
+            <element signature="e#1992#2025#0#HTML" expanded="true" />
+            <element signature="e#2088#2121#0#HTML" expanded="true" />
+            <element signature="e#2181#2214#0#HTML" expanded="true" />
+            <element signature="e#2278#2311#0#HTML" expanded="true" />
+            <element signature="e#2371#2404#0#HTML" expanded="true" />
+            <element signature="e#2467#2500#0#HTML" expanded="true" />
+            <element signature="e#2657#2690#0#HTML" expanded="true" />
+            <element signature="e#2751#2784#0#HTML" expanded="true" />
+            <element signature="e#2848#2881#0#HTML" expanded="true" />
+            <element signature="e#2941#2974#0#HTML" expanded="true" />
+            <element signature="e#3038#3071#0#HTML" expanded="true" />
+            <element signature="e#3131#3164#0#HTML" expanded="true" />
+            <element signature="e#3228#3261#0#HTML" expanded="true" />
+            <element signature="e#3321#3354#0#HTML" expanded="true" />
+            <element signature="e#3418#3451#0#HTML" expanded="true" />
+            <element signature="e#3511#3544#0#HTML" expanded="true" />
+            <element signature="e#3608#3641#0#HTML" expanded="true" />
+            <element signature="e#3701#3734#0#HTML" expanded="true" />
+            <element signature="e#3796#3829#0#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="64" column="57" lean-forward="false" selection-start-line="64" selection-start-column="57" selection-end-line="64" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/views_order/ope_edit_order.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="43" column="78" lean-forward="false" selection-start-line="43" selection-start-column="78" selection-end-line="43" selection-end-column="78" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/views_order/order_detail.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="56" lean-forward="false" selection-start-line="6" selection-start-column="56" selection-end-line="6" selection-end-column="56" />
+          <folding />
         </state>
       </provider>
     </entry>

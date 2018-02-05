@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import json
 from order_management.models import ORDER
+from order_management.models import CLIENT
 from order_management.models import ORDER_SUP_ALLO
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
@@ -52,7 +53,7 @@ def order_index(request):
             temp = []       #循环将对象从queryset变成list对象
             for line in order_ids:
                 temp.append(line)
-            sup_ids = temp
+            order_ids = temp
             query = query & Q(id__in=order_ids)
         if filter_supplier != "":
             order_ids = ORDER_SUP_ALLO.objects.filter(supplier_id=int(filter_supplier))
@@ -60,14 +61,27 @@ def order_index(request):
             temp = []       #循环将对象从queryset变成list对象
             for line in order_ids:
                 temp.append(line)
-            sup_ids = temp
+            order_ids = temp
             query = query & Q(id__in=order_ids)
 
         objs = ORDER.objects.filter(query).values()[offset:offset+limit]
         total = objs.count()
         rows = []  # 这里从数据库取回来的初始数据不是列表，而是ｑｕｅｒｙｓｅｔ，所以这里领建立一个列表ｒｏｗｓ然后重新过一遍数据，转存一下
+        client_ids = []
         for line in objs:
             rows.append(line)
+            #获取需要获得的客户信息的id set
+            client_ids.append(line["client_id"])
+        client_ids = list(set(client_ids))
+        client_objs = CLIENT.objects.filter(id__in=client_ids)
+        client_names = {}
+        for line in client_objs:
+            if line.type==0: #公司客户
+                client_names[line.id] = line.co_name
+            elif line.type==1:
+                client_names[line.id] = line.contact_name
+        for line in rows:
+            line["client_name"] = client_names[line["client_id"]]
         #返回表格的数据
         data = {
             "total": total,

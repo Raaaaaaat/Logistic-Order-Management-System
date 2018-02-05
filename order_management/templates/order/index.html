@@ -197,7 +197,7 @@
     $('#tablecase').bootstrapTable({
         url: "{% url 'order_index' %}",    //请求数据的地址
         method: 'post',
-
+        showColumns: true,
         //是否显示行间隔色
         striped: true,
         //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -268,9 +268,12 @@
                 field: 'No',
                 title: '编号',
                 align: 'center',
-                width: 50,
+                width: 100,
+                formatter: function(index, row){
+                    return '<a href="/order_detail?No='+row.No+'"+>'+row.No+'</a>';
+                }
             }, {
-                field: 'client_id',
+                field: 'client_name',
                 title: '客户名称',
                 align: 'center',
                 width: 100,
@@ -280,6 +283,9 @@
                 align: 'right',
                 halign:'center',
                 width: 120,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.dep_place+'">'+row.dep_place+'</span>';
+                }
             },  {
                 field: 'dep_city',
                 title: '起运城市',
@@ -292,21 +298,24 @@
                 align: 'right',
                 halign:'center',
                 width: 120,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.des_place+'">'+row.des_place+'</span>';
+                }
             },  {
                 field: 'des_city',
                 title: '目的城市',
-                align: 'right',
+                align: 'center',
                 halign:'center',
                 width: 90,
             }, {
                 field: 'cargo_name',
                 title: '货物名称',
-                align: 'left',
+                align: 'center',
                 halign:'center',
                 width: 160,
            },  {
                 field: 'cargo_weight',
-                title: '货物重量',
+                title: '货物重量(t)',
                 align: 'right',
                 halign:'center',
                 width: 80,
@@ -319,9 +328,12 @@
             },  {
                 field: 'note',
                 title: '备注',
-                align: 'left',
+                align: 'right',
                 halign:'center',
                 width: 160,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.note+'">'+row.note+'</span>';
+                }
             }, {
                 title: '-',
             }],

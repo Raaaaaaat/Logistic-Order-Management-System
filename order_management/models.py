@@ -61,6 +61,8 @@ class ORDER(models.Model):
     dep_city  = models.CharField(max_length=50)
     des_place = models.CharField(max_length=200)
     des_city  = models.CharField(max_length=50)
+    rec_name  = models.CharField(max_length=50, default="")
+    rec_tel   = models.CharField(max_length=50, default="")
     cargo_name     = models.CharField(max_length=100)
     cargo_weight   = models.FloatField(max_length=100)
     cargo_quantity = models.IntegerField()
