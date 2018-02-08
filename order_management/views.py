@@ -29,3 +29,4 @@ from order_management.views_order.ope_edit_order import *
 from order_management.views_order.order_detail import *
 from order_management.views_order.ope_add_trace import *
 from order_management.views_order.get_trace_data import *
+from order_management.views_order.ope_edit_trace import *

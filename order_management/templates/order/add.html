@@ -209,7 +209,8 @@
             };
             console.log(data);
             // 按照这样的方式可以传输json格式的数据
-            $.StandardPost('{% url "ope_edit_order" %}',data);
+            if(if_valid)
+                $.StandardPost('{% url "ope_edit_order" %}',data);
         });
         var ope_selects = [];
         var sup_selects = [];
