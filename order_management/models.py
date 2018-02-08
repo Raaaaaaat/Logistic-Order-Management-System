@@ -91,3 +91,9 @@ class ORDER_SUP_ALLO(models.Model):
     paid_oil    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
+
+class LOG_TRACE(models.Model):
+    order_id = models.IntegerField()
+    status = models.CharField(max_length=50)
+    time   = models.DateTimeField()
+    desc   = models.CharField(max_length=50, null=True)

@@ -51,4 +51,6 @@ urlpatterns = [
     path('order_add/',         tmr_views.order_add,        name = 'order_add'),
     path('ope_edit_order/',    tmr_views.ope_edit_order,   name='ope_edit_order'),
     path('order_detail/',      tmr_views.order_detail,     name='order_detail'),
+    path('ope_add_trace/',     tmr_views.ope_add_trace,    name='ope_add_trace'),
+    path('get_trace_data/',    tmr_views.get_trace_data,   name='get_trace_data'),
 ]

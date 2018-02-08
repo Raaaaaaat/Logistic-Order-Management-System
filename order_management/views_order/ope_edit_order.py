@@ -27,6 +27,7 @@ def ope_edit_order(request):
             No = ""  # 自动生成下一个该有的客户编号
             last_one = ORDER.objects.last()
             currentMonth = time.strftime("%Y%m", time.localtime())
+
             if last_one != None:  # 说明之前已经有记录
                 if last_one.No[2:8]==currentMonth:
                     No = last_one.No[8:]
