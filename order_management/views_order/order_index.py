@@ -3,7 +3,7 @@ from django.http import JsonResponse
 import json
 from order_management.models import ORDER
 from order_management.models import CLIENT
-from order_management.models import ORDER_SUP_ALLO
+from order_management.models import PAYABLES
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
@@ -48,7 +48,7 @@ def order_index(request):
         if len(filter_status) != 0:
             query = query & Q(status__in=filter_status)
         if filter_pay_status != "":
-            order_ids = ORDER_SUP_ALLO.objects.filter(status=int(filter_pay_status))
+            order_ids = PAYABLES.objects.filter(status=int(filter_pay_status))
             order_ids = order_ids.values_list("order_id", flat=True).distinct()
             temp = []       #循环将对象从queryset变成list对象
             for line in order_ids:
@@ -56,7 +56,7 @@ def order_index(request):
             order_ids = temp
             query = query & Q(id__in=order_ids)
         if filter_supplier != "":
-            order_ids = ORDER_SUP_ALLO.objects.filter(supplier_id=int(filter_supplier))
+            order_ids = PAYABLES.objects.filter(supplier_id=int(filter_supplier))
             order_ids = order_ids.values_list("order_id", flat=True).distinct()
             temp = []       #循环将对象从queryset变成list对象
             for line in order_ids:

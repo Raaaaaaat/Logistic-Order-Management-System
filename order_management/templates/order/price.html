@@ -1,0 +1,112 @@
+{% extends 'order/base.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title" style="display: inline-block;" id="title_info">Price Management</h4>
+                        <p class="category" id="note">订单应收账款与应付账款</p>
+                    </div>
+                    <div class="card-content">
+
+                        <h2 class="title" >应收账款</h2>
+
+                        <table id="table_receiveables" style=" table-layout: fixed;"></table>
+
+                        <h2 class="title" >应付账款</h2>
+                        <div id="table_payables_toolbar" class="btn-group">
+                            <button id="btn_payables_add" type="button" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+                            </button>
+                        </div>
+                        <table id="table_payables" style=" table-layout: fixed;"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="tablecase"></table>
+
+{% endblock %}
+
+{% block jscode %}
+<script>
+
+
+$(function(){
+    $("#table_receiveables").bootstrapTable({
+        columns: [{
+            field: 'description',
+            title: '描述',
+            align: 'center',
+        }, {
+            field: 'receiveables',
+            title: '价格',
+            align: 'center',
+
+        }, {
+            field: 'operation',
+            title: '操作',
+            align: 'center',
+
+        }],
+        data: [{
+            description: "<input id='rec_desc_input' style='width: 80%'></input>",
+            receiveables: "<input id='rec_price_input' style='width: 80%'></input>",
+            operation: "<a href='#' id='rec_add_btn'><span class='glyphicon glyphicon-plus-sign'></span>新增</a>"
+        }],
+        onPostBody: function(){
+            //写添加操作的表头
+            $("#rec_add_btn").click(function(){
+                var desc = $("#rec_desc_input").val();
+                var price =$("#rec_price_input").val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'add_receiveables' %}",
+                    data: {order_id:"{{ order_id }}", description: desc, price:price},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success == 1){
+                            toastr.success(data.info);
+                            load_rece_data();
+                        }
+                        else
+                            toastr.error(data.info);
+                    },
+                })
+            });
+        }
+    });
+//$("#table_receiveables").bootstrapTable('remove', {field: 'mark', values: 1});
+    //加载数据到table里面
+    load_rece_data();
+    function load_rece_data(){
+        $.ajax({
+            type: "POST",
+            url: "{% url 'get_receiveables' %}",
+            data: {order_id:"{{ order_id }}"},
+            datatype: "html",
+            success: function (data) {
+                $("#table_receiveables").bootstrapTable('remove', {field: 'mark', values: [1]});
+                if(data.rows!=undefined){
+                    for(var i = 0; i<data.rows.length; i++){
+                        console.log(data.rows[i]);
+                        $("#table_receiveables").bootstrapTable("append", [{
+                            description: data.rows[i].description,
+                            receiveables: data.rows[i].receiveables,
+                            mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
+                        }]);
+                    }
+                }
+            },
+        })
+    }
+
+})
+</script>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 import json,time, datetime
 from order_management.models import ORDER
-from order_management.models import ORDER_SUP_ALLO
+from order_management.models import PAYABLES
 
 def ope_edit_order(request):
 
@@ -49,7 +49,7 @@ def ope_edit_order(request):
                 operation = line['operation']
                 price = line['price']
                 supplier_id = line['supplier']
-                ORDER_SUP_ALLO.objects.create(status=0, order_id=id,
+                PAYABLES.objects.create(status=0, order_id=id,
                                               operation=operation, supplier_id=supplier_id)
             info = "添加成功"
         return redirect('/order?info=' + info)

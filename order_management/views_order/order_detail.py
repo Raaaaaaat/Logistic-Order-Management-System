@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from order_management.models import ORDER
-from order_management.models import ORDER_SUP_ALLO
+from order_management.models import PAYABLES
 import datetime
 
 def order_detail(request):

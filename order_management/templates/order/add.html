@@ -207,7 +207,7 @@
                 note:           remark,
                 supplier_allo:   JSON.stringify(table_data),
             };
-            console.log(data);
+            //console.log(data);
             // 按照这样的方式可以传输json格式的数据
             if(if_valid)
                 $.StandardPost('{% url "ope_edit_order" %}',data);

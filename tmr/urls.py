@@ -54,4 +54,9 @@ urlpatterns = [
     path('ope_add_trace/',     tmr_views.ope_add_trace,    name='ope_add_trace'),
     path('get_trace_data/',    tmr_views.get_trace_data,   name='get_trace_data'),
     path('ope_edit_trace/',    tmr_views.ope_edit_trace,   name='ope_edit_trace'),
+
+    #price part
+    path('price_management/',    tmr_views.index_price,      name='price_management'),
+    path('get_receiveables/',     tmr_views.get_receiveables,  name='get_receiveables'),
+    path('add_receiveables/',     tmr_views.add_receiveables,  name='add_receiveables'),
 ]

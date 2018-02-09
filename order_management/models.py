@@ -81,16 +81,27 @@ class ORDER(models.Model):
 class SUP_OP(models.Model): #供应商操作环节的列表
     name = models.CharField(max_length=100)
 
-class ORDER_SUP_ALLO(models.Model):
-    status = models.SmallIntegerField()
+class PAYABLES(models.Model):
+    status      = models.SmallIntegerField()
     order_id    = models.IntegerField()
-    operation   = models.IntegerField()
+    operation   = models.IntegerField()     #环节主码
+    description = models.CharField(max_length=200)
     supplier_id = models.IntegerField()
     payables    = models.FloatField(null=True)
     paid_cash   = models.FloatField(null=True)
     paid_oil    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
+
+class RECEIVEABLES(models.Model):
+    status      = models.SmallIntegerField()
+    order_id    = models.IntegerField()
+    description = models.CharField(max_length=200)
+    receiveables= models.FloatField(null=True)
+    received    = models.FloatField(null=True)
+    create_time = models.DateTimeField(auto_now_add=True)
+    clear_time  = models.DateTimeField(null=True)
+
 
 class LOG_TRACE(models.Model):
     order_id = models.IntegerField()
