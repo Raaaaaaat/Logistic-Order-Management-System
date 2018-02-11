@@ -31,10 +31,47 @@ def add_receiveables(request):
         return JsonResponse({"if_success":1, "info":"添加成功"})
 
 def delete_receiveables(request):
+    if request.method == "POST":
+        rec_id = request.POST.get("rec_id",0)
+        try:
+            rec_obj = RECEIVEABLES.objects.get(id=rec_id)
+            rec_obj.delete()
+            if_success = 1
+            info = "删除成功"
+        except:
+            info = "删除失败：记录不存在"
+            if_success = 0
+        return JsonResponse({"if_success":if_success, "info":info})
     return JsonResponse({})
 
 def update_receiveables_desc(request):
-    return JsonResponse({})
+    if request.method == "POST":
+        rec_id = request.POST.get("rec_id",0)
+        desc = request.POST.get("desc","")
+        if_success = 0
+        info = ""
+        try:
+            rec_obj = RECEIVEABLES.objects.get(id=rec_id)
+            rec_obj.description = desc
+            rec_obj.save()
+            if_success = 1
+            info = "修改成功"
+        except:
+            info = "修改失败：记录不存在"
+    return JsonResponse({"if_success":if_success, "info":info})
 
 def update_receiveables_price(request):
-    return JsonResponse({})
+    if request.method == "POST":
+        rec_id = request.POST.get("rec_id")
+        price = request.POST.get("price")
+        if_success = 0
+        info = ""
+        try:
+            rec_obj = RECEIVEABLES.objects.get(id=rec_id)
+            rec_obj.receiveables = price
+            rec_obj.save()
+            if_success = 1
+            info = "修改成功"
+        except:
+            info = "修改失败：记录不存在"
+    return JsonResponse({"if_success":if_success, "info":info})
