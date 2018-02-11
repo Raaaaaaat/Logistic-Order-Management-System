@@ -72,7 +72,7 @@
                                 <div class="td_div" style="width:10%">备注</div>
                                 <div class="td_div" style="width:90%">{{ note }}</div>
                                 <div class="td_div" style="width:100%">
-                                    <a id="add_log_info" ><i class="material-icons">zoom_in</i>添加</a>
+
                                     <a href="/price_management?No={{ No }}" ><i class="material-icons">zoom_in</i>报价</a>
                                 </div>
                                 <div class="td_div" style="width:10%">状态</div>
@@ -83,12 +83,86 @@
 
 
                                 </div>
-                                <div style="width:30%;word-wrap:break-word;  ">
-                                    <p>
-                                        asdfasdfa<br>sdfhuiasdhfi<br>u<br>cgb<br>dfagdgdafgrgeargergeargergerger
-                                    </p>
-                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-stats">
+                        <div class="card-header" data-background-color="orange">
+                            <i class="material-icons">content_copy</i>
+                        </div>
+                        <div class="card-content">
+                            <p class="category">总收入</p>
+                            <h3 class="title" id = "receiveables_total">￥0.00</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <table class="table table-hover" style="table-layout: fixed;">
+                                    <thead class="text-warning">
+                                    <th style="width:20%">序号</th>
+                                    <th style="width:50%">描述</th>
+                                    <th style="width:30%">价格</th>
+                                    </thead>
+                                    <tbody id="receiveables_table_data">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-stats">
+                        <div class="card-header" data-background-color="green">
+                            <i class="material-icons">store</i>
+                        </div>
+                        <div class="card-content">
+                            <p class="category">总成本</p>
+                            <h3 class="title" id="payables_total">￥0.00</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <table class="table table-hover" style="table-layout: fixed;">
+                                    <thead class="text-warning">
+                                        <th style="width:20%">序号</th>
+                                        <th style="width:30%">供应商</th>
+                                        <th style="width:30%">描述</th>
+                                        <th style="width:20%">价格</th>
+                                    </thead>
+                                    <tbody id="payables_table_data">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header" data-background-color="purple">
+                            <h4 class="title" style="display: inline-block;">物流跟踪</h4>
+                        </div>
+                        <div class = "card-content">
+                            <table class="table table-hover" style="table-layout: fixed;">
+                                <thead class="text-warning">
+                                    <th style="width:8%">序号</th>
+                                    <th style="width:20%">状态</th>
+                                    <th style="width:25%">更新时间</th>
+                                    <th style="width:15%">更新人员</th>
+                                    <th style="width:30%">描述</th>
+                                    <th style="width:10%">操作</th>
+                                </thead>
+                                <tbody id="log_table_data">
+                                <tr>
+                                    <td></td>
+                                    <td><select id="log_status_select" style="width: 80%"></select></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><input id="log_desc_input" style="width: 80%"></input></td>
+                                    <td><a id="add_log_info" ><span class='glyphicon glyphicon-plus'></span></a></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -104,24 +178,22 @@
 
         $(function(){
             show_status("{{ status }}");    //加载页面的时候填入状态
+
+            //状态选择初始化
+            $("#log_status_select").select2({
+                data: [{ id: "提货", text: "提货" }, { id: "出发", text: "出发" }, {id:"途径",text:"途径"}
+                    , {id:"到达",text:"到达"}, {id:"签收",text:"签收"}, {id:"异常",text:"异常"}],
+                allowClear: true,
+                placeholder: "请选择",
+            });
+            $("#log_status_select").val(null).trigger('change');
             $("#add_log_info").click(function(){
-                $("#log_info").append('<div class="td_div edit_status" style="width:10%"></div>' +
-                                      '<div class="td_div" style="width:25%">'+ (new Date().Format("yyyy-MM-dd hh:mm:ss"))+'</div>' +
-                                      '<div class="td_div edit_desc" style="width:55%"></div>' +
-                                      '<div class="td_div" style="width:10%">' +
-                                      '<a href="#" class="log_confirm_btn" data-id={{ id }}><span class="glyphicon glyphicon-ok"></span></a>'+
-                                      '<a href="#" class="log_cancel_btn"><span class="glyphicon glyphicon-remove"></span></a>'+
-                                      '</div>');
-                $(".edit_status").editable({
-                    type: "select",
-                    placement: "right",
-                    emptytext: "---",
-                    source: [{ value: "提货", text: "提货" }, { value: "出发", text: "出发" }, {value:"途径",text:"途径"}
-                    , {value:"到达",text:"到达"}, {value:"签收",text:"签收"}, {value:"异常",text:"异常"}],
-                });
-                $(".edit_desc").editable({
-                    emptytext: "---",
-                });
+                var id     = "{{ id }}";
+                var status = $("#log_status_select").val();
+                var time   = (new Date().Format("yyyy-MM-dd hh:mm:ss"));
+                var desc   = $("#log_desc_input").val();
+                console.log([id, status, time, desc, "{{ user.username }}"]);
+                return;
             });
             $('body').on('click', '.log_confirm_btn', function(){
                 var id     = $(this).data('id');
@@ -196,12 +268,13 @@
                         console.log(data);
                         var rows = data.rows;
                         for (index in rows){
-                            $("#log_info").append('<div class="td_div" style="width:10%">'+ rows[index].status +'</div>' +
-                                                  '<div class="td_div" style="width:25%">'+ rows[index].time +'</div>' +
-                                                  '<div class="td_div" style="width:55%">'+ rows[index].desc +'</div>' +
-                                                  '<div class="td_div" style="width:10%">' +
+                            $("#log_table_data").append('<tr><td>'+(parseInt(index)+1)+'</td><td>'+ rows[index].status +'</td>' +
+                                                  '<td>'+ rows[index].time +'</td>' +
+                                                  '<td>'+ 'username' +'</td>' +
+                                                  '<td>'+ rows[index].desc +'</td>' +
+                                                  '<td>' +
                                                   '<a href="#" class="log_edit_btn" data-trace_id="'+rows[index].trace_id+'"><span class="glyphicon glyphicon-edit"></span></a>'+
-                                                  '</div>');
+                                                  '</td></tr>');
                             $(".edit_status").editable({
                                 type: "select",
                                 placement: "right",
@@ -237,6 +310,49 @@
                     return;
                 $("#order_status").html(str);
             }
+
+
+            //加载应收以及应付的列表
+            $.ajax({
+                type: "POST",
+                url: "{% url 'get_receiveables' %}",
+                data: {order_id:"{{ id }}"},
+                datatype: "html",
+                success: function (data) {
+                    if(data.rows!=undefined){
+                        var tot = 0.00;
+                        for(var i = 0; i<data.rows.length; i++) {
+                            tot += parseFloat(data.rows[i].receiveables);
+                            $("#receiveables_table_data").append("<tr><td>" + (i + 1) + "</td>" +
+                                "<td title='"+data.rows[i].description+"'>"+data.rows[i].description+"</td>" +
+                                "<td>￥"+data.rows[i].receiveables+"</td>" +
+                                "</tr>");
+                        }
+                        $("#receiveables_total").html("￥"+tot.toFixed(2));
+                    }
+                },
+            })
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'get_payables' %}",
+                data: {order_id:"{{ id }}"},
+                datatype: "html",
+                success: function (data) {
+                    if(data.rows!=undefined){
+                        var tot = 0.00;
+                        for(var i = 0; i<data.rows.length; i++) {
+                            tot += parseFloat(data.rows[i].payables);
+                            $("#payables_table_data").append("<tr><td>" + (i + 1) + "</td>" +
+                                "<td title='"+data.rows[i].supplier_name+"'>"+data.rows[i].supplier_name+"</td>" +
+                                "<td title='"+data.rows[i].description+"'>"+data.rows[i].step_name+":"+data.rows[i].description+"</td>" +
+                                "<td>￥"+data.rows[i].payables+"</td>" +
+                                "</tr>");
+                        }
+                        $("#payables_total").html("￥"+tot.toFixed(2));
+                    }
+                },
+            })
 
         });
     </script>
