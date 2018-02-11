@@ -20,7 +20,7 @@ from order_management.views_supplier.supplier_edit import *
 from order_management.views_supplier.ope_delete_supplier import *
 from order_management.views_supplier.ope_edit_supplier import *
 from order_management.views_supplier.get_supplier_options import *
-from order_management.views_supplier.get_sup_ope_options import *
+from order_management.views_supplier.get_sup_step_options import *
 
 from order_management.views_order.order_index import *
 from order_management.views_order.order_add import *

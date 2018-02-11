@@ -18,11 +18,7 @@
                         <table id="table_receiveables" style=" table-layout: fixed;"></table>
 
                         <h2 class="title" >应付账款</h2>
-                        <div id="table_payables_toolbar" class="btn-group">
-                            <button id="btn_payables_add" type="button" class="btn btn-primary">
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
-                            </button>
-                        </div>
+
                         <table id="table_payables" style=" table-layout: fixed;"></table>
                     </div>
                 </div>
@@ -38,8 +34,9 @@
 <script>
 
 
-$(function(){
+$(function(){   //应收账款
     $("#table_receiveables").bootstrapTable({
+        uniqueId: "id",
         columns: [{
             field: 'description',
             title: '描述',
@@ -151,26 +148,16 @@ $(function(){
                 toastr.error("修改失败:网络错误");
             },
             complete: function(){
-                $this.parent().prev().prev().children().editable("destroy");
-                $this.parent().html("<a href='#' class='rec_edit_btn' data-id='"+id+"'>" +
-                                    "<span class='glyphicon glyphicon-pencil'></span>编辑</a>" +
-                                    "<a href='#' class='rec_edit_price_btn' data-id='"+id+"'>" +
-                                    "<span class='glyphicon glyphicon-usd'></span>改价</a>" +
-                                    "<a href='#' class='rec_delete_btn' data-id='"+id+"'>" +
-                                    "<span class='glyphicon glyphicon-trash'></span>删除</a>");
+                $("#table_receiveables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
+                        description: new_desc,
+                    }});
             },
         })
     })
 
     $('body').on('click', '.rec_edit_cancel_btn', function(){
         var id = $(this).data("id");
-        $(this).parent().prev().prev().children().editable("destroy");
-        $(this).parent().html("<a href='#' class='rec_edit_btn' data-id='"+id+"'>" +
-                              "<span class='glyphicon glyphicon-pencil'></span>编辑</a>" +
-                              "<a href='#' class='rec_edit_price_btn' data-id='"+id+"'>" +
-                              "<span class='glyphicon glyphicon-usd'></span>改价</a>" +
-                              "<a href='#' class='rec_delete_btn' data-id='"+id+"'>" +
-                              "<span class='glyphicon glyphicon-trash'></span>删除</a>");
+        $("#table_receiveables").bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
     })
 
 
@@ -186,7 +173,7 @@ $(function(){
     $('body').on('click', '.rec_edit_price_confirm_btn', function(){
         var id = $(this).data("id");
         var new_price = $(this).parent().prev().children().editable('getValue', true);
-        var $this = $(this);
+
         if (new_price == "" ||  isNaN(new_price)){
             toastr.error("价格输入错误");
             return;
@@ -203,26 +190,16 @@ $(function(){
                 toastr.error("修改失败:网络错误");
             },
             complete: function(){
-                $this.parent().prev().children().editable("destroy");
-                $this.parent().html("<a href='#' class='rec_edit_btn' data-id='"+id+"'>" +
-                                    "<span class='glyphicon glyphicon-pencil'></span>编辑</a>" +
-                                    "<a href='#' class='rec_edit_price_btn' data-id='"+id+"'>" +
-                                    "<span class='glyphicon glyphicon-usd'></span>改价</a>" +
-                                    "<a href='#' class='rec_delete_btn' data-id='"+id+"'>" +
-                                    "<span class='glyphicon glyphicon-trash'></span>删除</a>");
+                $("#table_receiveables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
+                        receiveables: new_price,
+                    }});
             },
         })
     })
 
     $('body').on('click', '.rec_edit_price_cancel_btn', function(){
         var id = $(this).data("id");
-        $(this).parent().prev().children().editable("destroy");
-        $(this).parent().html("<a href='#' class='rec_edit_btn' data-id='"+id+"'>" +
-                              "<span class='glyphicon glyphicon-pencil'></span>编辑</a>" +
-                              "<a href='#' class='rec_edit_price_btn' data-id='"+id+"'>" +
-                              "<span class='glyphicon glyphicon-usd'></span>改价</a>" +
-                              "<a href='#' class='rec_delete_btn' data-id='"+id+"'>" +
-                              "<span class='glyphicon glyphicon-trash'></span>删除</a>");
+        $("#table_receiveables").bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
     })
 
     //改应收账款删除操作部分代码， 包括以下一个函数
@@ -236,7 +213,292 @@ $(function(){
                 datatype: "html",
                 success: function (data) {
                     toastr.success(data.info);
-                    $("#table_receiveables").bootstrapTable('remove', {field: 'id', values: [id]});
+                    $("#table_receiveables").bootstrapTable('removeByUniqueId', id);
+                },
+                error: function(){
+                    toastr.error("修改失败:网络错误");
+                },
+
+            })
+        });
+
+    })
+
+})
+
+
+$(function(){   //应付账款
+    $("#table_payables").bootstrapTable({
+        uniqueId: "id",
+        columns: [{
+            field: 'step',
+            title: '环节',
+            align: 'center',
+        }, {
+            field: 'supplier',
+            title: '供应商',
+            align: 'center',
+        }, {
+            field: 'description',
+            title: '描述',
+            align: 'center',
+        }, {
+            field: 'payables',
+            title: '价格',
+            align: 'center',
+        }, {
+            field: 'operation',
+            title: '操作',
+            align: 'center',
+
+        }],
+        data: [{
+            step:        "<select id='pay_step_input' style='width: 80%'></select>",
+            supplier:    "<select id='pay_supp_input' style='width: 80%'></select>",
+            description: "<input  id='pay_desc_input' style='width: 80%'></input>",
+            payables:    "<input  id='pay_price_input' style='width: 80%'></input>",
+            operation:   "<a href='#' id='pay_add_btn'><span class='glyphicon glyphicon-plus-sign'></span>新增</a>"
+        }],
+        onPostBody: function(){
+            //写添加操作的表头
+            $("#pay_add_btn").click(function(){
+                var step     = $("#pay_step_input").val();
+                var supplier = $("#pay_supp_input").val();
+                var desc     = $("#pay_desc_input").val();
+                var price    = $("#pay_price_input").val();
+
+                if(step==null){
+                    toastr.error("必须选择环节");
+                    return;
+                }
+                if(supplier==null){
+                    toastr.error("必须选择供应商");
+                    return;
+                }
+                if(desc==""){
+                    toastr.error("描述不能为空");
+                    return;
+                }
+                if(price=="" || isNaN(price)){
+                    toastr.error("价格输入错误");
+                    return;
+                }
+                console.log([step, supplier, desc, price]);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'add_payables' %}",
+                    data: {order_id:"{{ order_id }}", description: desc, price:price, step: step, supplier_id: supplier},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success == 1){
+                            toastr.success(data.info);
+                            load_paya_data();
+                        }
+                        else
+                            toastr.error(data.info);
+                    },
+                })
+            });
+
+            $("#pay_supp_input").select2({
+                ajax: {
+                    url: "{% url 'get_supplier_options' %}",
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.data
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0,
+            });
+            $("#pay_step_input").select2({
+                ajax: {
+                    url: "{% url 'get_sup_step_options' %}",
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.data
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0,
+            });
+        }
+    });
+    //加载数据到table里面
+    load_paya_data();
+    function load_paya_data(){
+        $.ajax({
+            type: "POST",
+            url: "{% url 'get_payables' %}",
+            data: {order_id:"{{ order_id }}"},
+            datatype: "html",
+            success: function (data) {
+                $("#table_payables").bootstrapTable('remove', {field: 'mark', values: [1]});
+                if(data.rows!=undefined){
+                    for(var i = 0; i<data.rows.length; i++){
+                        $("#table_payables").bootstrapTable("append", [{
+                            id:          data.rows[i].id,
+                            step:        data.rows[i].step_name,
+                            step_name:   data.rows[i].step_name,
+                            step_id:     data.rows[i].step,
+                            supplier:    data.rows[i].supplier_name,
+                            supplier_id: data.rows[i].supplier_id,
+                            supplier_name:data.rows[i].supplier_name,
+                            description: "<span>"+data.rows[i].description+"</span>",
+                            payables:    "<span>"+data.rows[i].payables+"</span>",
+                            mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
+                            operation: "<a href='#' class='pay_edit_btn' data-id='"+data.rows[i].id+"'>" +
+                                       "<span class='glyphicon glyphicon-pencil'></span>编辑</a>" +
+                                       "<a href='#' class='pay_edit_price_btn' data-id='"+data.rows[i].id+"'>" +
+                                       "<span class='glyphicon glyphicon-usd'></span>改价</a>" +
+                                       "<a href='#' class='pay_delete_btn' data-id='"+data.rows[i].id+"'>" +
+                                       "<span class='glyphicon glyphicon-trash'></span></a>"
+                        }]);
+                    }
+                }
+            },
+        })
+    }
+//$("#table_payables").bootstrapTable("updateByUniqueId",{"id":1, "row": {"id":1}});
+    //改应收账款描述部分代码， 包括以下三个函数
+    $('body').on('click', '.pay_edit_btn', function(){
+        var id = $(this).data("id");    //这个id是应付款的对应的id
+        $(this).parent().prev().prev().children().editable();
+
+        var data = $("#table_payables").bootstrapTable("getRowByUniqueId", id);
+        console.log(data);
+        $(this).parent().prev().prev().prev().html("<select id='pay_supplier_edit_"+id+"' style='width: 80%'></select>");
+        $(this).parent().html(
+            "<a href='#' class='pay_edit_confirm_btn' data-id='"+id+"'><span class='glyphicon glyphicon-ok'></span></a> "+
+            "<a href='#' class='pay_edit_cancel_btn' data-id='"+id+"'><span class='glyphicon glyphicon-remove'></span></a>");
+        $("#pay_supplier_edit_"+id).select2({
+            ajax: {
+                url: "{% url 'get_supplier_options' %}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 0,
+        });
+        var option = new Option(data.supplier_name, data.supplier_id, true, true);
+        $("#pay_supplier_edit_"+id).append(option).trigger('change');
+    })
+
+    $('body').on('click', '.pay_edit_confirm_btn', function(){
+        var id = $(this).data("id");
+        var new_desc = $(this).parent().prev().prev().children().editable('getValue', true);
+        var new_supplier_name = $("#pay_supplier_edit_"+id).find('option').last().html();
+        var new_supplier_id   = $("#pay_supplier_edit_"+id).val();
+        var $this = $(this);
+        if(new_desc == ""){
+            toastr.error("描述内容不能为空");
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "{% url 'update_payables_info' %}",
+            data: {pay_id: id, desc: new_desc, supplier_id: new_supplier_id},
+            datatype: "html",
+            success: function (data) {
+                toastr.success(data.info);
+            },
+            error: function(){
+                toastr.error("修改失败:网络错误");
+            },
+            complete: function(){
+                $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
+                        supplier:new_supplier_name,
+                        supplier_name: new_supplier_name,
+                        supplier_id: new_supplier_id,
+                        description: new_desc,
+                }});
+            },
+        })
+    })
+
+    $('body').on('click', '.pay_edit_cancel_btn', function(){
+        var id = $(this).data("id");
+        $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
+    })
+
+
+    //改应收账款价格部分代码， 包括以下三个函数
+    $('body').on('click', '.pay_edit_price_btn', function(){
+        var id = $(this).data("id");
+        $(this).parent().prev().children().editable();
+        $(this).parent().html(
+            "<a href='#' class='pay_edit_price_confirm_btn' data-id='"+id+"'><span class='glyphicon glyphicon-ok'></span></a> "+
+            "<a href='#' class='pay_edit_price_cancel_btn' data-id='"+id+"'><span class='glyphicon glyphicon-remove'></span></a>");
+    })
+
+    $('body').on('click', '.pay_edit_price_confirm_btn', function(){
+        var id = $(this).data("id");
+        var new_price = $(this).parent().prev().children().editable('getValue', true);
+        var $this = $(this);
+        if (new_price == "" ||  isNaN(new_price)){
+            toastr.error("价格输入错误");
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "{% url 'update_payables_price' %}",
+            data: {pay_id: id, price: new_price},
+            datatype: "html",
+            success: function (data) {
+                toastr.success(data.info);
+            },
+            error: function(){
+                toastr.error("修改失败:网络错误");
+            },
+            complete: function(){
+                $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
+                        payables: new_price,
+                }});
+            },
+        })
+    })
+
+    $('body').on('click', '.pay_edit_price_cancel_btn', function(){
+        var id = $(this).data("id");
+        $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
+    })
+
+    //改应收账款删除操作部分代码， 包括以下一个函数
+    $('body').on('click', '.pay_delete_btn', function(){
+        var id = $(this).data("id");
+        myConfirm("确定删除？",function(){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'delete_payables' %}",
+                data: {pay_id: id},
+                datatype: "html",
+                success: function (data) {
+                    toastr.success(data.info);
+                    $("#table_payables").bootstrapTable('removeByUniqueId', id);
                 },
                 error: function(){
                     toastr.error("修改失败:网络错误");

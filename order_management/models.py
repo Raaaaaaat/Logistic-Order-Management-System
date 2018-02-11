@@ -78,13 +78,13 @@ class ORDER(models.Model):
             ("view_trash_order", "Can access information of trash box"),
         )
 
-class SUP_OP(models.Model): #供应商操作环节的列表
+class SUP_STEP(models.Model): #供应商操作环节的列表
     name = models.CharField(max_length=100)
 
 class PAYABLES(models.Model):
     status      = models.SmallIntegerField()
     order_id    = models.IntegerField()
-    operation   = models.IntegerField()     #环节主码
+    step        = models.IntegerField()     #环节主码
     description = models.CharField(max_length=200)
     supplier_id = models.IntegerField()
     payables    = models.FloatField(null=True)

@@ -44,7 +44,7 @@ urlpatterns = [
     path('ajax_edit_supplier/',   tmr_views.ope_edit_supplier,   name = 'ajax_edit_supplier'),
     path('ajax_delete_supplier/', tmr_views.ope_delete_supplier, name = 'ajax_delete_supplier'),
     path('get_supplier_options/', tmr_views.get_supplier_options,name = 'get_supplier_options'),
-    path('get_sup_ope_options/',  tmr_views.get_sup_ope_options, name='get_sup_ope_options'),
+    path('get_sup_step_options/', tmr_views.get_sup_step_options,name = 'get_sup_step_options'),
 
     #order part
     path('order/',             tmr_views.order_index,      name = 'order_index'),
@@ -62,4 +62,10 @@ urlpatterns = [
     path('update_receiveables_desc/',   tmr_views.update_receiveables_desc,  name='update_receiveables_desc'),
     path('update_receiveables_price/',  tmr_views.update_receiveables_price, name='update_receiveables_price'),
     path('delete_receiveables/',        tmr_views.delete_receiveables,       name='delete_receiveables'),
+
+    path('get_payables/',           tmr_views.get_payables,          name='get_payables'),
+    path('add_payables/',           tmr_views.add_payables,          name='add_payables'),
+    path('update_payables_info/',   tmr_views.update_payables_info,  name='update_payables_info'),
+    path('update_payables_price/',  tmr_views.update_payables_price, name='update_payables_price'),
+    path('delete_payables/',        tmr_views.delete_payables,       name='delete_payables'),
 ]
