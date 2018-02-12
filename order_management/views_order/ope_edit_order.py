@@ -17,8 +17,6 @@ def ope_edit_order(request):
         cargo_weight   = request.POST.get("cargo_weight")
         cargo_quantity = request.POST.get("cargo_quantity")
         note           = request.POST.get("note")
-        supplier_allo  = request.POST.get("supplier_allo")
-        supplier_allo  = json.loads(supplier_allo)
         rec_name       = request.POST.get("rec_name", "")
         rec_tel        = request.POST.get("rec_tel", "")
         if_edit        = request.POST.get("if_edit")
@@ -43,14 +41,7 @@ def ope_edit_order(request):
                                  cargo_name=cargo_name, cargo_weight=cargo_weight,
                                  cargo_quantity=cargo_quantity, if_delete=0,
                                  note=note, rec_name=rec_name, rec_tel=rec_tel)
-            id = obj.id
-            #下面对于供应商分配方案进行添加
-            for line in supplier_allo:
-                operation = line['operation']
-                price = line['price']
-                supplier_id = line['supplier']
-                PAYABLES.objects.create(status=0, order_id=id,
-                                              operation=operation, supplier_id=supplier_id)
+
             info = "添加成功"
         return redirect('/order?info=' + info)
 

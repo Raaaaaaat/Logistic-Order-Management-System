@@ -20,9 +20,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     #log_in part
-    path('', tmr_views.log_in_index), #临时
+    path('', tmr_views.page_index), #临时
     path('log_in/', tmr_views.log_in_index),
     path('ajax_log_in_check/', tmr_views.log_in_index, name='ajax_log_in_check'),
+
 
     #log_out_part
     path('ajax_log_out/', tmr_views.log_out_request, name='ajax_log_out'),
@@ -35,6 +36,7 @@ urlpatterns = [
     path('ajax_edit_client/',   tmr_views.ope_edit_client,   name = 'ajax_edit_client'),
     path('ajax_delete_client/', tmr_views.ope_delete_client, name = 'ajax_delete_client'),
     path('get_client_options/', tmr_views.get_client_options,name = 'get_client_options'),
+    path('get_client_details/', tmr_views.get_client_details,name = 'get_client_details'),
 
     #supplier part
     path('supplier/',             tmr_views.supplier_index,      name = 'supplier_index'),

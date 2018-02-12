@@ -26,21 +26,11 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header" data-background-color="purple">
-                            <h4 class="title" style="display: inline-block;">Order List</h4>
-                            <li class="active" style="display: inline-block; float:right; margin-right: 20px">
-                                <a id="advanced_filter_collapse_btn">
-                                    <i class="material-icons">zoom_in</i>
-                                    高级筛选
-                                    <div class="ripple-container"></div></a>
-                                <a href="/order_add">
-                                    <i class="material-icons">note_add</i>
-                                    添加
-                                    <div class="ripple-container"></div></a>
-                            </li>
+                            <h4 class="title" style="display: inline-block;">Order Detail</h4>
+                            <h3 class="title" style="display: inline-block;float:right">{{ No }}</h3>
                         </div>
                         <div class="card-content">
                             <div style = "overflow:hidden;">
-                                <div style="width:30%; display:inline">单号：<span id = "order_No"></span></div>
                                 <div style="width:30%; display:inline">状态：<span id = "order_status"></span></div>
                             </div>
 
@@ -71,18 +61,7 @@
                                 <div class="td_div" style="width:20%">{{ cargo_quantity }}</div>
                                 <div class="td_div" style="width:10%">备注</div>
                                 <div class="td_div" style="width:90%">{{ note }}</div>
-                                <div class="td_div" style="width:100%">
 
-                                    <a href="/price_management?No={{ No }}" ><i class="material-icons">zoom_in</i>报价</a>
-                                </div>
-                                <div class="td_div" style="width:10%">状态</div>
-                                <div class="td_div" style="width:25%">时间</div>
-                                <div class="td_div" style="width:55%">描述</div>
-                                <div class="td_div" style="width:10%">操作</div>
-                                <div id = "log_info">
-
-
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -91,7 +70,7 @@
                 <div class="col-md-6">
                     <div class="card card-stats">
                         <div class="card-header" data-background-color="orange">
-                            <i class="material-icons">content_copy</i>
+                            <a href="/price_management?No={{ No }}"><i class="material-icons">content_copy</i></a>
                         </div>
                         <div class="card-content">
                             <p class="category">总收入</p>
@@ -115,7 +94,7 @@
                 <div class="col-md-6">
                     <div class="card card-stats">
                         <div class="card-header" data-background-color="green">
-                            <i class="material-icons">store</i>
+                            <a href="/price_management?No={{ No }}"><i class="material-icons" >store</i></a>
                         </div>
                         <div class="card-content">
                             <p class="category">总成本</p>
@@ -177,6 +156,7 @@
 
 
         $(function(){
+            var log_trace_index = 1;
             show_status("{{ status }}");    //加载页面的时候填入状态
 
             //状态选择初始化
@@ -188,37 +168,36 @@
             });
             $("#log_status_select").val(null).trigger('change');
             $("#add_log_info").click(function(){
-                var id     = "{{ id }}";
+                var order_id     = "{{ id }}";
                 var status = $("#log_status_select").val();
                 var time   = (new Date().Format("yyyy-MM-dd hh:mm:ss"));
                 var desc   = $("#log_desc_input").val();
-                console.log([id, status, time, desc, "{{ user.username }}"]);
-                return;
-            });
-            $('body').on('click', '.log_confirm_btn', function(){
-                var id     = $(this).data('id');
-                var status = $(this).parent().prev().prev().prev().html();
-                var time   = (new Date().Format("yyyy-MM-dd hh:mm:ss"));
-                var desc   = $(this).parent().prev().html();
-                var $thisdom = $(this).parent();
-                if(status == "---"){
-                    toastr.error("必须选择状态");
+                var update_user = "{{ user.username }}";
+                console.log([order_id, status, time, desc, "{{ user.username }}"]);
+                if(status==null){
+                    toastr.error("物流信息状态不能为空");
+                    return;
+                }
+                if(desc==""){
+                    toastr.error("物流信息描述不能为空");
                     return;
                 }
                 $.ajax({
                     type: "POST",
                     url: "{% url 'ope_add_trace' %}",
-                    data: {id:id, status:status, time:time, desc:desc},
+                    data: {order_id:order_id, status:status, create_time:time, desc:desc},
                     datatype: "html",
                     success: function (data) {
-                        if(data.success == 1){
+                        if(data.if_success == 1){
                             toastr.success(data.info);
                             show_status(data.order_status);
-                            $thisdom.html('<a href="#" class="log_edit_btn" data-trace_id="'+id+'"><span class="glyphicon glyphicon-edit"></span></a>');    //这里页面js会抛错，暂时未修复
-                            $thisdom.prev().editable("destroy");
-                            $thisdom.prev().removeClass("edit_desc")
-                            $thisdom.prev().prev().prev().editable("destroy");
-                            $thisdom.prev().prev().prev().removeClass("edit_status")
+                            $("#log_table_data").append('<tr><td>'+(log_trace_index++)+'</td><td>'+ status +'</td>' +
+                                                  '<td>'+ time +'</td>' +
+                                                  '<td>'+ update_user +'</td>' +
+                                                  '<td><span title="'+desc+'">'+ desc +'</span></td>' +
+                                                  '<td>' +
+                                                  '<a href="#" class="log_edit_btn" data-trace_id="'+data.trace_id+'"><span class="glyphicon glyphicon-edit"></span></a>'+
+                                                  '</td></tr>');
                         }
                         else{
                             toastr.error(data.info);
@@ -229,18 +208,11 @@
                 });
             });
 
-            $('body').on('click', '.log_cancel_btn', function(){
-
-                $(this).parent().prev().prev().prev().remove();
-                $(this).parent().prev().prev().remove();
-                $(this).parent().prev().remove();
-                $(this).parent().remove();
-
-            });
 
             $('body').on('click', '.log_edit_btn', function(){
                 var trace_id     = $(this).data('trace_id');
-                var $this = $(this).parent().prev();
+                var $this = $(this).parent().prev().children();
+                console.log($this);
                 $this.editable({
                     emptytext: "---",
                     success: function (response, newValue) {
@@ -269,22 +241,12 @@
                         var rows = data.rows;
                         for (index in rows){
                             $("#log_table_data").append('<tr><td>'+(parseInt(index)+1)+'</td><td>'+ rows[index].status +'</td>' +
-                                                  '<td>'+ rows[index].time +'</td>' +
-                                                  '<td>'+ 'username' +'</td>' +
-                                                  '<td>'+ rows[index].desc +'</td>' +
+                                                  '<td>'+ rows[index].create_time +'</td>' +
+                                                  '<td>'+ rows[index].create_user +'</td>' +
+                                                  '<td><span title="'+rows[index].desc+'">'+ rows[index].desc +'</span></td>' +
                                                   '<td>' +
                                                   '<a href="#" class="log_edit_btn" data-trace_id="'+rows[index].trace_id+'"><span class="glyphicon glyphicon-edit"></span></a>'+
                                                   '</td></tr>');
-                            $(".edit_status").editable({
-                                type: "select",
-                                placement: "right",
-                                emptytext: "---",
-                                source: [{ value: "提货", text: "提货" }, { value: "出发", text: "出发" }, {value:"途径",text:"途径"}
-                                , {value:"到达",text:"到达"}, {value:"签收",text:"签收"}, {value:"异常",text:"异常"}],
-                            });
-                            $(".edit_desc").editable({
-                                emptytext: "---",
-                            });
                         }
 
                     },

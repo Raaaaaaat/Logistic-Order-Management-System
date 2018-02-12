@@ -10,8 +10,9 @@ def get_trace_data(request):
         rows.append({
             "trace_id":line.id,
             "status": line.status,
-            "time": datetime.datetime.strftime(line.time, '%Y-%m-%d %H:%M:%S'),
+            "create_time": datetime.datetime.strftime(line.create_time, '%Y-%m-%d %H:%M:%S'),
             "desc": line.desc,
+            "create_user": line.create_user,
         })
     return JsonResponse({
         "rows": rows,

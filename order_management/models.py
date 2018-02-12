@@ -67,8 +67,6 @@ class ORDER(models.Model):
     cargo_weight   = models.FloatField(max_length=100)
     cargo_quantity = models.IntegerField()
     note           = models.CharField(max_length=500, null=True)
-    receiveables   = models.FloatField(null=True)
-    received       = models.FloatField(null=True)
     create_time    = models.DateTimeField(auto_now_add=True)
     clear_time     = models.DateTimeField(null=True)
     if_delete      = models.SmallIntegerField()
@@ -106,5 +104,6 @@ class RECEIVEABLES(models.Model):
 class LOG_TRACE(models.Model):
     order_id = models.IntegerField()
     status = models.CharField(max_length=50)
-    time   = models.DateTimeField()
+    create_time   = models.DateTimeField()
+    create_user   = models.CharField(max_length=100, null=True)
     desc   = models.CharField(max_length=50, null=True)

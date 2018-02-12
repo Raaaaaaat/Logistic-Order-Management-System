@@ -40,3 +40,23 @@ function myConfirm(info,call_back_func)
     $('#modal_click').click(call_back_func);
     $('#popModal').modal();
 }
+
+function myShowTableInfo(title, info)
+{
+    var modalHtml = "\
+		<div class='modal-dialog'>\
+			<div class='modal-content'>\
+				<div class='modal-header'>"+title+"\
+				</div>\
+				<div class='modal-body' id = 'modal_body_multi'>\
+					"+info+"\
+				</div>\
+				<div class='modal-footer'>\
+					<button type='button' class='btn btn-default' data-dismiss='modal'>确认\
+					</button>\
+				</div>\
+			</div>\
+	    </div>";
+    $('#popModal').html(modalHtml);
+    $('#popModal').modal();
+}

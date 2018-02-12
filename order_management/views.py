@@ -2,8 +2,9 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from order_management.user_views.log_in_index import *
-from order_management.user_views.log_out import *
+from order_management.views_user.log_in_index import *
+from order_management.views_user.log_out import *
+from order_management.views_user.page_index import *
 
 from order_management.views_client.client_index import *
 from order_management.views_client.client_get_table_data import *
@@ -12,6 +13,7 @@ from order_management.views_client.client_edit import *
 from order_management.views_client.ope_delete_client import *
 from order_management.views_client.ope_edit_client import *
 from order_management.views_client.get_client_options import *
+from order_management.views_client.get_client_detail import *
 
 from order_management.views_supplier.supplier_index import *
 from order_management.views_supplier.supplier_get_table_data import *
