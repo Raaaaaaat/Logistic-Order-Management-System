@@ -25,7 +25,7 @@ SECRET_KEY = '29dtz7%c3$77fs_n%iwzte&nvhb8820%nns!7@bf5#vye3qqc5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.0.120", "localhost"]
+ALLOWED_HOSTS = ["192.168.0.122", "localhost"]
 
 
 # Application definition
@@ -80,11 +80,11 @@ pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'HOST'  :'47.52.16.101',
+        'HOST'  :'localhost',
         'PORT'  :'3306',
         'NAME'  :'tmr',
         'USER'  :'test',
-        'PASSWORD':'test',
+        'PASSWORD':'123456',
     }
 }
 

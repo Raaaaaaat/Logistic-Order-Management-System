@@ -1,5 +1,12 @@
 {% extends 'order/base.html' %}
-
+{% block style %}
+    <style>
+    #table_receiveables th, #table_payables th{
+        font-weight: bold;
+        background-color: rgb(160, 158, 226);
+    }
+    </style>
+{% endblock %}
 {% block content %}
 <div class="content">
     <div class="container-fluid">
@@ -11,13 +18,13 @@
                         <h4 class="title" style="display: inline-block;" id="title_info">Price Management</h4>
                         <p class="category" id="note">订单应收账款与应付账款</p>
                     </div>
-                    <div class="card-content">
+                    <div class="card-content" style="text-align:center">
 
-                        <h2 class="title" >应收账款</h2>
+                        <h3 class="title" >应收账款</h3>
 
                         <table id="table_receiveables" style=" table-layout: fixed;"></table>
-
-                        <h2 class="title" >应付账款</h2>
+                        <div style="height:30px"></div>
+                        <h3 class="title" >应付账款</h3>
 
                         <table id="table_payables" style=" table-layout: fixed;"></table>
                     </div>
@@ -37,6 +44,7 @@
 $(function(){   //应收账款
     $("#table_receiveables").bootstrapTable({
         uniqueId: "id",
+        striped: true,
         columns: [{
             field: 'description',
             title: '描述',
@@ -55,7 +63,7 @@ $(function(){   //应收账款
         data: [{
             description: "<input id='rec_desc_input' style='width: 80%'></input>",
             receiveables: "<input id='rec_price_input' style='width: 80%'></input>",
-            operation: "<a href='#' id='rec_add_btn'><span class='glyphicon glyphicon-plus-sign'></span>新增</a>"
+            operation: "<a href='#' id='rec_add_btn'><span class='glyphicon glyphicon-plus-sign' title='新增'></span></a>"
         }],
         onPostBody: function(){
             //写添加操作的表头
@@ -86,7 +94,7 @@ $(function(){   //应收账款
                     },
                 })
             });
-        }
+        },
     });
 //$("#table_receiveables").bootstrapTable('remove', {field: 'mark', values: 1});
     //加载数据到table里面
@@ -107,11 +115,11 @@ $(function(){   //应收账款
                             receiveables: "<span>"+data.rows[i].receiveables+"</span>",
                             mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
                             operation: "<a href='#' class='rec_edit_btn' data-id='"+data.rows[i].id+"'>" +
-                                       "<span class='glyphicon glyphicon-pencil'></span>编辑</a>" +
+                                       "<span class='glyphicon glyphicon-pencil' title='编辑'></span></a> " +
                                        "<a href='#' class='rec_edit_price_btn' data-id='"+data.rows[i].id+"'>" +
-                                       "<span class='glyphicon glyphicon-usd'></span>改价</a>" +
+                                       "<span class='glyphicon glyphicon-usd' title='修改价格'></span></a> " +
                                        "<a href='#' class='rec_delete_btn' data-id='"+data.rows[i].id+"'>" +
-                                       "<span class='glyphicon glyphicon-trash'></span>删除</a>"
+                                       "<span class='glyphicon glyphicon-trash' title='删除'></span></a> "
                         }]);
                     }
                 }
@@ -230,6 +238,7 @@ $(function(){   //应收账款
 $(function(){   //应付账款
     $("#table_payables").bootstrapTable({
         uniqueId: "id",
+        striped: true,
         columns: [{
             field: 'step',
             title: '环节',
@@ -257,7 +266,7 @@ $(function(){   //应付账款
             supplier:    "<select id='pay_supp_input' style='width: 80%'></select>",
             description: "<input  id='pay_desc_input' style='width: 80%'></input>",
             payables:    "<input  id='pay_price_input' style='width: 80%'></input>",
-            operation:   "<a href='#' id='pay_add_btn'><span class='glyphicon glyphicon-plus-sign'></span>新增</a>"
+            operation:   "<a href='#' id='pay_add_btn'><span class='glyphicon glyphicon-plus-sign' title='新增'></span></a>"
         }],
         onPostBody: function(){
             //写添加操作的表头
@@ -363,11 +372,11 @@ $(function(){   //应付账款
                             payables:    "<span>"+data.rows[i].payables+"</span>",
                             mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
                             operation: "<a href='#' class='pay_edit_btn' data-id='"+data.rows[i].id+"'>" +
-                                       "<span class='glyphicon glyphicon-pencil'></span>编辑</a>" +
+                                       "<span class='glyphicon glyphicon-pencil' title='编辑'></span></a>" +
                                        "<a href='#' class='pay_edit_price_btn' data-id='"+data.rows[i].id+"'>" +
-                                       "<span class='glyphicon glyphicon-usd'></span>改价</a>" +
+                                       "<span class='glyphicon glyphicon-usd' title='修改价格'></span></a>" +
                                        "<a href='#' class='pay_delete_btn' data-id='"+data.rows[i].id+"'>" +
-                                       "<span class='glyphicon glyphicon-trash'></span></a>"
+                                       "<span class='glyphicon glyphicon-trash' title='删除'></span></a>"
                         }]);
                     }
                 }

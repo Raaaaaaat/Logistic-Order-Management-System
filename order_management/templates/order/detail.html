@@ -25,13 +25,13 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header" data-background-color="purple">
-                            <h4 class="title" style="display: inline-block;">Order Detail</h4>
-                            <h3 class="title" style="display: inline-block;float:right">{{ No }}</h3>
+                        <div class="card-header" data-background-color="purple" style="overflow: hidden">
+                            <h3 class="title" style="display: inline-block;float:left">{{ No }}</h3>
+                            <h4 class="title" style="display: inline-block;float:right;border:2px solid;border-radius:5px;" id = "order_status"></h4>
                         </div>
                         <div class="card-content">
                             <div style = "overflow:hidden;">
-                                <div style="width:30%; display:inline">状态：<span id = "order_status"></span></div>
+                                <div style="width:30%; display:inline">状态：<span id = ""></span></div>
                             </div>
 
                             <div class="table_div">
@@ -69,8 +69,8 @@
 
                 <div class="col-md-6">
                     <div class="card card-stats">
-                        <div class="card-header" data-background-color="orange">
-                            <a href="/price_management?No={{ No }}"><i class="material-icons">content_copy</i></a>
+                        <div class="card-header" data-background-color="purple">
+                            <a href="/price_management?No={{ No }}"><i class="material-icons">add_circle_outline</i></a>
                         </div>
                         <div class="card-content">
                             <p class="category">总收入</p>
@@ -93,8 +93,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card card-stats">
-                        <div class="card-header" data-background-color="green">
-                            <a href="/price_management?No={{ No }}"><i class="material-icons" >store</i></a>
+                        <div class="card-header" data-background-color="purple">
+                            <a href="/price_management?No={{ No }}"><i class="material-icons" >remove_circle_outline</i></a>
                         </div>
                         <div class="card-content">
                             <p class="category">总成本</p>
@@ -182,6 +182,8 @@
                     toastr.error("物流信息描述不能为空");
                     return;
                 }
+                $("#log_status_select").val(null).trigger('change');
+                $("#log_desc_input").val('');
                 $.ajax({
                     type: "POST",
                     url: "{% url 'ope_add_trace' %}",
