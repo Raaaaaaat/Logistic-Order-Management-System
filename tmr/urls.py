@@ -73,5 +73,8 @@ urlpatterns = [
 
     #finance part
     path('finance/',              tmr_views.finance_index,       name='finance_index'),
-    path('get_papa_list/',        tmr_views.get_papa_list,       name='get_papa_list'),
+    path('get_paya_list/',        tmr_views.get_paya_list,       name='get_paya_list'),
+    path('mark_paya_invoice/',    tmr_views.mark_paya_invoice,   name='mark_paya_invoice'),
+    path('mark_paya_paid/',    tmr_views.mark_paya_paid,   name='mark_paya_paid'),
+    path('paya_verify/',    tmr_views.paya_verify,   name='paya_verify'),
 ]

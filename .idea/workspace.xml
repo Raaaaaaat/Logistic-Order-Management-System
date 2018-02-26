@@ -7,15 +7,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="147a764d-af0d-4325-8f5e-c3cdd6992ac5" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/order_management/static/tmp_file/supplier/S0002.rtf" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/order_management/templates/finance/base.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/order_management/templates/finance/index.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/order_management/views_finance/finance_index.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/order_management/views_finance/ope_papa.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/order_management/views_finance/ope_recv.py" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/order_management/models.py" afterPath="$PROJECT_DIR$/order_management/models.py" />
+      <change beforePath="$PROJECT_DIR$/order_management/static/modal.js" afterPath="$PROJECT_DIR$/order_management/static/modal.js" />
+      <change beforePath="$PROJECT_DIR$/order_management/templates/finance/index.html" afterPath="$PROJECT_DIR$/order_management/templates/finance/index.html" />
       <change beforePath="$PROJECT_DIR$/order_management/views.py" afterPath="$PROJECT_DIR$/order_management/views.py" />
+      <change beforePath="$PROJECT_DIR$/order_management/views_finance/ope_papa.py" afterPath="$PROJECT_DIR$/order_management/views_finance/ope_paya.py" />
       <change beforePath="$PROJECT_DIR$/tmr/urls.py" afterPath="$PROJECT_DIR$/tmr/urls.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,20 +27,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/index.html">
+        <entry file="file://$PROJECT_DIR$/order_management/templates/order/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="54" column="34" lean-forward="false" selection-start-line="54" selection-start-column="24" selection-end-line="54" selection-end-column="34" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="add.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/add.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
-              <caret line="16" column="34" lean-forward="false" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
+            <state relative-caret-position="450">
+              <caret line="174" column="11" lean-forward="true" selection-start-line="134" selection-start-column="8" selection-end-line="174" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -53,8 +39,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/order_management/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="20" column="22" lean-forward="true" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
+            <state relative-caret-position="338">
+              <caret line="35" column="0" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -63,52 +49,142 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tmr/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="74" column="33" lean-forward="false" selection-start-line="74" selection-start-column="33" selection-end-line="74" selection-end-column="33" />
+            <state relative-caret-position="482">
+              <caret line="78" column="70" lean-forward="false" selection-start-line="78" selection-start-column="70" selection-end-line="78" selection-end-column="70" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/templates/finance/index.html">
+        <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="226">
-              <caret line="106" column="30" lean-forward="false" selection-start-line="106" selection-start-column="30" selection-end-line="106" selection-end-column="30" />
+            <state relative-caret-position="162">
+              <caret line="244" column="21" lean-forward="false" selection-start-line="244" selection-start-column="8" selection-end-line="244" selection-end-column="21" />
               <folding>
-                <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#table#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#table#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="e#949#991#0#HTML" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/models.py">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/order_management/templates/finance/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="334">
-              <caret line="103" column="16" lean-forward="false" selection-start-line="103" selection-start-column="16" selection-end-line="103" selection-end-column="16" />
+            <state relative-caret-position="289">
+              <caret line="83" column="153" lean-forward="false" selection-start-line="83" selection-start-column="153" selection-end-line="83" selection-end-column="153" />
+              <folding>
+                <element signature="n#style#0;n#table#0;n#div#0;n#div#2;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#div#1;n#div#2;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#table#0;n#div#1;n#div#2;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="modal.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/static/modal.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="626">
+              <caret line="129" column="57" lean-forward="false" selection-start-line="129" selection-start-column="57" selection-end-line="129" selection-end-column="57" />
+              <folding>
+                <marker date="1519632433569" expanded="true" signature="47:408" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="75:395" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="75:397" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="75:408" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="107:395" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="139:158" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="212:248" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="280:384" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="354:372" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="571:1177" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="603:1164" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="635:821" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="635:822" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="635:834" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="757:764" ph="×" />
+                <marker date="1519632433569" expanded="true" signature="888:922" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="954:1153" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1028:1039" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1130:1141" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1383:1709" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1415:1447" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1415:1696" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1447:1468" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1522:1549" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1581:1685" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1655:1673" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1872:2721" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1904:2708" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1936:2116" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="1936:2138" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2058:2065" ph="×" />
+                <marker date="1519632433569" expanded="true" signature="2192:2202" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2192:2255" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2192:2282" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2192:2453" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2192:2455" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2192:2466" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2282:2325" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2282:2398" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2282:2436" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2282:2453" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2315:2325" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="2498:2697" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3238:4641" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3270:4628" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3270:4641" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3302:3506" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3424:3431" ph="×" />
+                <marker date="1519632433569" expanded="true" signature="3560:3601" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3560:3640" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3560:4312" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3560:4313" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3560:4374" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3560:4376" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3560:4386" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3591:3601" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3691:3712" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3713:3723" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3713:3956" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="3750:3924" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="4012:4033" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="4035:4045" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="4035:4261" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="4072:4229" ph="..." />
+                <marker date="1519632433569" expanded="true" signature="4418:4617" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="add.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/templates/order/add.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="504">
+              <caret line="112" column="75" lean-forward="false" selection-start-line="112" selection-start-column="75" selection-end-line="112" selection-end-column="75" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ope_recv.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/views_finance/ope_recv.py">
+      <file leaf-file-name="add.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/add.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="306">
+              <caret line="163" column="59" lean-forward="true" selection-start-line="163" selection-start-column="23" selection-end-line="163" selection-end-column="59" />
+              <folding>
+                <element signature="e#927#956#0#HTML" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ope_papa.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/order_management/views_finance/ope_papa.py">
+      <file leaf-file-name="ope_paya.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order_management/views_finance/ope_paya.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
-              <caret line="35" column="42" lean-forward="true" selection-start-line="35" selection-start-column="42" selection-end-line="35" selection-end-column="42" />
+            <state relative-caret-position="280">
+              <caret line="60" column="40" lean-forward="false" selection-start-line="60" selection-start-column="40" selection-end-line="60" selection-end-column="40" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -116,21 +192,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ope_add_trace.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/views_order/ope_add_trace.py">
+      <file leaf-file-name="base.py" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/local/lib/python3.4/dist-packages/django/core/handlers/base.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-702">
-              <caret line="19" column="12" lean-forward="true" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ope_edit_order.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/order_management/views_order/ope_edit_order.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
-              <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+            <state relative-caret-position="172">
+              <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -149,14 +215,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>csrf</find>
-      <find>console</find>
-      <find>create</find>
-      <find>note</find>
-      <find>cargo_name</find>
-      <find>Number</find>
       <find>search</find>
-      <find>submit_button</find>
       <find>supplier</find>
       <find>json.</find>
       <find>len</find>
@@ -179,6 +238,13 @@
       <find>purpl</find>
       <find>red</find>
       <find>get_p</find>
+      <find>split</find>
+      <find>type</find>
+      <find>search_input_info</find>
+      <find>submit_button</find>
+      <find>papa</find>
+      <find>filter_start_time</find>
+      <find>filter_supplier</find>
     </findStrings>
     <replaceStrings>
       <replace>&quot;text&quot;:</replace>
@@ -190,7 +256,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/order_management/supplier_views/supplier_edit.py" />
         <option value="$PROJECT_DIR$/order_management/supplier_views/supplier_index.py" />
         <option value="$PROJECT_DIR$/order_management/client_views/client_get_table_data.py" />
         <option value="$PROJECT_DIR$/order_management/supplier_views/get_table_data.py" />
@@ -225,7 +290,6 @@
         <option value="$PROJECT_DIR$/order_management/views_user/page_index.py" />
         <option value="$PROJECT_DIR$/order_management/views_client/get_client_detail.py" />
         <option value="$PROJECT_DIR$/order_management/views_order/order_detail.py" />
-        <option value="$PROJECT_DIR$/order_management/static/modal.js" />
         <option value="$PROJECT_DIR$/tmr/settings.py" />
         <option value="$PROJECT_DIR$/order_management/templates/order/detail.html" />
         <option value="$PROJECT_DIR$/order_management/templates/supplier/index.html" />
@@ -236,11 +300,13 @@
         <option value="$PROJECT_DIR$/order_management/templates/finance/base.html" />
         <option value="$PROJECT_DIR$/order_management/views_finance/finance_index.py" />
         <option value="$PROJECT_DIR$/order_management/views_finance/ope_recv.py" />
-        <option value="$PROJECT_DIR$/order_management/views.py" />
-        <option value="$PROJECT_DIR$/tmr/urls.py" />
         <option value="$PROJECT_DIR$/order_management/views_finance/ope_papa.py" />
-        <option value="$PROJECT_DIR$/order_management/templates/finance/index.html" />
         <option value="$PROJECT_DIR$/order_management/models.py" />
+        <option value="$PROJECT_DIR$/order_management/views.py" />
+        <option value="$PROJECT_DIR$/order_management/static/modal.js" />
+        <option value="$PROJECT_DIR$/tmr/urls.py" />
+        <option value="$PROJECT_DIR$/order_management/views_finance/ope_paya.py" />
+        <option value="$PROJECT_DIR$/order_management/templates/finance/index.html" />
       </list>
     </option>
   </component>
@@ -336,12 +402,6 @@
             <path>
               <item name="tmr" type="b2602c69:ProjectViewProjectNode" />
               <item name="tmr" type="462c0819:PsiDirectoryNode" />
-              <item name="order_management" type="462c0819:PsiDirectoryNode" />
-              <item name="views_order" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tmr" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tmr" type="462c0819:PsiDirectoryNode" />
               <item name="tmr" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -429,6 +489,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25870648" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -438,7 +499,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="manage.py@tmr" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32984293" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
     </layout>
@@ -487,8 +547,13 @@
           <line>25</line>
           <option name="timeStamp" value="60" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/order_management/views_finance/ope_paya.py</url>
+          <line>54</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="61" />
+      <option name="time" value="63" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -504,6 +569,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="30" column="7" lean-forward="true" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -580,16 +646,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/order/add.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="112" column="75" lean-forward="false" selection-start-line="112" selection-start-column="75" selection-end-line="112" selection-end-column="75" />
-          <folding>
-            <element signature="e#1314#1332#0#HTML" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/views_user/log_out.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -628,13 +684,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/lib/python3.4/dist-packages/django/core/handlers/base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="507">
-          <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/views_client/get_client_options.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -669,13 +718,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/static/common.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="1" lean-forward="false" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/views_order/get_trace_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
@@ -689,13 +731,6 @@
         <state relative-caret-position="129">
           <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/static/modal.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="16" column="35" lean-forward="true" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="35" />
         </state>
       </provider>
     </entry>
@@ -741,14 +776,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/order/detail.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="28" column="31" lean-forward="false" selection-start-line="28" selection-start-column="31" selection-end-line="28" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/templates/client/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="540">
@@ -787,9 +814,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
           <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#36#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -797,14 +822,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
           <caret line="24" column="55" lean-forward="false" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/order/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="132" column="64" lean-forward="true" selection-start-line="132" selection-start-column="4" selection-end-line="132" selection-end-column="64" />
           <folding />
         </state>
       </provider>
@@ -833,26 +850,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="54" column="34" lean-forward="false" selection-start-line="54" selection-start-column="24" selection-end-line="54" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/add.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="16" column="34" lean-forward="false" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/views_order/ope_add_trace.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-702">
-          <caret line="19" column="12" lean-forward="true" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
+          <caret line="19" column="12" lean-forward="false" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
           <folding />
         </state>
       </provider>
@@ -865,38 +866,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/templates/finance/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="106" column="30" lean-forward="false" selection-start-line="106" selection-start-column="30" selection-end-line="106" selection-end-column="30" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#table#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#table#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order_management/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="334">
           <caret line="103" column="16" lean-forward="false" selection-start-line="103" selection-start-column="16" selection-end-line="103" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tmr/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="74" column="33" lean-forward="false" selection-start-line="74" selection-start-column="33" selection-end-line="74" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="20" column="22" lean-forward="true" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -909,12 +882,174 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order_management/views_finance/ope_papa.py">
+    <entry file="file://$PROJECT_DIR$/order_management/static/common.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
-          <caret line="35" column="42" lean-forward="true" selection-start-line="35" selection-start-column="42" selection-end-line="35" selection-end-column="42" />
+        <state relative-caret-position="288">
+          <caret line="16" column="1" lean-forward="false" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/order/detail.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="254" column="15" lean-forward="true" selection-start-line="235" selection-start-column="12" selection-end-line="254" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/order/add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="112" column="75" lean-forward="false" selection-start-line="112" selection-start-column="75" selection-end-line="112" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="163" column="59" lean-forward="true" selection-start-line="163" selection-start-column="23" selection-end-line="163" selection-end-column="59" />
+          <folding>
+            <element signature="e#927#956#0#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.4/dist-packages/django/core/handlers/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tmr/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="482">
+          <caret line="78" column="70" lean-forward="false" selection-start-line="78" selection-start-column="70" selection-end-line="78" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="35" column="0" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/supplier/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="244" column="21" lean-forward="false" selection-start-line="244" selection-start-column="8" selection-end-line="244" selection-end-column="21" />
+          <folding>
+            <element signature="e#949#991#0#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/static/modal.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="626">
+          <caret line="129" column="57" lean-forward="false" selection-start-line="129" selection-start-column="57" selection-end-line="129" selection-end-column="57" />
+          <folding>
+            <marker date="1519632433569" expanded="true" signature="47:408" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="75:395" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="75:397" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="75:408" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="107:395" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="139:158" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="212:248" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="280:384" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="354:372" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="571:1177" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="603:1164" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="635:821" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="635:822" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="635:834" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="757:764" ph="×" />
+            <marker date="1519632433569" expanded="true" signature="888:922" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="954:1153" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1028:1039" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1130:1141" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1383:1709" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1415:1447" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1415:1696" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1447:1468" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1522:1549" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1581:1685" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1655:1673" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1872:2721" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1904:2708" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1936:2116" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="1936:2138" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2058:2065" ph="×" />
+            <marker date="1519632433569" expanded="true" signature="2192:2202" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2192:2255" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2192:2282" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2192:2453" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2192:2455" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2192:2466" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2282:2325" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2282:2398" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2282:2436" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2282:2453" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2315:2325" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="2498:2697" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3238:4641" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3270:4628" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3270:4641" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3302:3506" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3424:3431" ph="×" />
+            <marker date="1519632433569" expanded="true" signature="3560:3601" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3560:3640" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3560:4312" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3560:4313" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3560:4374" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3560:4376" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3560:4386" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3591:3601" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3691:3712" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3713:3723" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3713:3956" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="3750:3924" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="4012:4033" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="4035:4045" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="4035:4261" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="4072:4229" ph="..." />
+            <marker date="1519632433569" expanded="true" signature="4418:4617" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/views_finance/ope_paya.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="60" column="40" lean-forward="false" selection-start-line="60" selection-start-column="40" selection-end-line="60" selection-end-column="40" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/order/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="174" column="11" lean-forward="true" selection-start-line="134" selection-start-column="8" selection-end-line="174" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order_management/templates/finance/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="83" column="153" lean-forward="false" selection-start-line="83" selection-start-column="153" selection-end-line="83" selection-end-column="153" />
+          <folding>
+            <element signature="n#style#0;n#table#0;n#div#0;n#div#2;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#2;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#table#0;n#div#1;n#div#2;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>

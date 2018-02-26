@@ -35,5 +35,5 @@ from order_management.views_order.ope_edit_trace import *
 from order_management.views_order.order_price import *
 
 from order_management.views_finance.finance_index import *
-from order_management.views_finance.ope_papa import *
+from order_management.views_finance.ope_paya import *
 from order_management.views_finance.ope_recv import *

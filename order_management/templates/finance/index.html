@@ -18,7 +18,7 @@
                                                     </a>
                                                 </li>
                                                 <li class="">
-                                                    <a href="#page_papa" data-toggle="tab">
+                                                    <a href="#page_paya" data-toggle="tab">
                                                         <i class="material-icons">code</i> 应付账款
                                                         <div class="ripple-container"></div>
                                                     </a>
@@ -29,25 +29,64 @@
                                     </div>
                                 </div>
                         <div class="card-content table-responsive">
-                            <div class="col-sm-12" style ="display: flex;align-items:Center;">
+                            <div class="row">
                                 <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="material-icons">search</i>
-                                        </span>
-                                        <input type="text" class="form-control" placeholder="搜索编号或名称" id="search_input_info" value="{{ contact_tel }}">
-                                    </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">search</i>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="按单号进行搜索" id="filter_No">
+                                        </div>
                                 </div>
-                                <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
+                                <div class="col-sm-4">
+                                        <div class="input-group" title="按客户进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">account_box</i>
+                                            </span>
+                                            <select id="filter_client" class="form-control" style="width: 90%"></select>
+                                        </div>
+                                </div>
+                                <div class="col-sm-4">
+                                        <div class="input-group" title="按供应商进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">account_box</i>
+                                            </span>
+                                            <select id="filter_supplier" class="form-control" style="width: 90%;"></select>
+                                        </div>
+                                </div>
                             </div>
+                            <div class="row">
+                                <div class="col-sm-4 to_fade fade_perm_contract">
+                                        <div class="input-group" title="开始日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">date_range</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="开始日期" id="filter_start_time">
+                                        </div>
+                                </div>
 
+                                <div class="col-sm-4 to_fade fade_perm_contract">
+                                        <div class="input-group" title="结束日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">arrow_forward</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="结束日期" id="filter_end_time">
+                                        </div>
+                                </div>
+                            </div>
 
                             <div class="tab-content">
                                 <div class="tab-pane active" id="page_recv">
                                     <table id="table_recv" style=" table-layout: fixed;" class = "bt_table"></table>
                                 </div>
-                                <div class="tab-pane" id="page_papa">
-                                    <table id="table_papa" style=" table-layout: fixed;" class = "bt_table"></table>
+                                <div class="tab-pane" id="page_paya">
+                                    <div class="col-sm-12" style ="align-items:Center;">
+                                        <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
+                                        <button class="btn btn-primary btn-xs" id="btn_paya_mark_invoice">出票</button>
+                                        <button class="btn btn-primary btn-xs" id="btn_paya_mark_paid">付款</button>
+                                        <button class="btn btn-primary btn-xs" id="btn_paya_verify">核销</button>
+                                    </div>
+                                    <table id="table_paya" style=" table-layout: fixed;" class = "bt_table"></table>
                                 </div>
                             </div>
 
@@ -62,19 +101,62 @@
 {% block jscode %}
 <script>
 $(function(){
+    //筛选多选项下拉框初始化
+        $("#filter_client").select2({
+            placeholder: "按客户进行筛选",
+            allowClear: true,
+            ajax: {
+                url: "{% url 'get_client_options' %}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 0,
+        });
+        $("#filter_supplier").select2({
+            placeholder: "按供应商进行筛选",
+            allowClear: true,
+            ajax: {
+                url: "{% url 'get_supplier_options' %}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 0,
+        });
+
     $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
-    $('#table_papa').bootstrapTable({
-        url: "{% url 'get_papa_list' %}",    //请求数据的地址
+    $('#table_paya').bootstrapTable({
+        url: "{% url 'get_paya_list' %}",    //请求数据的地址
         method: 'post',
         striped: true,
         cache: false,
         pagination: true,
         sortable: false,
+        clickToSelect: true,
         sortOrder: "desc",
         pageNumber:1,
         pageSize: 10,
-        pageList: [10, 25, 50, 100],
-        sidePagination: "server",
+        pageList: [10, 25, 50, 100, 500],
+        sidePagination: "client",
         queryParams: function(params){
             //params.csrfmiddlewaretoken = '{{ csrf_token }}';
             var search = $('#search_input_info').val();
@@ -89,6 +171,9 @@ $(function(){
         idField : "id",
             //接单时间、单号、客户姓名、供应商姓名、起运地、目的地、应付金额、已付金额、已付油卡、付款时间、状态（已核销\未核销）
             columns: [{
+                field: 'index',
+                checkbox: true,
+            }, {
                 field: 'No',
                 title: '编号',
                 align: 'center',
@@ -123,13 +208,13 @@ $(function(){
             },  {
                 field: 'des_city',
                 title: '目的地',
-                align: 'right',
+                align: 'center',
                 halign:'center',
                 width: 150,
             }, {
                 field: 'payables',
                 title: '应付金额',
-                align: 'right',
+                align: 'center',
                 halign:'center',
                 width: 160,
            },  {
@@ -144,22 +229,118 @@ $(function(){
             },  {
                 field: 'clear_time',
                 title: '付款时间',
-                align: 'right',
+                align: 'center',
                 halign:'center',
                 width: 160,
             },  {
-                field: 'status',
-                title: '状态',
-                align: 'right',
+                field: 'invoice',
+                title: '票号',
+                align: 'center',
                 halign:'center',
                 width: 150,
-            },{
+            },  {
+                field: 'status',
+                title: '状态',
+                align: 'center',
+                halign:'center',
+                width: 150,
+            }, {
                 title: '-',
             }],
         onPostBody: function(){
             //更新浮动title标签
             $('#tablecase').find('span').tooltip();
         },
+    });
+
+    $('#btn_paya_mark_invoice').click(function(){
+        var select_lines = $('#table_paya').bootstrapTable('getAllSelections');
+        if ((select_lines.length)==0){
+            toastr.info("请选择分录");
+        }else{
+            var selections = [];
+            for (var i =0; i<select_lines.length; i++){
+                selections.push(select_lines[i].id);
+            }
+            myInputInvoice(function(){
+                var invoice = $('#modal_input').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'mark_paya_invoice' %}",
+                    data: {paya_ids:selections.join(","), invoice: invoice},
+                    datatype: "html",
+                    success: function (data) {
+                        console.log(data);
+                        if(data.if_success == 1){
+                            toastr.success("票号录入成功");
+                            $('#table_paya').bootstrapTable('refresh');
+                        }else{
+                            toastr.error(data.info);
+                        }
+                    },
+                });
+            });
+        }
+    });
+
+    $('#btn_paya_mark_paid').click(function(){
+        var select_lines = $('#table_paya').bootstrapTable('getAllSelections');
+        if ((select_lines.length)==0){
+            toastr.info("请选择分录");
+        }else{
+            var selections = [];
+            for (var i =0; i<select_lines.length; i++){
+                selections.push(select_lines[i].id);
+            }
+            myInputPaid(function(){
+                var paid_type = $('input[name=paid_type]:checked').val();
+                var paid_ammount = $('#modal_input').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'mark_paya_paid' %}",
+                    data: {paya_ids:selections.join(","), paid_ammount: paid_ammount, paid_type:paid_type},
+                    datatype: "html",
+                    success: function (data) {
+                        console.log(data);
+                        if(data.if_success == 1){
+                            toastr.success("已收款录入成功");
+                            $('#table_paya').bootstrapTable('refresh');
+                        }else{
+                            toastr.error(data.info);
+                        }
+                    },
+                });
+            });
+        }
+    });
+
+    $('#btn_paya_verify').click(function(){
+        var select_lines = $('#table_paya').bootstrapTable('getAllSelections');
+        if ((select_lines.length)==0){
+            toastr.info("请选择分录");
+        }else{
+            var selections = [];
+            for (var i =0; i<select_lines.length; i++){
+                selections.push(select_lines[i].id);
+            }
+            myConfirm("是否确定核销以上 "+select_lines.length+" 条分录", function(){
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'paya_verify' %}",
+                    data: {paya_ids:selections.join(",")},
+                    datatype: "html",
+                    success: function (data) {
+                        console.log(data);
+                        if(data.if_success == 1){
+                            toastr.success("已核销成功");
+                            $('#table_paya').bootstrapTable('refresh');
+                        }else{
+                            toastr.error(data.info);
+                        }
+                    },
+                });
+            });
+        }
     });
 })
 </script>
