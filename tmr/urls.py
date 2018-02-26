@@ -70,4 +70,8 @@ urlpatterns = [
     path('update_payables_info/',   tmr_views.update_payables_info,  name='update_payables_info'),
     path('update_payables_price/',  tmr_views.update_payables_price, name='update_payables_price'),
     path('delete_payables/',        tmr_views.delete_payables,       name='delete_payables'),
+
+    #finance part
+    path('finance/',              tmr_views.finance_index,       name='finance_index'),
+    path('get_papa_list/',        tmr_views.get_papa_list,       name='get_papa_list'),
 ]

@@ -80,7 +80,7 @@ class SUP_STEP(models.Model): #供应商操作环节的列表
     name = models.CharField(max_length=100)
 
 class PAYABLES(models.Model):
-    status      = models.SmallIntegerField()
+    status      = models.SmallIntegerField() #0 未核销 1:已核销
     order_id    = models.IntegerField()
     step        = models.IntegerField()     #环节主码
     description = models.CharField(max_length=200)
@@ -90,6 +90,8 @@ class PAYABLES(models.Model):
     paid_oil    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
+    invoice     = models.CharField(max_length=200, null=True)
+
 
 class RECEIVEABLES(models.Model):
     status      = models.SmallIntegerField()
@@ -99,6 +101,7 @@ class RECEIVEABLES(models.Model):
     received    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
+    invoice     = models.CharField(max_length=200, null=True)
 
 
 class LOG_TRACE(models.Model):

@@ -1,0 +1,168 @@
+{% extends 'finance/base.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-nav-tabs">
+                        <div class="card-header" data-background-color="purple">
+                                    <div class="nav-tabs-navigation">
+                                        <div class="nav-tabs-wrapper">
+                                            <span class="nav-tabs-title">财务管理:</span>
+                                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                                <li class="active">
+                                                    <a href="#page_recv" data-toggle="tab">
+                                                        <i class="material-icons">bug_report</i> 应收账款
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                                <li class="">
+                                                    <a href="#page_papa" data-toggle="tab">
+                                                        <i class="material-icons">code</i> 应付账款
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                        <div class="card-content table-responsive">
+                            <div class="col-sm-12" style ="display: flex;align-items:Center;">
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">search</i>
+                                        </span>
+                                        <input type="text" class="form-control" placeholder="搜索编号或名称" id="search_input_info" value="{{ contact_tel }}">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
+                            </div>
+
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="page_recv">
+                                    <table id="table_recv" style=" table-layout: fixed;" class = "bt_table"></table>
+                                </div>
+                                <div class="tab-pane" id="page_papa">
+                                    <table id="table_papa" style=" table-layout: fixed;" class = "bt_table"></table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jscode %}
+<script>
+$(function(){
+    $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+    $('#table_papa').bootstrapTable({
+        url: "{% url 'get_papa_list' %}",    //请求数据的地址
+        method: 'post',
+        striped: true,
+        cache: false,
+        pagination: true,
+        sortable: false,
+        sortOrder: "desc",
+        pageNumber:1,
+        pageSize: 10,
+        pageList: [10, 25, 50, 100],
+        sidePagination: "server",
+        queryParams: function(params){
+            //params.csrfmiddlewaretoken = '{{ csrf_token }}';
+            var search = $('#search_input_info').val();
+            params.search = search;
+            //console.log(params);
+            return params;
+        },
+        contentType: 'application/json',
+        resizable: true,
+        showColumns: true,
+        //Indicate which field is an identity field.
+        idField : "id",
+            //接单时间、单号、客户姓名、供应商姓名、起运地、目的地、应付金额、已付金额、已付油卡、付款时间、状态（已核销\未核销）
+            columns: [{
+                field: 'No',
+                title: '编号',
+                align: 'center',
+                width: 50,
+            }, {
+                field: 'create_time',
+                title: '接单时间',
+                align: 'center',
+                width: 80,
+            }, {
+                field: 'order_No',
+                title: '单号',
+                align: 'center',
+                width: 150,
+            }, {
+                field: 'client_name',
+                title: '客户',
+                align: 'center',
+                width: 100,
+                titleTooltip: "asdfasdf",
+            },  {
+                field: 'supplier_name',
+                title: '供应商',
+                align: 'center',
+                halign:'center',
+                width: 100,
+            },  {
+                field: 'dep_city',
+                title: '起运地',
+                align: 'center',
+                width: 110,
+            },  {
+                field: 'des_city',
+                title: '目的地',
+                align: 'right',
+                halign:'center',
+                width: 150,
+            }, {
+                field: 'payables',
+                title: '应付金额',
+                align: 'right',
+                halign:'center',
+                width: 160,
+           },  {
+                field: 'paid',
+                title: '已付金额/油卡',
+                align: 'center',
+                halign:'center',
+                formatter: function(index, row){
+                    return row.paid_cash+"/"+row.paid_oil;
+                },
+                width: 120,
+            },  {
+                field: 'clear_time',
+                title: '付款时间',
+                align: 'right',
+                halign:'center',
+                width: 160,
+            },  {
+                field: 'status',
+                title: '状态',
+                align: 'right',
+                halign:'center',
+                width: 150,
+            },{
+                title: '-',
+            }],
+        onPostBody: function(){
+            //更新浮动title标签
+            $('#tablecase').find('span').tooltip();
+        },
+    });
+})
+</script>
+{% endblock %}
+
+
