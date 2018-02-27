@@ -5,7 +5,7 @@ function myAlert(info)
 			<div class='modal-content'>\
 				<div class='modal-header'>Warning\
 				</div>\
-				<div class='modal-body' id = 'modal_body_multi'>\
+				<div class='modal-body'>\
 					<h1>"+info+"</h1>\
 				</div>\
 				<div class='modal-footer'>\
@@ -27,7 +27,7 @@ function myConfirm(info,call_back_func)
 				    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\
 				    <h4 class=\"modal-title\">确认</h4>\
 				</div>\
-				<div class='modal-body' id = 'modal_body_multi'>\
+				<div class='modal-body'>\
 					<p>"+info+"</p>\
 				</div>\
 				<div class='modal-footer'>\
@@ -48,7 +48,7 @@ function myShowTableInfo(title, info)
 			<div class='modal-content'>\
 				<div class='modal-header'>"+title+"\
 				</div>\
-				<div class='modal-body' id = 'modal_body_multi'>\
+				<div class='modal-body'>\
 					"+info+"\
 				</div>\
 				<div class='modal-footer'>\
@@ -70,7 +70,7 @@ function myInputInvoice(call_back_func)
 				    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\
 				    <h4 class=\"modal-title\">请输入票号</h4>\
 				</div>\
-				<div class='modal-body' id = 'modal_body_multi'>\
+				<div class='modal-body'>\
 					<p>票号： </p>\
 					<input type='text' id='modal_input'>\
 					<div class='checkbox'>\
@@ -109,7 +109,7 @@ function myInputPaid(call_back_func)
 				    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\
 				    <h4 class=\"modal-title\">请输入已收金额</h4>\
 				</div>\
-				<div class='modal-body' id = 'modal_body_multi'>\
+				<div class='modal-body'>\
 				<div class=\"col-sm-12\">\
                     <div class='input-group'>\
                         <div class='radio' style='display: inline-block'>\
@@ -146,6 +146,30 @@ function myInputPaid(call_back_func)
             $("#modal_input").removeAttr('disabled');
         }
     });
+    $('#modal_click').click(call_back_func);
+    $('#popModal').modal();
+}
+
+function myInputContent(title, note, call_back_func)
+{
+    var modalHtml = "\
+		<div class='modal-dialog'>\
+			<div class='modal-content'>\
+				<div class='modal-header'>\
+				    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\
+				    <h4 class=\"modal-title\">"+title+"</h4>\
+				</div>\
+				<div class='modal-body'>\
+					<p>"+note+"</p>\
+					<input type='text' id='modal_input'>\
+				</div>\
+				<div class='modal-footer'>\
+					<button type='button' class='btn btn-default' data-dismiss='modal'>取消</button>\
+					<button type='button' class='btn btn-default' id='modal_click' data-dismiss='modal'>确认</button>\
+				</div>\
+			</div>\
+	    </div>";
+    $('#popModal').html(modalHtml);
     $('#modal_click').click(call_back_func);
     $('#popModal').modal();
 }

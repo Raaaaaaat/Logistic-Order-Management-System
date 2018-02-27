@@ -17,6 +17,7 @@ class CLIENT(models.Model):
     contract_start = models.CharField(max_length=20,  null=True)
     contract_end   = models.CharField(max_length=20,  null=True)
     contract_file  = models.CharField(max_length=100, null=True)
+    remark         = models.CharField(max_length=500, null=True)
     class Meta:
         permissions=(
             ("view_client",            "Can access information of client"),
@@ -43,6 +44,7 @@ class SUPPLIER(models.Model):
     contract_start = models.CharField(max_length=20,  null=True)
     contract_end   = models.CharField(max_length=20,  null=True)
     contract_file  = models.CharField(max_length=100, null=True)
+    remark = models.CharField(max_length=500, null=True)
     class Meta:
         permissions=(
             ("view_supplier",            "Can access information of supplier"),
@@ -91,6 +93,7 @@ class PAYABLES(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
     invoice     = models.CharField(max_length=200, null=True)
+    remark      = models.CharField(max_length=500, null=True)
 
 
 class RECEIVEABLES(models.Model):
@@ -102,6 +105,7 @@ class RECEIVEABLES(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
     invoice     = models.CharField(max_length=200, null=True)
+    remark      = models.CharField(max_length=500, null=True)
 
 
 class LOG_TRACE(models.Model):

@@ -75,6 +75,11 @@ urlpatterns = [
     path('finance/',              tmr_views.finance_index,       name='finance_index'),
     path('get_paya_list/',        tmr_views.get_paya_list,       name='get_paya_list'),
     path('mark_paya_invoice/',    tmr_views.mark_paya_invoice,   name='mark_paya_invoice'),
-    path('mark_paya_paid/',    tmr_views.mark_paya_paid,   name='mark_paya_paid'),
-    path('paya_verify/',    tmr_views.paya_verify,   name='paya_verify'),
+    path('paya_verify/',          tmr_views.paya_verify,         name='paya_verify'),
+    path('paya_cancel_verify/',   tmr_views.paya_cancel_verify,  name='paya_cancel_verify'),
+
+    path('get_recv_list/',        tmr_views.get_recv_list,       name='get_recv_list'),
+    path('mark_recv_invoice/',    tmr_views.mark_recv_invoice,   name='mark_recv_invoice'),
+    path('recv_verify/',          tmr_views.recv_verify,         name='recv_verify'),
+    path('recv_cancel_verify/',   tmr_views.recv_cancel_verify,  name='recv_cancel_verify'),
 ]

@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-header" data-background-color="purple">
                         <h4 class="title" style="display: inline-block;" id="title_info">Create Supplier</h4>
-                        <p class="category" id="note">请输入供应商信息</p>
+                        <p class="category">请输入供应商信息</p>
                     </div>
                     <div class="card-content">
                         <form class="form" enctype="multipart/form-data" action="{% url 'ajax_edit_supplier' %}" id="supplier_info_form" method="post" onsubmit="return check();">
@@ -139,6 +139,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-sm-12">
+                                <div class="input-group" title="备注">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">note</i>
+                                    </span>
+                                    <textarea class="form-control" rows="5" placeholder="备注" name="remark" id="remark" >{{ remark }}</textarea>
+                                </div>
+                            </div>
+
                             <input type="text" class="fade" name="if_edit"   id = "if_edit"   value="0">
                             <input type="text" class="fade" name="if_refile" id = "if_refile" value="0">
                             <button class="btn btn-primary" id="submit_button" style="float:right;">提交</button>
@@ -168,22 +177,10 @@
                     info = "请输入公司名称";
                 }else if($('#supplier_info_form input[name=co_tel]').val().length == 0){
                     info = "请输入公司电话";
-                }else if($('#supplier_info_form input[name=tax_id]').val().length == 0){
-                    info = "请输入公司税号";
-                }else if($('#supplier_info_form input[name=co_addr]').val().length == 0){
-                    info = "请输入公司地址";
-                }else if($('#supplier_info_form input[name=account_owner]').val().length == 0){
-                    info = "请输入银行用户名";
-                }else if($('#supplier_info_form input[name=account_number]').val().length == 0){
-                    info = "请输入银行账号";
-                }else if($('#supplier_info_form input[name=account_bank]').val().length == 0){
-                    info = "请输入开户行";
                 }else if($('#supplier_info_form input[name=contact_name]').val().length == 0){
                     info = "请输入联系人姓名";
                 }else if($('#supplier_info_form input[name=contact_tel]').val().length == 0){
                     info = "请输入联系人电话";
-                }else if($('#supplier_info_form input[name=contact_role]').val().length == 0){
-                    info = "请输入联系人职位";
                 }else if($('#supplier_info_form input[name=contract_start]').val().length == 0){
                     info = "请输入合同开始日期";
                 }else if($('#supplier_info_form input[name=contract_end]').val().length == 0){
@@ -194,8 +191,6 @@
                     info = "请输入联系人姓名";
                 }else if($('#supplier_info_form input[name=contact_tel]').val().length == 0){
                     info = "请输入联系人电话";
-                }else if($('#supplier_info_form input[name=contact_role]').val().length == 0){
-                    info = "请输入联系人职位";
                 }else if($('#supplier_info_form input[name=contract_start]').val().length == 0){
                     info = "请输入合同开始日期";
                 }else if($('#supplier_info_form input[name=contract_end]').val().length == 0){
