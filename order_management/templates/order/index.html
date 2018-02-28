@@ -8,8 +8,14 @@
     .modal-body .table>tbody>tr>td{
         font-size: 20px;
     }
+    .card-content .form-group{
+        margin: 0px 0 0 0;
+        padding-bottom: 10px;
+    }
     </style>
+
 {% endblock %}
+
 {% block content %}
     <div class="content">
         <div class="container-fluid">
@@ -33,7 +39,7 @@
 
                             <div class="row collapse">
                                 <div class = "row">
-                                    <div class="col-sm-4">
+                                    <div class="col-md-4 col-lg-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">search</i>
@@ -41,25 +47,7 @@
                                             <input type="text" class="form-control" placeholder="按单号进行搜索" id="filter_No">
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <div class="input-group" title="按客户进行搜索">
-                                            <span class="input-group-addon">
-                                                <i class="material-icons">account_box</i>
-                                            </span>
-                                            <select id="filter_client" class="form-control" style="width: 90%"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="input-group" title="按供应商进行搜索">
-                                            <span class="input-group-addon">
-                                                <i class="material-icons">account_box</i>
-                                            </span>
-                                            <select id="filter_supplier" class="form-control" style="width: 90%;"></select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class = "row">
-                                    <div class="col-sm-4 to_fade fade_perm_contract">
+                                    <div class="col-md-4 col-lg-3">
                                         <div class="input-group" title="开始日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">date_range</i>
@@ -68,7 +56,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4 to_fade fade_perm_contract">
+                                    <div class="col-md-4 col-lg-3">
                                         <div class="input-group" title="结束日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">arrow_forward</i>
@@ -76,12 +64,31 @@
                                             <input class="datepicker form-control" type="text" placeholder="结束日期" id="filter_end_time">
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+
+                                </div>
+                                <div class = "row">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group" title="按客户进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">person</i>
+                                            </span>
+                                            <select id="filter_client" class="form-control" style="width: 170px"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group" title="按供应商进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">person</i>
+                                            </span>
+                                            <select id="filter_supplier" class="form-control" style="width: 170px"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
                                         <div class="input-group" title="按付款状态搜索">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">account_box</i>
+                                                <i class="material-icons">check_box</i>
                                             </span>
-                                            <select id="filter_pay_status" class="form-control" style="width: 90%"></select>
+                                            <select id="filter_pay_status" class="form-control" style="width: 170px"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -90,9 +97,9 @@
                                     <div class="col-sm-12">
                                         <div class="input-group" title="按订单状态进行搜索">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">account_box</i>
+                                                <i class="material-icons">storage</i>
                                             </span>
-                                            <select id="filter_status" class="form-control" style="width: 90%" multiple="multiple"></select>
+                                            <select id="filter_status" class="" style="width: 500px" multiple="multiple"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -100,7 +107,7 @@
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">search</i>
+                                                <i class="material-icons">place</i>
                                             </span>
                                             <input type="text" class="form-control" placeholder="按起运地进行搜索" id="filter_dep_city">
                                         </div>
@@ -108,7 +115,7 @@
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">search</i>
+                                                <i class="material-icons">place</i>
                                             </span>
                                             <input type="text" class="form-control" placeholder="按目的地进行搜索" id="filter_des_city">
                                         </div>
@@ -194,6 +201,9 @@
         //时间选择器初始化
         $('.datepicker').datepicker({
             weekStart:1, //1代表从一周周一开始，0代表从周天开始
+            autoclose:true,
+            clearBtn:true,
+            zIndexOffset: 10000,
         });
 
         $('#submit_button').click(function(){
@@ -300,29 +310,41 @@
                     return '<a href="#" class = "client_detail" data-client_id = "'+row.client_id+'">'+row.client_name+'</a>';
                 }
             }, {
-                field: 'dep_place',
-                title: '起运地',
+                field: 'create_time',
+                title: '下单时间',
+                align: 'center',
+                halign:'center',
+                width: 150,
+           },  {
+                field: 'cargo_name',
+                title: '货物名称',
+                align: 'center',
+                halign:'center',
+                width: 80,
+           },  {
+                field: 'cargo_weight',
+                title: '货物重量(t)',
                 align: 'right',
                 halign:'center',
-                width: 120,
-                formatter: function(index, row){
-                    return '<span rel="tooltip" title="'+row.dep_place+'">'+row.dep_place+'</span>';
-                }
+                width: 110,
+            },  {
+                field: 'cargo_quantity',
+                title: '货物数量',
+                align: 'right',
+                halign:'center',
+                width: 80,
+            },  {
+                field: 'cargo_size',
+                title: '货物体积(方)',
+                align: 'right',
+                halign:'center',
+                width: 110,
             },  {
                 field: 'dep_city',
                 title: '起运城市',
                 align: 'center',
                 halign:'center',
                 width: 90,
-            },  {
-                field: 'des_place',
-                title: '目的地',
-                align: 'right',
-                halign:'center',
-                width: 120,
-                formatter: function(index, row){
-                    return '<span rel="tooltip" title="'+row.des_place+'">'+row.des_place+'</span>';
-                }
             },  {
                 field: 'des_city',
                 title: '目的城市',
@@ -342,38 +364,41 @@
                 halign:'center',
                 width: 90,
             }, {
-                field: 'cargo_name',
-                title: '货物名称',
+                field: 'dep_place',
+                title: '起运地址',
+                align: 'left',
+                halign:'center',
+                width: 120,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.dep_place+'">'+row.dep_place+'</span>';
+                }
+            },  {
+                field: 'des_place',
+                title: '目的地址',
+                align: 'left',
+                halign:'center',
+                width: 120,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.des_place+'">'+row.des_place+'</span>';
+                }
+            },  {
+                field: 'remark',
+                title: '备注',
                 align: 'center',
                 halign:'center',
-                width: 160,
-           },  {
-                field: 'cargo_weight',
-                title: '货物重量(t)',
-                align: 'right',
-                halign:'center',
-                width: 80,
-            },  {
-                field: 'cargo_quantity',
-                title: '货物数量',
-                align: 'right',
-                halign:'center',
-                width: 80,
-            },  {
-                field: 'note',
-                title: '备注',
-                align: 'right',
-                halign:'center',
-                width: 160,
+                width: 50,
                 formatter: function(index, row){
-                    return '<span rel="tooltip" title="'+row.note+'">'+row.note+'</span>';
-                }
+                    if(row.remark  != "")
+                        return '<a class="edit_button"  rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
+                    else
+                        return "";
+                },
             }, {
                 title: '-',
             }],
         onPostBody: function(){
             //更新浮动title标签
-            $('#tablecase').find('span').tooltip();
+            $('[rel="tooltip"]').tooltip();
         },
     });
     $("#advanced_filter_collapse_btn").click(function(){

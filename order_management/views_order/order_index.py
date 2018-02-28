@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 import datetime,time
+from django.utils.timezone import localtime
 
 def order_index(request):
 
@@ -81,6 +82,11 @@ def order_index(request):
             elif line.type==1:
                 client_names[line.id] = line.contact_name
         for line in rows:
+            if line['remark'] == None:
+                line['remark'] = ""
+            else:
+                line['remark'] = line['remark'].replace("\r\n", "<br>")
+            line["create_time"] = datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')
             line["client_name"] = client_names[line["client_id"]]
         #返回表格的数据
         data = {

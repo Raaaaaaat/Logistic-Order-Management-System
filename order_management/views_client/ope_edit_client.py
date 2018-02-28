@@ -24,7 +24,7 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
         contact_role   = request.POST.get("contact_role")
         contract_start = request.POST.get("contract_start")
         contract_end   = request.POST.get("contract_end")
-
+        remark         = request.POST.get("remark")
         if if_edit=="0":
             #新增模式
             # 检查重复
@@ -57,7 +57,7 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
                                       account_bank=account_bank, contact_name=contact_name,
                                       contact_tel=contact_tel, contact_role=contact_role,
                                       contract_start=contract_start, contract_end=contract_end,
-                                      contract_file=file_path)
+                                      contract_file=file_path, remark=remark)
                 info = "添加成功"
             else:
                 info = "添加失败，该客户已存在"
@@ -82,12 +82,13 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
                 target_obj.contact_name = contact_name
                 target_obj.contact_tel = contact_tel
                 target_obj.contact_role = contact_role
+                target_obj.remark      =remark
                 if request.user.has_perm("order_management.change_client_contract"): #二次检查，防止没有权限的用户越过界面伪造表单修改数据
                     target_obj.contract_start = contract_start
                     target_obj.contract_end = contract_end
                     if(if_refile == "1" or target_obj.contract_file==""):
                         contract_file = request.FILES.get("contract_file", None)
-                        file_path = "";
+                        file_path = ""
                         if contract_file != None:
                             file_path = contract_file._name  # 获取到源文件的名字
                             file_path = file_path.split(".").pop()  # 获取文件后缀

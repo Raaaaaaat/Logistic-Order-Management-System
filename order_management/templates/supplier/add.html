@@ -166,6 +166,9 @@
     <script>
         $('.datepicker').datepicker({
             weekStart:1, //1代表从一周周一开始，0代表从周天开始
+            autoclose:true,
+            clearBtn:true,
+            zIndexOffset: 10000,
         });
 
         function check(){

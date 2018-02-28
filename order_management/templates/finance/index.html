@@ -39,33 +39,6 @@
                                 </div>
                         <div class="card-content table-responsive ">
                             <div class="row">
-                                <div class="col-md-3 col-lg-3">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                <i class="material-icons">search</i>
-                                            </span>
-                                            <input type="text" class="form-control" placeholder="按单号进行搜索" id="f_order_No">
-                                        </div>
-                                </div>
-                                <div class="col-md-3 col-lg-3">
-                                        <div class="input-group" title="按客户进行搜索">
-                                            <select id="f_client" class="form-control" style="width: 100%"></select>
-                                        </div>
-                                </div>
-                                <div class="col-md-3 col-lg-3" id="ex_sup" hidden>
-                                        <div class="input-group" title="按供应商进行搜索">
-                                            <select id="f_supplier" class="form-control" style="width: 100%;"></select>
-                                        </div>
-                                </div>
-                                <div class="col-md-3 col-lg-3">
-                                    <div class="checkbox input-group" >
-                                        <label>
-                                            <input type="checkbox" id="f_if_total">
-                                        </label>展示全部
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
 
                                 <div class="col-md-3 col-lg-3">
                                         <div class="input-group" title="创建开始日期">
@@ -103,6 +76,40 @@
                                 </div>
 
                             </div>
+                            <div class="row">
+                                <div class="col-md-7 col-lg-3">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">search</i>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="按单号进行搜索" id="f_order_No">
+                                        </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                        <div class="input-group" title="按客户进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">person</i>
+                                            </span>
+                                            <select id="f_client" class="form-control" style="width: 180px"></select>
+                                        </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3" id="ex_sup" hidden>
+                                        <div class="input-group" title="按供应商进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">person</i>
+                                            </span>
+                                            <select id="f_supplier" class="form-control" style="width: 180px;"></select>
+                                        </div>
+                                </div>
+                                <div class="col-md-3 col-lg-3" >
+                                    <div class="checkbox input-group" style = "margin-left:20px;">
+                                        <label>
+                                            <input type="checkbox" id="f_if_total">
+                                        </label>展示全部
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <div class="tab-content">
                                 <div class="" id="page_recv">

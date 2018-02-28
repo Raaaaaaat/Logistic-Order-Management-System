@@ -37,6 +37,7 @@ def client_edit(request):
             "contract_file" : to_be_edit_obj.contract_file,
             "perm_tax"      : perm_tax,
             "perm_contract" : perm_contract,
+            "remark"        : to_be_edit_obj.remark,
         })
     else:
         #直接访问网址而不是通过跳转提交表单就会到这个页面，跳转到404

@@ -59,8 +59,8 @@
                                 <div class="td_div" style="width:20%">{{ cargo_weight }}</div>
                                 <div class="td_div" style="width:10%">货物数量</div>
                                 <div class="td_div" style="width:20%">{{ cargo_quantity }}</div>
-                                <div class="td_div" style="width:10%">备注</div>
-                                <div class="td_div" style="width:90%">{{ note }}</div>
+                                <div class="td_div" style="width:10%;height:70px;">备注</div>
+                                <div class="td_div" style="width:90%;height:70px;overflow-y:auto" id="remark_park"></div>
 
                             </div>
                         </div>
@@ -156,6 +156,10 @@
 
 
         $(function(){
+            //填充备注栏
+            var ht = "{{ remark }}".replace(/-rrr-/g, '<br>');
+            $("#remark_park").html("<p style='font-size:0.9em; line-height:100%'>"+ht+"</p>");
+
             var log_trace_index = 1;
             show_status("{{ status }}");    //加载页面的时候填入状态
 

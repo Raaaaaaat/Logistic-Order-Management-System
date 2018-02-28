@@ -20,6 +20,12 @@ def order_detail(request):
         except:
             client_name=""
             client_tel=""
+
+
+        if order_obj.remark==None:
+            remark=""
+        else:
+            remark = order_obj.remark.replace("\r\n", "-rrr-") #这个-r-代表换行，前段可以对于这个组合进行转义
         return render(request, 'order/detail.html', {
             'id':          order_obj.id,
             'No':          No,
@@ -32,7 +38,7 @@ def order_detail(request):
             'cargo_quantity': order_obj.cargo_quantity,
             'cargo_name':     order_obj.cargo_name,
             'cargo_weight':   order_obj.cargo_weight,
-            'note':           order_obj.note,
+            'remark':         remark,
             'rec_name':       order_obj.rec_name,
             'rec_tel':        order_obj.rec_tel,
             'client_name':    client_name,

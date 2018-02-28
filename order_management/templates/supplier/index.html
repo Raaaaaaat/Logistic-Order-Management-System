@@ -1,5 +1,14 @@
 {% extends 'supplier/base.html' %}
+{% block style %}
+    <style>
 
+    .card-content .form-group{
+        display: inline-block;
+        margin: 0px 0 0 0;
+        padding-bottom: 10px;
+    }
+    </style>
+{% endblock %}
 {% block content %}
     <div class="content">
         <div class="container-fluid">
@@ -16,7 +25,7 @@
                             </li>
                         </div>
                         <div class="card-content table-responsive">
-                            <div class="col-sm-12" style ="display: flex;align-items:Center;">
+
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-addon">
@@ -25,8 +34,8 @@
                                         <input type="text" class="form-control" placeholder="搜索编号或名称" id="search_input_info" value="{{ contact_tel }}">
                                     </div>
                                 </div>
-                                <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
-                            </div>
+                                <button class="btn btn-primary btn-xs" id="submit_button" >Search</button>
+
                             <table id="tablecase" style=" table-layout: fixed;" class = "bt_table"></table>
                         </div>
                     </div>
@@ -139,7 +148,7 @@ $(function(){
             },  {
                 field: 'co_addr',
                 title: '公司地址',
-                align: 'right',
+                align: 'left',
                 halign:'center',
                 width: 150,
                 formatter: co_addr_formatter,
@@ -172,7 +181,7 @@ $(function(){
             },  {
                 field: 'account_bank',
                 title: '开户行',
-                align: 'right',
+                align: 'left',
                 halign:'center',
                 width: 150,
                 visible: false,
@@ -196,16 +205,26 @@ $(function(){
                 width: 80,
                 visible: false,
             },  {
+                title: '备注',
+                formatter: function(index, row){
+                    if(row.remark  != "")
+                        return '<a class="edit_button"  rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
+                    else
+                        return "";
+                },
+                align: 'center',
+                width: 50,
+            },  {
                 title: '操作',
                 formatter: operation_formatter,
                 align: 'center',
                 width: 80,
-            },{
+            },  {
                 title: '-',
             }],
         onPostBody: function(){
             //更新浮动title标签
-            $('#tablecase').find('span').tooltip();
+            $('[rel="tooltip"]').tooltip();
         },
     });
 

@@ -31,7 +31,7 @@
                                     <span class="">
                                         <i class="material-icons">account_box</i>
                                     </span>
-                                    <select id="client_id" class="form-control" style="width: 50%"></select>
+                                    <select id="client_id" class="form-control" style="width: 85%"></select>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -117,13 +117,22 @@
                                     <input type="text" class="form-control" id="cargo_quantity">
                                 </div>
                             </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">equalizer</i>
+                                </span>
+                                <div class="form-group label-floating" title="货物体积">
+                                    <label class="control-label">货物体积</label>
+                                    <input type="text" class="form-control" id="cargo_size">
+                                </div>
+                            </div>
                             <div class="col-sm-12">
                                 <span>
                                         <i class="material-icons">message</i>
                                 </span>
                                 <div class="form-group label-floating" title="备注">
                                     <label class="control-label">备注</label>
-                                    <input type="text" class="form-control" id="remark">
+                                    <textarea class="form-control" rows="5" name="remark" id="remark" ></textarea>
                                 </div>
                             </div>
                             <button class="btn btn-primary" id="submit_button" style="float:right;">提交</button>
@@ -180,15 +189,16 @@
             var remark        = $("#remark").val();
             var rec_name      = $("#rec_name").val();
             var rec_tel       = $("#rec_tel").val();
+            var cargo_size    = $("#cargo_size").val();
             if(client_id==null){
                 toastr.error("请选择客户");
                 if_valid = false;
             }
-            if(dep_city=="" || dep_place==""){
+            if(dep_city==""){
                 toastr.error("请输入出发地信息");
                 if_valid = false;
             }
-            if(des_city=="" || des_place==""){
+            if(des_city==""){
                 toastr.error("请输入目的地信息");
                 if_valid = false;
             }
@@ -204,12 +214,16 @@
                 toastr.error("请输入货物名称");
                 if_valid = false;
             }
-            if(cargo_weight=="" || isNaN(cargo_weight)){
+            if(cargo_weight!="" && isNaN(cargo_weight)){
                 toastr.error("请输入正确的货物重量");
                 if_valid = false;
             }
-            if(cargo_quantity=="" || isNaN(cargo_quantity) || Number(cargo_quantity)%1 !== 0){
+            if(cargo_quantity!="" && (isNaN(cargo_quantity) || Number(cargo_quantity)%1 !== 0)){
                 toastr.error("请输入货物数量并且货物数量必须为整数");
+                if_valid = false;
+            }
+            if(cargo_size!="" && isNaN(cargo_size)){
+                toastr.error("请输入正确的货物体积");
                 if_valid = false;
             }
             if(remark.length > 500){
@@ -229,7 +243,8 @@
                 cargo_name:     cargo_name,
                 cargo_weight:   Number(cargo_weight),
                 cargo_quantity: Number(cargo_quantity),
-                note:           remark,
+                cargo_size:     Number(cargo_size),
+                remark:         remark,
                 rec_name:       rec_name,
                 rec_tel:        rec_tel,
             };

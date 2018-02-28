@@ -16,7 +16,8 @@ def ope_edit_order(request):
         cargo_name     = request.POST.get("cargo_name")
         cargo_weight   = request.POST.get("cargo_weight")
         cargo_quantity = request.POST.get("cargo_quantity")
-        note           = request.POST.get("note")
+        cargo_size     = request.POST.get("cargo_size")
+        remark         = request.POST.get("remark")
         rec_name       = request.POST.get("rec_name", "")
         rec_tel        = request.POST.get("rec_tel", "")
         if_edit        = request.POST.get("if_edit")
@@ -39,8 +40,8 @@ def ope_edit_order(request):
                                  dep_city=dep_city, dep_place=dep_place,
                                  des_city=des_city, des_place=des_place,
                                  cargo_name=cargo_name, cargo_weight=cargo_weight,
-                                 cargo_quantity=cargo_quantity, if_delete=0,
-                                 note=note, rec_name=rec_name, rec_tel=rec_tel)
+                                 cargo_quantity=cargo_quantity, if_delete=0,cargo_size=cargo_size,
+                                 remark=remark, rec_name=rec_name, rec_tel=rec_tel)
 
             info = "添加成功"
         return redirect('/order?info=' + info)
