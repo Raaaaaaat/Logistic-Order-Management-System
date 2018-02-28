@@ -284,10 +284,6 @@ $(function(){   //应付账款
                     toastr.error("必须选择供应商");
                     return;
                 }
-                if(desc==""){
-                    toastr.error("描述不能为空");
-                    return;
-                }
                 if(price=="" || isNaN(price)){
                     toastr.error("价格输入错误");
                     return;
@@ -346,6 +342,12 @@ $(function(){   //应付账款
                 },
                 minimumInputLength: 0,
             });
+            $("#pay_step_input").on("select2:select",function(e){
+
+            　　 // e 的话就是一个对象 然后需要什么就 “e.参数” 形式 进行获取
+            　　 console.log(e.params.data.text);
+                $("#pay_desc_input").val(e.params.data.text);
+            })
         }
     });
     //加载数据到table里面

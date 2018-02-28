@@ -29,9 +29,9 @@ def ope_edit_supplier(request):     #这个方法可以用来增加单条数据�
 
             #检查重复
             if type=="0":
-                conflict_check = SUPPLIER.objects.filter(tax_id=tax_id).count()
+                conflict_check = SUPPLIER.objects.filter(co_name=co_name).count()
             else:
-                conflict_check = SUPPLIER.objects.filter(contact_tel=contact_tel).count()
+                conflict_check = SUPPLIER.objects.filter(contact_name=contact_name).count()
             if conflict_check==0: #没有重复冲突
                 No = ""  #自动生成下一个该有的客户编号
                 last_one = SUPPLIER.objects.last()
@@ -65,12 +65,15 @@ def ope_edit_supplier(request):     #这个方法可以用来增加单条数据�
             #编辑模式
             # 检查重复
             if type == "0":
-                conflict_check = SUPPLIER.objects.filter(~Q(No=if_edit) & Q(tax_id=tax_id)).count()
+                conflict_check = SUPPLIER.objects.filter(~Q(No=if_edit) & Q(co_name=co_name)).count()
             else:
-                conflict_check = SUPPLIER.objects.filter(~Q(No=if_edit) & Q(contact_tel=contact_tel)).count()
+                conflict_check = SUPPLIER.objects.filter(~Q(No=if_edit) & Q(contact_name=contact_name)).count()
             if conflict_check == 0:  # 没有重复冲突
                 No = if_edit
-                target_obj = SUPPLIER.objects.get(No=No)
+                try:
+                    target_obj = SUPPLIER.objects.get(No=No)
+                except:
+                    return redirect('/supplier?info=供应商不存在！')
                 target_obj.co_name = co_name
                 target_obj.co_addr = co_addr
                 target_obj.co_tel = co_tel

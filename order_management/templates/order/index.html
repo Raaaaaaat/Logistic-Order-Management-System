@@ -307,7 +307,10 @@
                 align: 'center',
                 width: 100,
                 formatter: function(index, row){
-                    return '<a href="#" class = "client_detail" data-client_id = "'+row.client_id+'">'+row.client_name+'</a>';
+                    if(row.client_id != 0)
+                        return '<a href="#" class = "client_detail" data-client_id = "'+row.client_id+'">'+row.client_name+'</a>';
+                    else
+                        return row.client_name;
                 }
             }, {
                 field: 'create_time',
@@ -323,7 +326,7 @@
                 width: 80,
            },  {
                 field: 'cargo_weight',
-                title: '货物重量(t)',
+                title: '货物重量(KG)',
                 align: 'right',
                 halign:'center',
                 width: 110,
@@ -389,11 +392,19 @@
                 width: 50,
                 formatter: function(index, row){
                     if(row.remark  != "")
-                        return '<a class="edit_button"  rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
+                        return '<a rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
                     else
                         return "";
                 },
             }, {
+                title: '操作',
+                formatter: function(index, row){
+                    //console.log(row);
+                    return '<a data-no="'+row.No+'" href = "/order_edit?No='+row.No+'"><i class="fa fa-pencil"></i></a>';
+                },
+                align: 'center',
+                width: 50,
+            },{
                 title: '-',
             }],
         onPostBody: function(){
@@ -433,5 +444,7 @@
             },
         })
     });
+
+
 </script>
 {% endblock %}

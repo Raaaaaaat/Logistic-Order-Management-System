@@ -248,13 +248,11 @@ $(function(){
                 datatype: "html",
                 success: function (data) {//这里检查data.info的值，如果删除成功就为1，否则为0，2代表没有权限，在这里做一样的判断
                     //console.log(data);
-                    if(data.info==1){
+                    if(data.if_success==1){
                         toastr.success('删除成功');
-                        location.reload();
-                    }else if(data.info==0){
-                        toastr.error('删除失败');
-                    }else if(data.info==2){
-                        toastr.info('没有删除权限，请联系管理员');
+                        $('#tablecase').bootstrapTable("refresh");
+                    }else if(data.if_success==0){
+                        toastr.error(data.info);
                     }else{}
                 },
             });

@@ -3,7 +3,7 @@ import json,time, datetime
 from order_management.models import ORDER
 from order_management.models import PAYABLES
 
-def ope_edit_order(request):
+def ope_add_order(request):
 
 
 

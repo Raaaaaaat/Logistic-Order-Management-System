@@ -288,6 +288,18 @@ $(function(){
                 halign:'center',
                 width: 80,
             }, {
+                field: 'description',
+                title: '描述',
+                align: 'center',
+                halign:'center',
+                width: 80,
+                formatter: function(index, row){
+                    if(row.description  != "")
+                        return '<span rel="tooltip" title="'+row.description+'" data-html="true" >'+row.description+'</span>';
+                    else
+                        return "";
+                },
+            }, {
                 field: 'receiveables',
                 title: '应收金额',
                 align: 'center',
@@ -334,7 +346,7 @@ $(function(){
             }],
         onPostBody: function(){
             //更新浮动title标签
-            $('#table_recv').find('span').tooltip();
+            $('[rel="tooltip"]').tooltip();
         },
     });
 
@@ -514,6 +526,18 @@ $(function(){
                 align: 'center',
                 halign:'center',
                 width: 80,
+            }, {
+                field: 'description',
+                title: '描述',
+                align: 'center',
+                halign:'center',
+                width: 80,
+                formatter: function(index, row){
+                    if(row.description  != "")
+                        return '<span rel="tooltip" title="'+row.description+'" data-html="true" >'+row.description+'</span>';
+                    else
+                        return "";
+                },
             }, {
                 field: 'payables',
                 title: '应付金额',

@@ -27,7 +27,7 @@ from order_management.views_supplier.get_sup_step_options import *
 from order_management.views_order.order_index import *
 from order_management.views_order.order_add import *
 from order_management.views_order.order_edit import *
-from order_management.views_order.ope_edit_order import *
+from order_management.views_order.ope_add_order import *
 from order_management.views_order.order_detail import *
 from order_management.views_order.ope_add_trace import *
 from order_management.views_order.get_trace_data import *

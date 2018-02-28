@@ -30,7 +30,11 @@ def get_paya_list(request):
                 ids.append(single.id)
             query = query & Q(order_id__in=ids)
         if f_client != "":
-            query = query & Q(client_id=f_client)
+            t_order_objs = ORDER.objects.filter(client_id=f_client)
+            ids = []
+            for single in t_order_objs:
+                ids.append(single.id)
+            query = query & Q(order_id__in=ids)
         if f_supplier != "":
             query = query & Q(supplier_id=f_supplier)
         if f_create_start_time != "":
@@ -62,17 +66,24 @@ def get_paya_list(request):
         for line in pay_obj:
             order_obj = ORDER.objects.get(id=line["order_id"])
             client_id = order_obj.client_id
-            client_obj = CLIENT.objects.get(id=client_id)
-            if client_obj.type == 0:
-                line["client_name"] = client_obj.No + " - " + client_obj.co_name
-            else:
-                line["client_name"] = client_obj.No + " - " + client_obj.contact_name
+            try:
+                client_obj = CLIENT.objects.get(id=client_id)
+                if client_obj.type == 0:
+                    line["client_name"] = client_obj.No + " - " + client_obj.co_name
+                else:
+                    line["client_name"] = client_obj.No + " - " + client_obj.contact_name
+            except:
+                line["client_name"] = "客户已删除"
             line["index"] = index
             index += 1
             line["order_No"] = order_obj.No
             line["dep_city"] = order_obj.dep_city
             line["des_city"] = order_obj.des_city
-            line["supplier_name"] = supplier_dic[line["supplier_id"]]
+            if line["supplier_id"] in supplier_dic:
+                line["supplier_name"] = supplier_dic[line["supplier_id"]]
+            else:
+                line["supplier_name"] = "供应商已删除"
+
 
 
             line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')

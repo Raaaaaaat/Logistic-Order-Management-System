@@ -41,7 +41,7 @@ def order_index(request):
         if filter_start_time != "":
             query = query & Q(create_time__gte=datetime.datetime.strptime(filter_start_time,'%m/%d/%Y'))
         if filter_end_time != "":
-            query = query & Q(create_time__lte=datetime.datetime.strptime(filter_end_time,'%m/%d/%Y'))
+            query = query & Q(create_time__lte=datetime.datetime.strptime(filter_end_time,'%m/%d/%Y')+datetime.timedelta(days=1))
         if filter_dep_city != "":
             query = query & Q(dep_city=filter_dep_city)
         if filter_des_city != "":
@@ -87,7 +87,11 @@ def order_index(request):
             else:
                 line['remark'] = line['remark'].replace("\r\n", "<br>")
             line["create_time"] = datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')
-            line["client_name"] = client_names[line["client_id"]]
+            if line["client_id"] in client_names:
+                line["client_name"] = client_names[line["client_id"]]
+            else:
+                line["client_name"] = "该客户已删除"
+                line["client_id"] = 0
         #返回表格的数据
         data = {
             "total": total,

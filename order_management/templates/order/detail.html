@@ -54,11 +54,13 @@
                                 <div class="td_div" style="width:10%">目的地址</div>
                                 <div class="td_div" style="width:90%">{{ des_place }}</div>
                                 <div class="td_div" style="width:10%">货物名称</div>
-                                <div class="td_div" style="width:30%">{{ cargo_name }}</div>
-                                <div class="td_div" style="width:10%">货物重量</div>
-                                <div class="td_div" style="width:20%">{{ cargo_weight }}</div>
+                                <div class="td_div" style="width:15%">{{ cargo_name }}</div>
+                                <div class="td_div" style="width:10%">货物重量(KG)</div>
+                                <div class="td_div" style="width:15%">{{ cargo_weight }}</div>
                                 <div class="td_div" style="width:10%">货物数量</div>
-                                <div class="td_div" style="width:20%">{{ cargo_quantity }}</div>
+                                <div class="td_div" style="width:15%">{{ cargo_quantity }}</div>
+                                <div class="td_div" style="width:10%">货物体积(方)</div>
+                                <div class="td_div" style="width:15%">{{ cargo_size }}</div>
                                 <div class="td_div" style="width:10%;height:70px;">备注</div>
                                 <div class="td_div" style="width:90%;height:70px;overflow-y:auto" id="remark_park"></div>
 
@@ -182,10 +184,7 @@
                     toastr.error("物流信息状态不能为空");
                     return;
                 }
-                if(desc==""){
-                    toastr.error("物流信息描述不能为空");
-                    return;
-                }
+
                 $("#log_status_select").val(null).trigger('change');
                 $("#log_desc_input").val('');
                 $.ajax({

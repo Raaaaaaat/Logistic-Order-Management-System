@@ -44,7 +44,7 @@ class SUPPLIER(models.Model):
     contract_start = models.CharField(max_length=20,  null=True)
     contract_end   = models.CharField(max_length=20,  null=True)
     contract_file  = models.CharField(max_length=100, null=True)
-    remark = models.CharField(max_length=500, null=True)
+    remark         = models.CharField(max_length=500, null=True)
     class Meta:
         permissions=(
             ("view_supplier",            "Can access information of supplier"),
@@ -67,7 +67,7 @@ class ORDER(models.Model):
     rec_tel   = models.CharField(max_length=50, default="")
     cargo_name     = models.CharField(max_length=100)
     cargo_weight   = models.FloatField(max_length=100, null=True)
-    cargo_quantity = models.IntegerField(null=True)
+    cargo_quantity = models.CharField(max_length=50, null=True)
     cargo_size     = models.FloatField(max_length=100, null=True)
     remark         = models.CharField(max_length=500, null=True)
     create_time    = models.DateTimeField(auto_now_add=True)
@@ -86,7 +86,7 @@ class PAYABLES(models.Model):
     status      = models.SmallIntegerField() #0 未核销 1:已核销
     order_id    = models.IntegerField()
     step        = models.IntegerField()     #环节主码
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, null=True)
     supplier_id = models.IntegerField()
     payables    = models.FloatField(null=True)
     paid_cash   = models.FloatField(null=True)

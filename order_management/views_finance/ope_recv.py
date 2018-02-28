@@ -33,7 +33,7 @@ def get_recv_list(request):
             ids = []
             for single in t_order_objs:
                 ids.append(single.id)
-            query = query & Q(client_id__in=ids)
+            query = query & Q(order_id__in=ids)
         if f_create_start_time != "":
             query = query & Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
         if f_create_end_time != "":
@@ -55,11 +55,14 @@ def get_recv_list(request):
         for line in recv_obj:
             order_obj = ORDER.objects.get(id=line["order_id"])
             client_id = order_obj.client_id
-            client_obj = CLIENT.objects.get(id=client_id)
-            if client_obj.type == 0:
-                line["client_name"] = client_obj.No + " - " + client_obj.co_name
-            else:
-                line["client_name"] = client_obj.No + " - " + client_obj.contact_name
+            try:
+                client_obj = CLIENT.objects.get(id=client_id)
+                if client_obj.type == 0:
+                    line["client_name"] = client_obj.No + " - " + client_obj.co_name
+                else:
+                    line["client_name"] = client_obj.No + " - " + client_obj.contact_name
+            except:
+                line["client_name"] = "客户已删除"
             line["index"] = index
             index += 1
             line["order_No"] = order_obj.No

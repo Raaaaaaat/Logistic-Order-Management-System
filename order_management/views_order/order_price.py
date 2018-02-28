@@ -102,7 +102,10 @@ def get_payables(request):
         rows = []
         for line in pay_obj:
             line["step_name"]= step_dic[line["step"]]
-            line["supplier_name"] = supplier_dic[line["supplier_id"]]
+            if line["supplier_id"] in supplier_dic:
+                line["supplier_name"] = supplier_dic[line["supplier_id"]]
+            else:
+                line["supplier_name"] = "该供应商已删除"
             rows.append(line)
         return JsonResponse({"rows":rows})
 
