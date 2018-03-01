@@ -83,4 +83,8 @@ urlpatterns = [
     path('mark_recv_invoice/',    tmr_views.mark_recv_invoice,   name='mark_recv_invoice'),
     path('recv_verify/',          tmr_views.recv_verify,         name='recv_verify'),
     path('recv_cancel_verify/',   tmr_views.recv_cancel_verify,  name='recv_cancel_verify'),
+    path('invoice_management/',   tmr_views.invoice_management,  name='invoice_management'),
+    path('get_invoice_list/',     tmr_views.get_invoice_list,    name='get_invoice_list'),
+    path('edit_invoice/',         tmr_views.edit_invoice,        name='edit_invoice'),
+    path('delete_invoice/',       tmr_views.delete_invoice,      name='delete_invoice'),
 ]

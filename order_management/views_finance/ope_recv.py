@@ -7,6 +7,7 @@ from order_management.models import CLIENT
 import datetime,json
 from django.db.models import Q
 from django.utils.timezone import localtime
+from order_management.models import RECV_INVOICE
 
 def get_recv_list(request):
     if request.method == "POST":
@@ -78,15 +79,61 @@ def get_recv_list(request):
 
 def mark_recv_invoice(request):
     #两个参数分别是数组为payables的id，以及要批量修改的票号
+    #应收款的发票专门存在另一个表里
+    # 1. 检查是否已经出过这张发票
+    # 1.1 检查所选择的应收分录是否有供应商并且唯一
+    # 2. 创建发票，插入表中
+    # 3. 在应收款里填写发票主码
+    # 4. 检查如果一个订单的所有发票都已经填写完成，就变更订单状态
     if request.method == "POST":
         recv_ids = request.POST.get("recv_ids","")
         recv_ids = recv_ids.split(",")
         invoice  = request.POST.get("invoice")
 
+        if RECEIVEABLES.objects.filter(Q(id__in=recv_ids) & ~Q(invoice=None) & ~Q(invoice=0)).count()!=0:
+            return JsonResponse({"if_success": 0, "info": "不可重复开票"})
+        if invoice != "不出票":
+            check_if_exist_invoice = RECV_INVOICE.objects.filter(invoice=invoice).count()
+            if check_if_exist_invoice!=0:
+                return JsonResponse({"if_success": 0, "info":"此发票已被使用"})
+
+            #
+            recv_objs = RECEIVEABLES.objects.filter(id__in=recv_ids)
+            recv_objs_clients = []
+            for single in recv_objs:
+                #这里假设应收款的order_id一定可以查到order_obj
+                order_obj = ORDER.objects.get(id=single.order_id)   #这里等待优化，首先确定order_id再检查他们对应的用户是否有重复
+                recv_objs_clients.append(order_obj.client_id)
+            recv_objs_clients = list(set(recv_objs_clients))
+            if len(recv_objs_clients) >1:
+                return JsonResponse({"if_success": 0, "info": "一张发票只能对应单一供应商"})
+            if len(recv_objs_clients) == 0:
+                return JsonResponse({"if_success": 0, "info": "系统错误：请重新尝试"})
+            client_id = recv_objs_clients[0]
+            invoice_obj = RECV_INVOICE.objects.create(invoice=invoice, client_id=client_id, create_user=request.user.username)
+            invoice_id = invoice_obj.id
+        else:
+            recv_objs = RECEIVEABLES.objects.filter(id__in=recv_ids)
+            invoice_id = 0
         try:
-            recv_obj = RECEIVEABLES.objects.filter(id__in=recv_ids).update(invoice=invoice)
+            recv_objs.update(invoice=invoice_id)
         except:
-            return JsonResponse({"if_success": 0})
+            return JsonResponse({"if_success": 0, "info": "添加失败：请重新尝试"})
+        #获取这些记录对应的order号
+        order_ids = []
+        for single in recv_objs:
+            order_ids.append(single.order_id)
+        order_ids = list(set(order_ids))
+        #再对于order_ids进行遍历查看
+        for single in order_ids:
+            try:
+                count_order_no_invoice = RECEIVEABLES.objects.filter(Q(order_id=single) & Q(invoice=None)).count()
+                if count_order_no_invoice == 0:
+                    order_obj = ORDER.objects.get(id=single)
+                    order_obj.status=5
+                    order_obj.save()
+            except:
+                continue
         return JsonResponse({"if_success": 1})
 
 def recv_verify(request):

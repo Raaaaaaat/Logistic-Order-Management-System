@@ -105,7 +105,7 @@ class RECEIVEABLES(models.Model):
     received    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
-    invoice     = models.CharField(max_length=200, null=True)
+    invoice     = models.IntegerField(null=True)
     remark      = models.CharField(max_length=500, null=True)
 
 
@@ -114,4 +114,12 @@ class LOG_TRACE(models.Model):
     status = models.CharField(max_length=50)
     create_time   = models.DateTimeField()
     create_user   = models.CharField(max_length=100, null=True)
-    desc   = models.CharField(max_length=50, null=True)
+    desc   = models.CharField(max_length=50, null=True) #描述
+
+
+class RECV_INVOICE(models.Model):
+    invoice     = models.CharField(max_length=100)
+    client_id   = models.IntegerField()
+    create_time = models.DateTimeField(auto_now_add=True)
+    remark      = models.CharField(max_length=100, null=True)
+    create_user = models.CharField(max_length=100)

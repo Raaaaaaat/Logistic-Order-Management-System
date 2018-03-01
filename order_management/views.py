@@ -37,3 +37,4 @@ from order_management.views_order.order_price import *
 from order_management.views_finance.finance_index import *
 from order_management.views_finance.ope_paya import *
 from order_management.views_finance.ope_recv import *
+from order_management.views_finance.invoice_management import *

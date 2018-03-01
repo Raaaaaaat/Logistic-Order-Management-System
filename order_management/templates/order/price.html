@@ -18,14 +18,14 @@
                         <h4 class="title" style="display: inline-block;" id="title_info">Price Management</h4>
                         <p class="category" id="note">订单应收账款与应付账款</p>
                     </div>
-                    <div class="card-content" style="text-align:center">
+                    <div class="card-content" style="">
 
-                        <h3 class="title" >应收账款</h3>
-
+                        <h3 class="title" style="display: inline;">应收账款</h3>
+                        <h3 class="title" style="display: inline; float:right; margin-right:20px;" id="rec_price_display">￥0.00</h3>
                         <table id="table_receiveables" style=" table-layout: fixed;"></table>
                         <div style="height:30px"></div>
-                        <h3 class="title" >应付账款</h3>
-
+                        <h3 class="title" style="display: inline;">应付账款</h3>
+                        <h3 class="title" style="display: inline; float:right; margin-right:20px;" id="pay_price_display">￥0.00</h3>
                         <table id="table_payables" style=" table-layout: fixed;"></table>
                     </div>
                 </div>
@@ -82,7 +82,7 @@ $(function(){   //应收账款
                 $.ajax({
                     type: "POST",
                     url: "{% url 'add_receiveables' %}",
-                    data: {order_id:"{{ order_id }}", description: desc, price:price},
+                    data: {order_id:"{{ order_id }}", description: desc, price:Number(price).toFixed(2)},
                     datatype: "html",
                     success: function (data) {
                         if(data.if_success == 1){
@@ -94,6 +94,13 @@ $(function(){   //应收账款
                     },
                 })
             });
+
+            //计算总数
+            var rec_count_total = 0;
+            $(".rec_price_num").each(function(){
+                rec_count_total += Number($(this).html());
+            });
+            $("#rec_price_display").html("￥"+rec_count_total.toFixed(2));
         },
     });
 //$("#table_receiveables").bootstrapTable('remove', {field: 'mark', values: 1});
@@ -108,11 +115,12 @@ $(function(){   //应收账款
             success: function (data) {
                 $("#table_receiveables").bootstrapTable('remove', {field: 'mark', values: [1]});
                 if(data.rows!=undefined){
+                    var to_append_data = [];
                     for(var i = 0; i<data.rows.length; i++){
-                        $("#table_receiveables").bootstrapTable("append", [{
+                        to_append_data.push({
                             id: data.rows[i].id,
                             description:  "<span>"+data.rows[i].description+"</span>",
-                            receiveables: "<span>"+data.rows[i].receiveables+"</span>",
+                            receiveables: "<span class='rec_price_num'>"+data.rows[i].receiveables+"</span>",
                             mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
                             operation: "<a href='#' class='rec_edit_btn' data-id='"+data.rows[i].id+"'>" +
                                        "<span class='glyphicon glyphicon-pencil' title='编辑'></span></a> " +
@@ -120,8 +128,9 @@ $(function(){   //应收账款
                                        "<span class='glyphicon glyphicon-usd' title='修改价格'></span></a> " +
                                        "<a href='#' class='rec_delete_btn' data-id='"+data.rows[i].id+"'>" +
                                        "<span class='glyphicon glyphicon-trash' title='删除'></span></a> "
-                        }]);
+                        });
                     }
+                    $("#table_receiveables").bootstrapTable("append", to_append_data);
                 }
             },
         })
@@ -293,7 +302,7 @@ $(function(){   //应付账款
                 $.ajax({
                     type: "POST",
                     url: "{% url 'add_payables' %}",
-                    data: {order_id:"{{ order_id }}", description: desc, price:price, step: step, supplier_id: supplier},
+                    data: {order_id:"{{ order_id }}", description: desc, price:Number(price).toFixed(2), step: step, supplier_id: supplier},
                     datatype: "html",
                     success: function (data) {
                         if(data.if_success == 1){
@@ -347,7 +356,14 @@ $(function(){   //应付账款
             　　 // e 的话就是一个对象 然后需要什么就 “e.参数” 形式 进行获取
             　　 console.log(e.params.data.text);
                 $("#pay_desc_input").val(e.params.data.text);
-            })
+            });
+
+            //计算总数
+            var pay_count_total = 0;
+            $(".pay_price_num").each(function(){
+                pay_count_total += Number($(this).html());
+            });
+            $("#pay_price_display").html("￥"+pay_count_total.toFixed(2));
         }
     });
     //加载数据到table里面
@@ -361,8 +377,9 @@ $(function(){   //应付账款
             success: function (data) {
                 $("#table_payables").bootstrapTable('remove', {field: 'mark', values: [1]});
                 if(data.rows!=undefined){
+                    var to_append_data = [];
                     for(var i = 0; i<data.rows.length; i++){
-                        $("#table_payables").bootstrapTable("append", [{
+                        to_append_data.push({
                             id:          data.rows[i].id,
                             step:        data.rows[i].step_name,
                             step_name:   data.rows[i].step_name,
@@ -371,7 +388,7 @@ $(function(){   //应付账款
                             supplier_id: data.rows[i].supplier_id,
                             supplier_name:data.rows[i].supplier_name,
                             description: "<span>"+data.rows[i].description+"</span>",
-                            payables:    "<span>"+data.rows[i].payables+"</span>",
+                            payables:    "<span class='pay_price_num'>"+data.rows[i].payables+"</span>",
                             mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
                             operation: "<a href='#' class='pay_edit_btn' data-id='"+data.rows[i].id+"'>" +
                                        "<span class='glyphicon glyphicon-pencil' title='编辑'></span></a>" +
@@ -379,8 +396,9 @@ $(function(){   //应付账款
                                        "<span class='glyphicon glyphicon-usd' title='修改价格'></span></a>" +
                                        "<a href='#' class='pay_delete_btn' data-id='"+data.rows[i].id+"'>" +
                                        "<span class='glyphicon glyphicon-trash' title='删除'></span></a>"
-                        }]);
+                        });
                     }
+                    $("#table_payables").bootstrapTable("append", to_append_data);
                 }
             },
         })

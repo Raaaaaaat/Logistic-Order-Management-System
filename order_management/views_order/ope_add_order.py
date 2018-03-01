@@ -44,5 +44,5 @@ def ope_add_order(request):
                                  remark=remark, rec_name=rec_name, rec_tel=rec_tel)
 
             info = "添加成功"
-        return redirect('/order?info=' + info)
+        return redirect('/price_management?No=' + No)
 

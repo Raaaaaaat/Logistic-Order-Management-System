@@ -49,13 +49,17 @@ def order_index(request):
         if len(filter_status) != 0:
             query = query & Q(status__in=filter_status)
         if filter_pay_status != "":
-            order_ids = PAYABLES.objects.filter(status=int(filter_pay_status))
+            #未付款的订单数量相对比较少，所以筛选payables，只要有一条未付款，那么就代表这个分录对应的订单未付款完成
+            order_ids = PAYABLES.objects.filter(clear_time=None)
             order_ids = order_ids.values_list("order_id", flat=True).distinct()
             temp = []       #循环将对象从queryset变成list对象
             for line in order_ids:
                 temp.append(line)
             order_ids = temp
-            query = query & Q(id__in=order_ids)
+            if filter_pay_status == "0": #未付款
+                query = query & Q(id__in=order_ids)
+            else:
+                query = query & ~Q(id__in=order_ids)
         if filter_supplier != "":
             order_ids = PAYABLES.objects.filter(supplier_id=int(filter_supplier))
             order_ids = order_ids.values_list("order_id", flat=True).distinct()
@@ -66,7 +70,7 @@ def order_index(request):
             query = query & Q(id__in=order_ids)
 
         objs = ORDER.objects.filter(query).values()[offset:offset+limit]
-        total = objs.count()
+        total = ORDER.objects.filter(query).count()
         rows = []  # 这里从数据库取回来的初始数据不是列表，而是ｑｕｅｒｙｓｅｔ，所以这里领建立一个列表ｒｏｗｓ然后重新过一遍数据，转存一下
         client_ids = []
         for line in objs:
