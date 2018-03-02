@@ -17,6 +17,7 @@ class CLIENT(models.Model):
     contract_start = models.CharField(max_length=20,  null=True)
     contract_end   = models.CharField(max_length=20,  null=True)
     contract_file  = models.CharField(max_length=100, null=True)
+    remark         = models.CharField(max_length=500, null=True)
     class Meta:
         permissions=(
             ("view_client",            "Can access information of client"),
@@ -43,6 +44,7 @@ class SUPPLIER(models.Model):
     contract_start = models.CharField(max_length=20,  null=True)
     contract_end   = models.CharField(max_length=20,  null=True)
     contract_file  = models.CharField(max_length=100, null=True)
+    remark         = models.CharField(max_length=500, null=True)
     class Meta:
         permissions=(
             ("view_supplier",            "Can access information of supplier"),
@@ -57,18 +59,17 @@ class ORDER(models.Model):
     No        = models.CharField(max_length=12, unique=True)
     status    = models.SmallIntegerField() #6个状态 用数字代替
     client_id = models.IntegerField()
-    dep_place = models.CharField(max_length=200)
+    dep_place = models.CharField(max_length=200, null=True)
     dep_city  = models.CharField(max_length=50)
-    des_place = models.CharField(max_length=200)
+    des_place = models.CharField(max_length=200, null=True)
     des_city  = models.CharField(max_length=50)
     rec_name  = models.CharField(max_length=50, default="")
     rec_tel   = models.CharField(max_length=50, default="")
     cargo_name     = models.CharField(max_length=100)
-    cargo_weight   = models.FloatField(max_length=100)
-    cargo_quantity = models.IntegerField()
-    note           = models.CharField(max_length=500, null=True)
-    receiveables   = models.FloatField(null=True)
-    received       = models.FloatField(null=True)
+    cargo_weight   = models.FloatField(max_length=100, null=True)
+    cargo_quantity = models.CharField(max_length=50, null=True)
+    cargo_size     = models.FloatField(max_length=100, null=True)
+    remark         = models.CharField(max_length=500, null=True)
     create_time    = models.DateTimeField(auto_now_add=True)
     clear_time     = models.DateTimeField(null=True)
     if_delete      = models.SmallIntegerField()
@@ -82,16 +83,19 @@ class SUP_STEP(models.Model): #供应商操作环节的列表
     name = models.CharField(max_length=100)
 
 class PAYABLES(models.Model):
-    status      = models.SmallIntegerField()
+    status      = models.SmallIntegerField() #0 未核销 1:已核销
     order_id    = models.IntegerField()
     step        = models.IntegerField()     #环节主码
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, null=True)
     supplier_id = models.IntegerField()
     payables    = models.FloatField(null=True)
     paid_cash   = models.FloatField(null=True)
     paid_oil    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
+    invoice     = models.CharField(max_length=200, null=True)
+    remark      = models.CharField(max_length=500, null=True)
+
 
 class RECEIVEABLES(models.Model):
     status      = models.SmallIntegerField()
@@ -101,10 +105,21 @@ class RECEIVEABLES(models.Model):
     received    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
+    invoice     = models.IntegerField(null=True)
+    remark      = models.CharField(max_length=500, null=True)
 
 
 class LOG_TRACE(models.Model):
     order_id = models.IntegerField()
     status = models.CharField(max_length=50)
-    time   = models.DateTimeField()
-    desc   = models.CharField(max_length=50, null=True)
+    create_time   = models.DateTimeField()
+    create_user   = models.CharField(max_length=100, null=True)
+    desc   = models.CharField(max_length=50, null=True) #描述
+
+
+class RECV_INVOICE(models.Model):
+    invoice     = models.CharField(max_length=100)
+    client_id   = models.IntegerField()
+    create_time = models.DateTimeField(auto_now_add=True)
+    remark      = models.CharField(max_length=100, null=True)
+    create_user = models.CharField(max_length=100)

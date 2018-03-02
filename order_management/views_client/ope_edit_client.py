@@ -24,14 +24,14 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
         contact_role   = request.POST.get("contact_role")
         contract_start = request.POST.get("contract_start")
         contract_end   = request.POST.get("contract_end")
-
+        remark         = request.POST.get("remark")
         if if_edit=="0":
             #新增模式
             # 检查重复
             if type == "0":
-                conflict_check = CLIENT.objects.filter(tax_id=tax_id).count()
+                conflict_check = CLIENT.objects.filter(co_name=co_name).count()
             else:
-                conflict_check = CLIENT.objects.filter(contact_tel=contact_tel).count()
+                conflict_check = CLIENT.objects.filter(contact_name=contact_name).count()
             if conflict_check == 0:  # 没有重复冲突
                 No = ""  #自动生成下一个该有的客户编号
                 last_one = CLIENT.objects.last()
@@ -57,7 +57,7 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
                                       account_bank=account_bank, contact_name=contact_name,
                                       contact_tel=contact_tel, contact_role=contact_role,
                                       contract_start=contract_start, contract_end=contract_end,
-                                      contract_file=file_path)
+                                      contract_file=file_path, remark=remark)
                 info = "添加成功"
             else:
                 info = "添加失败，该客户已存在"
@@ -65,12 +65,15 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
             #编辑模式
             # 检查重复
             if type == "0":
-                conflict_check = CLIENT.objects.filter(~Q(No=if_edit)&Q(tax_id=tax_id)).count()
+                conflict_check = CLIENT.objects.filter(~Q(No=if_edit)&Q(co_name=co_name)).count()
             else:
-                conflict_check = CLIENT.objects.filter(~Q(No=if_edit)&Q(contact_tel=contact_tel)).count()
+                conflict_check = CLIENT.objects.filter(~Q(No=if_edit)&Q(contact_name=contact_name)).count()
             if conflict_check == 0:  # 没有重复冲突
                 No = if_edit
-                target_obj = CLIENT.objects.get(No=No)
+                try:
+                    target_obj = CLIENT.objects.get(No=No)
+                except:
+                    return redirect('/client?info=客户不存在！')
                 target_obj.co_name = co_name
                 target_obj.co_addr = co_addr
                 target_obj.co_tel = co_tel
@@ -82,12 +85,13 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
                 target_obj.contact_name = contact_name
                 target_obj.contact_tel = contact_tel
                 target_obj.contact_role = contact_role
+                target_obj.remark      =remark
                 if request.user.has_perm("order_management.change_client_contract"): #二次检查，防止没有权限的用户越过界面伪造表单修改数据
                     target_obj.contract_start = contract_start
                     target_obj.contract_end = contract_end
                     if(if_refile == "1" or target_obj.contract_file==""):
                         contract_file = request.FILES.get("contract_file", None)
-                        file_path = "";
+                        file_path = ""
                         if contract_file != None:
                             file_path = contract_file._name  # 获取到源文件的名字
                             file_path = file_path.split(".").pop()  # 获取文件后缀

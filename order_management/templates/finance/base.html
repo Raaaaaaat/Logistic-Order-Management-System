@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block nav_bar %}
+    <ul class="nav">
+        <li>
+            <a href="/order">
+                <i class="material-icons">dashboard</i>
+                <p>订单管理</p>
+            </a>
+        </li>
+        <li>
+            <a href="/client">
+                <i class="material-icons">person</i>
+                <p>客户管理</p>
+            </a>
+        </li>
+        <li>
+            <a href="/supplier">
+                <i class="material-icons">content_paste</i>
+                <p>供应商管理</p>
+            </a>
+        </li>
+        <li  class="active">
+            <a href="/finance">
+                <i class="material-icons">attach_money</i>
+                <p>财务中心</p>
+            </a>
+        </li>
+        <li>
+            <a href="/graph">
+                <i class="material-icons">bubble_chart</i>
+                <p>数据中心</p>
+            </a>
+        </li>
+        <li>
+            <a href="/request">
+                <i class="material-icons">location_on</i>
+                <p>请求管理</p>
+            </a>
+        </li>
+    </ul>
+{% endblock %}

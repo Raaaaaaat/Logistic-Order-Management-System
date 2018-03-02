@@ -29,6 +29,11 @@
 <style>
 
     .table tr td{ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+    .bt_table th{
+        font-weight: bold;
+        background-color: rgb(160, 158, 226);
+    }
 </style>
 {% block style %}
 {% endblock %}
@@ -41,7 +46,7 @@
         Tip 2: you can also add an image using data-image tag
     -->
             <div class="logo">
-                <a href="http://www.creative-tim.com" class="simple-text">
+                <a href="#" class="simple-text">
                     TMR Logistics
                 </a>
             </div>
@@ -130,7 +135,7 @@
 <script src="/static/extensions/material_dashboard/assets/js/material-dashboard.js?v=1.2.0"></script>
 
 <link rel="stylesheet" href="/static/extensions/bootstrap-table/bootstrap-table.css">
-<link rel="stylesheet" href="/static/extensions/datepicker/css/datepicker.css">
+<link rel="stylesheet" href="/static/extensions/datepicker/css/bootstrap-datepicker.css">
 <link rel="stylesheet" href="/static/extensions/toastr/toastr.min.css" >
 <link rel="stylesheet" href="/static/extensions/select2-master/css/select2.css" >
 <link rel="stylesheet" href="/static/extensions/bootstrap3-editable/css/bootstrap-editable.css" >
@@ -147,6 +152,7 @@
 
 
 <script src="/static/modal.js"></script>
+<script src="/static/common.js"></script>
 
 <script type="text/javascript">
     $(function() {

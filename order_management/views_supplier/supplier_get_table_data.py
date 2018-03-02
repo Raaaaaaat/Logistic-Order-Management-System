@@ -20,6 +20,10 @@ def supplier_get_table_data(request):
 
     rows = []           #这里从数据库取回来的初始数据不是列表，而是ｑｕｅｒｙｓｅｔ，所以这里领建立一个列表ｒｏｗｓ然后重新过一遍数据，转存一下
     for line in all_client:
+        if line['remark']==None:
+            line['remark']=""
+        else:
+            line['remark'] = line['remark'].replace("\r\n", "<br>")
         rows.append(line)
 
     data = {

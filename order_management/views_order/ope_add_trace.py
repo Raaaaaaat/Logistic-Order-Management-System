@@ -7,7 +7,7 @@ from order_management.models import ORDER
 
 def ope_add_trace(request):
     if request.method=="POST":
-        order_id = request.POST.get("id","")
+        order_id = request.POST.get("order_id","")
         try:
             order_obj = ORDER.objects.get(id=order_id)
         except (ORDER.DoesNotExist, ValueError):
@@ -23,9 +23,9 @@ def ope_add_trace(request):
         #已出票
         #已收款
         status  = request.POST.get("status")
-        time    = request.POST.get("time")
+        create_time    = request.POST.get("create_time")
         desc    = request.POST.get("desc","")
-        time    = datetime.datetime.strptime(time,'%Y-%m-%d %H:%M:%S')
+        create_time    = datetime.datetime.strptime(create_time,'%Y-%m-%d %H:%M:%S')
 
         if_success = 0
         if_update_status = False
@@ -76,16 +76,19 @@ def ope_add_trace(request):
         else:
             info = "添加失败：参数错误"
 
+        t_id = ""
         if if_success==1:
-            LOG_TRACE.objects.create(
+            obj = LOG_TRACE.objects.create(
                 order_id=order_id, status=status,
-                time=time, desc=desc
+                create_time=create_time, desc=desc,
+                create_user= request.user.username,
             )
+            t_id = obj.id
             if if_update_status:    #可以对于订单状态进行更新
                 order_obj.status = order_obj.status + 1
                 order_obj.save()
             info = "添加成功"
 
 
-        return JsonResponse({'success':if_success, 'info': info, 'order_status':order_obj.status})
+        return JsonResponse({'if_success':if_success, 'info': info, 'order_status':order_obj.status, 'trace_id': t_id})
 

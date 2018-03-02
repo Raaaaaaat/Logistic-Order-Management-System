@@ -1,4 +1,16 @@
 {% extends 'order/base.html' %}
+{% block style %}
+    <style>
+    .card-content .material-icons{
+        width: 25px;
+        color: rgb(85,85,85);
+    }
+    .card-content .form-group{
+        display: inline-block;
+        width:85%;
+    }
+    </style>
+{% endblock %}
 
 {% block content %}
 <div class="content">
@@ -9,92 +21,125 @@
                 <div class="card">
                     <div class="card-header" data-background-color="purple">
                         <h4 class="title" style="display: inline-block;" id="title_info">Create Order</h4>
-                        <p class="category" id="note">请输入供应商信息</p>
+                        <p class="category" id="note">创建订单</p>
                     </div>
                     <div class="card-content">
                         <form class="form" enctype="multipart/form-data" id="supplier_info_form" onsubmit="return false;">
                             {% csrf_token %}
                             <div class="col-sm-12">
-                                <div class="input-group" title="联系人姓名">
-                                    <span class="input-group-addon">
+                                <div class="form-group" title="客户">
+                                    <span class="">
                                         <i class="material-icons">account_box</i>
                                     </span>
-                                    <select id="client_id" class="form-control" style="width: 50%"></select>
+                                    <select id="client_id" class="form-control" style="width: 85%"></select>
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="input-group" title="起运城市">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">location_city</i>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="起运城市" id="dep_city">
-                                </div>
-                            </div>
-                            <div class="col-sm-8">
-                                <div class="input-group" title="起运地">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">place</i>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="起运地" id="dep_place">
+                                <span>
+                                        <i class="material-icons">face</i>
+                                </span>
+                                <div class="form-group label-floating" title="收件人姓名">
+
+                                    <label class="control-label">收件人姓名</label>
+                                    <input type="text" class="form-control" id="rec_name">
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="input-group" title="目的城市">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">location_city</i>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="目的城市" id="des_city">
-                                </div>
-                            </div>
-                            <div class="col-sm-8">
-                                <div class="input-group" title="目的地">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">place</i>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="目的地" id="des_place">
+                                <span>
+                                        <i class="material-icons">call</i>
+                                </span>
+                                <div class="form-group label-floating" title="收件人电话">
+                                    <label class="control-label">收件人电话</label>
+                                    <input type="text" class="form-control" id="rec_tel">
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="input-group" title="货物名称">
-                                    <span class="input-group-addon">
+                                <span>
                                         <i class="material-icons">local_shipping</i>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="货物名称" id="cargo_name">
+                                </span>
+                                <div class="form-group label-floating" title="货物名称">
+                                    <label class="control-label">货物名称</label>
+                                    <input type="text" class="form-control" id="cargo_name">
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="input-group" title="货物重量">
-                                    <span class="input-group-addon">
+                                <span>
+                                        <i class="material-icons">domain</i>
+                                </span>
+                                <div class="form-group label-floating" title="起运城市">
+                                    <label class="control-label">起运城市</label>
+                                    <input type="text" class="form-control" id="dep_city">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <span>
+                                        <i class="material-icons">place</i>
+                                </span>
+                                <div class="form-group label-floating" title="起运地">
+                                    <label class="control-label">起运地</label>
+                                    <input type="text" class="form-control" id="dep_place">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">domain</i>
+                                </span>
+                                <div class="form-group label-floating" title="目的城市">
+                                    <label class="control-label">目的城市</label>
+                                    <input type="text" class="form-control" id="des_city">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <span>
+                                        <i class="material-icons">place</i>
+                                </span>
+                                <div class="form-group label-floating" title="目的地">
+                                    <label class="control-label">目的地</label>
+                                    <input type="text" class="form-control" id="des_place">
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-4">
+                                <span>
                                         <i class="material-icons">fitness_center</i>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="货物重量" id="cargo_weight">
+                                </span>
+                                <div class="form-group label-floating" title="货物重量">
+                                    <label class="control-label">货物重量(公斤)</label>
+                                    <input type="text" class="form-control" id="cargo_weight">
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="input-group" title="货物数量">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">sort</i>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="货物数量" id="cargo_quantity">
+                                <span>
+                                        <i class="material-icons">equalizer</i>
+                                </span>
+                                <div class="form-group label-floating" title="货物数量">
+                                    <label class="control-label">货物数量</label>
+                                    <input type="text" class="form-control" id="cargo_quantity">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">equalizer</i>
+                                </span>
+                                <div class="form-group label-floating" title="货物体积">
+                                    <label class="control-label">货物体积（方）</label>
+                                    <input type="text" class="form-control" id="cargo_size">
                                 </div>
                             </div>
                             <div class="col-sm-12">
-                                <div class="input-group" title="备注">
-                                    <span class="input-group-addon">
+                                <span>
                                         <i class="material-icons">message</i>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="备注" id="remark">
+                                </span>
+                                <div class="form-group label-floating" title="备注">
+                                    <label class="control-label">备注</label>
+                                    <textarea class="form-control" rows="5" name="remark" id="remark" ></textarea>
                                 </div>
                             </div>
                             <button class="btn btn-primary" id="submit_button" style="float:right;">提交</button>
                         </form>
 
-                        <div id="table_toolbar" class="btn-group">
-                            <button id="btn_add" type="button" class="btn btn-primary">
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
-                            </button>
-                        </div>
-                        <table id="table_sup_des" style=" table-layout: fixed;"></table>
+
                     </div>
                 </div>
             </div>
@@ -143,28 +188,39 @@
             var cargo_weight  = $("#cargo_weight").val();
             var cargo_quantity= $("#cargo_quantity").val();
             var remark        = $("#remark").val();
+            var rec_name      = $("#rec_name").val();
+            var rec_tel       = $("#rec_tel").val();
+            var cargo_size    = $("#cargo_size").val();
             if(client_id==null){
                 toastr.error("请选择客户");
                 if_valid = false;
             }
-            if(dep_city=="" || dep_place==""){
+            if(dep_city==""){
                 toastr.error("请输入出发地信息");
                 if_valid = false;
             }
-            if(des_city=="" || des_place==""){
+            if(des_city==""){
                 toastr.error("请输入目的地信息");
+                if_valid = false;
+            }
+            if(rec_name==""){
+                toastr.error("请输入收件人姓名");
+                if_valid = false;
+            }
+            if(rec_tel==""){
+                toastr.error("请输入收件人电话");
                 if_valid = false;
             }
             if(cargo_name==""){
                 toastr.error("请输入货物名称");
                 if_valid = false;
             }
-            if(cargo_weight=="" || isNaN(cargo_weight)){
+            if(cargo_weight!="" && isNaN(cargo_weight)){
                 toastr.error("请输入正确的货物重量");
                 if_valid = false;
             }
-            if(cargo_quantity=="" || isNaN(cargo_quantity) || Number(cargo_quantity)%1 !== 0){
-                toastr.error("请输入货物数量并且货物数量必须为整数");
+            if(cargo_size!="" && isNaN(cargo_size)){
+                toastr.error("请输入正确的货物体积");
                 if_valid = false;
             }
             if(remark.length > 500){
@@ -172,27 +228,7 @@
                 if_valid = false;
             }
 
-            $("#table_sup_des tbody tr").each(function() {
-                var $line = $(this).find("td");
-                if($line.length==1) //如果没有数据则bootstrap table也会加入一行数据显示为没有相关记录
-                    return;
-                var ope = $line.eq(0).find("select").val();
-                var sup = $line.eq(1).find("select").val();
-                if(ope == null || sup==null){
-                    toastr.error("请填入正确的供应商信息");
-                    if_valid = false;
-                }
-                var pri = $line.eq(2).find("a").html();
-                table_data.push({
-                    operation: ope,
-                    supplier: sup,
-                    price: pri,
-                });
-            });
-            if(table_data.length==0){
-                toastr.error("至少请选择一家供应商");
-                if_valid = false;
-            }
+
 
             var data = {
                 if_edit: "0",
@@ -203,123 +239,19 @@
                 des_place: des_place,
                 cargo_name:     cargo_name,
                 cargo_weight:   Number(cargo_weight),
-                cargo_quantity: Number(cargo_quantity),
-                note:           remark,
-                supplier_allo:   JSON.stringify(table_data),
+                cargo_quantity: cargo_quantity,
+                cargo_size:     Number(cargo_size),
+                remark:         remark,
+                rec_name:       rec_name,
+                rec_tel:        rec_tel,
             };
             //console.log(data);
             // 按照这样的方式可以传输json格式的数据
             if(if_valid)
-                $.StandardPost('{% url "ope_edit_order" %}',data);
+                $.StandardPost('{% url "ope_add_order" %}',data);
         });
-        var ope_selects = [];
-        var sup_selects = [];
-        $("#table_sup_des").bootstrapTable({
-            toolbar: "#table_toolbar",
-            columns: [{
-                field: 'operation',
-                title: '操作环节',
-                align: 'center',
-                formatter: function(index, row){
-                    return "<select class='ope_select_options' style='width: 80%'></select>";
-                },
-            }, {
-                field: 'supplier',
-                title: '供应商',
-                align: 'center',
-                formatter: function(index, row){
-                    return "<select class='sup_select_options' style='width: 80%'></select>";
-                },
-            }, {
-                field: 'price',
-                title: '价格',
-                editable: {
-                    type: 'text',
-                    title: 'dd',
-                    emptytext: "Empty",
-                    display: function(value, sourceData){
-                        var val = Number(value);
-                        val = val.toFixed(2);
-
-                        $(this).html(val.toString());
 
 
-                    },
-                    validate: function(value){
-                        //对于输入进行有效性验证
-                        if(isNaN(value))
-                            return "请输入有效数字";
-                    }
-                },
-                align: 'center',
-            }],
 
-            onPostBody: function(){
-                $(".sup_select_options").select2({
-                    ajax: {
-                        url: "{% url 'get_supplier_options' %}",
-                        dataType: 'json',
-                        data: function (params) {
-                            return {
-                                q: params.term,
-                            };
-                        },
-                        processResults: function (data) {
-                            return {
-                                results: data.data
-                            };
-                        },
-                        cache: true
-                    },
-                    minimumInputLength: 0,
-                });
-                $(".ope_select_options").select2({
-                    ajax: {
-                        url: "{% url 'get_sup_ope_options' %}",
-                        dataType: 'json',
-                        data: function (params) {
-                            return {
-                                q: params.term,
-                            };
-                        },
-                        processResults: function (data) {
-                            return {
-                                results: data.data
-                            };
-                        },
-                        cache: true
-                    },
-                    minimumInputLength: 0,
-                });
-                //填充表格刷新前的保留数据
-                for (i=0;i<ope_selects.length;i++){
-                    var option = new Option(ope_selects[i][1], ope_selects[i][0], true, true);
-                    $('.ope_select_options').eq(i).append(option).trigger('change');
-                }
-                for (i=0;i<sup_selects.length;i++){
-                    var option = new Option(sup_selects[i][1], sup_selects[i][0], true, true);
-                    $('.sup_select_options').eq(i).append(option).trigger('change');
-                }
-            },
-        });
-        $("#btn_add").click(function(){
-            ope_selects = [];
-            sup_selects = [];
-            //新增行会刷新表格，之前输入的内容会被刷新，所以在此对于旧的数据进行提取，getData方法无法使用因为只能获取val不能获取text
-            $('.ope_select_options').each(function(){
-                var text = ($(this).find('option').last().html());
-                var value = $(this).val();
-                ope_selects.push([value,text]);
-            });
-            $('.sup_select_options').each(function(){
-                var text = ($(this).find('option').last().html());
-                var value = $(this).val();
-                sup_selects.push([value,text]);
-            });
-
-            $("#table_sup_des").bootstrapTable("append",[{
-                price: "0.00"
-            }]); //插入空行
-        });
     </script>
 {% endblock %}

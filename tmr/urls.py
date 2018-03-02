@@ -20,9 +20,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     #log_in part
-    path('', tmr_views.log_in_index), #临时
+    path('', tmr_views.page_index), #临时
     path('log_in/', tmr_views.log_in_index),
     path('ajax_log_in_check/', tmr_views.log_in_index, name='ajax_log_in_check'),
+
 
     #log_out_part
     path('ajax_log_out/', tmr_views.log_out_request, name='ajax_log_out'),
@@ -35,6 +36,7 @@ urlpatterns = [
     path('ajax_edit_client/',   tmr_views.ope_edit_client,   name = 'ajax_edit_client'),
     path('ajax_delete_client/', tmr_views.ope_delete_client, name = 'ajax_delete_client'),
     path('get_client_options/', tmr_views.get_client_options,name = 'get_client_options'),
+    path('get_client_details/', tmr_views.get_client_details,name = 'get_client_details'),
 
     #supplier part
     path('supplier/',             tmr_views.supplier_index,      name = 'supplier_index'),
@@ -49,7 +51,8 @@ urlpatterns = [
     #order part
     path('order/',             tmr_views.order_index,      name = 'order_index'),
     path('order_add/',         tmr_views.order_add,        name = 'order_add'),
-    path('ope_edit_order/',    tmr_views.ope_edit_order,   name='ope_edit_order'),
+    path('order_edit/',        tmr_views.order_edit,       name = 'order_edit'),
+    path('ope_add_order/',     tmr_views.ope_add_order,    name='ope_add_order'),
     path('order_detail/',      tmr_views.order_detail,     name='order_detail'),
     path('ope_add_trace/',     tmr_views.ope_add_trace,    name='ope_add_trace'),
     path('get_trace_data/',    tmr_views.get_trace_data,   name='get_trace_data'),
@@ -68,4 +71,20 @@ urlpatterns = [
     path('update_payables_info/',   tmr_views.update_payables_info,  name='update_payables_info'),
     path('update_payables_price/',  tmr_views.update_payables_price, name='update_payables_price'),
     path('delete_payables/',        tmr_views.delete_payables,       name='delete_payables'),
+
+    #finance part
+    path('finance/',              tmr_views.finance_index,       name='finance_index'),
+    path('get_paya_list/',        tmr_views.get_paya_list,       name='get_paya_list'),
+    path('mark_paya_invoice/',    tmr_views.mark_paya_invoice,   name='mark_paya_invoice'),
+    path('paya_verify/',          tmr_views.paya_verify,         name='paya_verify'),
+    path('paya_cancel_verify/',   tmr_views.paya_cancel_verify,  name='paya_cancel_verify'),
+
+    path('get_recv_list/',        tmr_views.get_recv_list,       name='get_recv_list'),
+    path('mark_recv_invoice/',    tmr_views.mark_recv_invoice,   name='mark_recv_invoice'),
+    path('recv_verify/',          tmr_views.recv_verify,         name='recv_verify'),
+    path('recv_cancel_verify/',   tmr_views.recv_cancel_verify,  name='recv_cancel_verify'),
+    path('invoice_management/',   tmr_views.invoice_management,  name='invoice_management'),
+    path('get_invoice_list/',     tmr_views.get_invoice_list,    name='get_invoice_list'),
+    path('edit_invoice/',         tmr_views.edit_invoice,        name='edit_invoice'),
+    path('delete_invoice/',       tmr_views.delete_invoice,      name='delete_invoice'),
 ]

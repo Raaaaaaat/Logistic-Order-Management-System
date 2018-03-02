@@ -1,5 +1,21 @@
 {% extends 'order/base.html' %}
 
+{% block style %}
+    <style>
+    .modal-body .table>thead>tr>th{
+        font-size: 20px;
+    }
+    .modal-body .table>tbody>tr>td{
+        font-size: 20px;
+    }
+    .card-content .form-group{
+        margin: 0px 0 0 0;
+        padding-bottom: 10px;
+    }
+    </style>
+
+{% endblock %}
+
 {% block content %}
     <div class="content">
         <div class="container-fluid">
@@ -20,9 +36,10 @@
                             </li>
                         </div>
                         <div class="card-content table-responsive">
-                            <div class="collapse in">
+
+                            <div class="row collapse">
                                 <div class = "row">
-                                    <div class="col-sm-4">
+                                    <div class="col-md-4 col-lg-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">search</i>
@@ -30,25 +47,7 @@
                                             <input type="text" class="form-control" placeholder="按单号进行搜索" id="filter_No">
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <div class="input-group" title="按客户进行搜索">
-                                            <span class="input-group-addon">
-                                                <i class="material-icons">account_box</i>
-                                            </span>
-                                            <select id="filter_client" class="form-control" style="width: 100%"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="input-group" title="按供应商进行搜索">
-                                            <span class="input-group-addon">
-                                                <i class="material-icons">account_box</i>
-                                            </span>
-                                            <select id="filter_supplier" class="form-control" style="width: 100%;"></select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class = "row">
-                                    <div class="col-sm-4 to_fade fade_perm_contract">
+                                    <div class="col-md-4 col-lg-3">
                                         <div class="input-group" title="开始日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">date_range</i>
@@ -57,7 +56,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4 to_fade fade_perm_contract">
+                                    <div class="col-md-4 col-lg-3">
                                         <div class="input-group" title="结束日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">arrow_forward</i>
@@ -65,12 +64,31 @@
                                             <input class="datepicker form-control" type="text" placeholder="结束日期" id="filter_end_time">
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+
+                                </div>
+                                <div class = "row">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group" title="按客户进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">person</i>
+                                            </span>
+                                            <select id="filter_client" class="form-control" style="width: 170px"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group" title="按供应商进行搜索">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">person</i>
+                                            </span>
+                                            <select id="filter_supplier" class="form-control" style="width: 170px"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
                                         <div class="input-group" title="按付款状态搜索">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">account_box</i>
+                                                <i class="material-icons">check_box</i>
                                             </span>
-                                            <select id="filter_pay_status" class="form-control" style="width: 100%"></select>
+                                            <select id="filter_pay_status" class="form-control" style="width: 170px"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -79,9 +97,9 @@
                                     <div class="col-sm-12">
                                         <div class="input-group" title="按订单状态进行搜索">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">account_box</i>
+                                                <i class="material-icons">storage</i>
                                             </span>
-                                            <select id="filter_status" class="form-control" style="width: 100%" multiple="multiple"></select>
+                                            <select id="filter_status" class="" style="width: 500px" multiple="multiple"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -89,7 +107,7 @@
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">search</i>
+                                                <i class="material-icons">place</i>
                                             </span>
                                             <input type="text" class="form-control" placeholder="按起运地进行搜索" id="filter_dep_city">
                                         </div>
@@ -97,17 +115,17 @@
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                                <i class="material-icons">search</i>
+                                                <i class="material-icons">place</i>
                                             </span>
                                             <input type="text" class="form-control" placeholder="按目的地进行搜索" id="filter_des_city">
                                         </div>
                                     </div>
                                 </div>
 
-                                <button class="btn btn-primary btn-xs" id="submit_button" style="float:right;margin-right: 20px;">Search</button>
+                                <button class="btn btn-primary btn-xs" id="submit_button" style="float:left;margin-left: 20px;">Search</button>
 
                             </div>
-                            <table id="tablecase" style=" table-layout: fixed;"></table>
+                            <table id="tablecase" style=" table-layout: fixed;" class = "bt_table"></table>
                         </div>
                     </div>
                 </div>
@@ -183,6 +201,9 @@
         //时间选择器初始化
         $('.datepicker').datepicker({
             weekStart:1, //1代表从一周周一开始，0代表从周天开始
+            autoclose:true,
+            clearBtn:true,
+            zIndexOffset: 10000,
         });
 
         $('#submit_button').click(function(){
@@ -273,52 +294,42 @@
                     return '<a href="/order_detail?No='+row.No+'"+>'+row.No+'</a>';
                 }
             }, {
+                field: 'status',
+                title: '状态',
+                align: 'center',
+                width: 100,
+                formatter: function(index, row){
+                    return order_status_switch(row.status);
+                }
+            }, {
                 field: 'client_name',
                 title: '客户名称',
                 align: 'center',
                 width: 100,
-            }, {
-                field: 'dep_place',
-                title: '起运地',
-                align: 'right',
-                halign:'center',
-                width: 120,
                 formatter: function(index, row){
-                    return '<span rel="tooltip" title="'+row.dep_place+'">'+row.dep_place+'</span>';
+                    if(row.client_id != 0)
+                        return '<a href="#" class = "client_detail" data-client_id = "'+row.client_id+'">'+row.client_name+'</a>';
+                    else
+                        return row.client_name;
                 }
-            },  {
-                field: 'dep_city',
-                title: '起运城市',
+            }, {
+                field: 'create_time',
+                title: '下单时间',
                 align: 'center',
                 halign:'center',
-                width: 90,
-            },  {
-                field: 'des_place',
-                title: '目的地',
-                align: 'right',
-                halign:'center',
-                width: 120,
-                formatter: function(index, row){
-                    return '<span rel="tooltip" title="'+row.des_place+'">'+row.des_place+'</span>';
-                }
-            },  {
-                field: 'des_city',
-                title: '目的城市',
-                align: 'center',
-                halign:'center',
-                width: 90,
-            }, {
+                width: 150,
+           },  {
                 field: 'cargo_name',
                 title: '货物名称',
                 align: 'center',
                 halign:'center',
-                width: 160,
+                width: 80,
            },  {
                 field: 'cargo_weight',
-                title: '货物重量(t)',
+                title: '货物重量(KG)',
                 align: 'right',
                 halign:'center',
-                width: 80,
+                width: 110,
             },  {
                 field: 'cargo_quantity',
                 title: '货物数量',
@@ -326,24 +337,114 @@
                 halign:'center',
                 width: 80,
             },  {
-                field: 'note',
-                title: '备注',
+                field: 'cargo_size',
+                title: '货物体积(方)',
                 align: 'right',
                 halign:'center',
-                width: 160,
-                formatter: function(index, row){
-                    return '<span rel="tooltip" title="'+row.note+'">'+row.note+'</span>';
-                }
+                width: 110,
+            },  {
+                field: 'dep_city',
+                title: '起运城市',
+                align: 'center',
+                halign:'center',
+                width: 90,
+            },  {
+                field: 'des_city',
+                title: '目的城市',
+                align: 'center',
+                halign:'center',
+                width: 90,
             }, {
+                field: 'rec_name',
+                title: '收件人姓名',
+                align: 'center',
+                halign:'center',
+                width: 90,
+            }, {
+                field: 'rec_tel',
+                title: '收件人电话',
+                align: 'center',
+                halign:'center',
+                width: 90,
+            }, {
+                field: 'dep_place',
+                title: '起运地址',
+                align: 'left',
+                halign:'center',
+                width: 120,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.dep_place+'">'+row.dep_place+'</span>';
+                }
+            },  {
+                field: 'des_place',
+                title: '目的地址',
+                align: 'left',
+                halign:'center',
+                width: 120,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.des_place+'">'+row.des_place+'</span>';
+                }
+            },  {
+                field: 'remark',
+                title: '备注',
+                align: 'center',
+                halign:'center',
+                width: 50,
+                formatter: function(index, row){
+                    if(row.remark  != "")
+                        return '<a rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
+                    else
+                        return "";
+                },
+            }, {
+                title: '操作',
+                formatter: function(index, row){
+                    //console.log(row);
+                    return '<a data-no="'+row.No+'" href = "/order_edit?No='+row.No+'"><i class="fa fa-pencil"></i></a>';
+                },
+                align: 'center',
+                width: 50,
+            },{
                 title: '-',
             }],
         onPostBody: function(){
             //更新浮动title标签
-            $('#tablecase').find('span').tooltip();
+            $('[rel="tooltip"]').tooltip();
         },
     });
     $("#advanced_filter_collapse_btn").click(function(){
         $('.collapse').collapse("toggle");
     });
+
+    $('body').on("click",".client_detail", function(){
+        var client_id = $(this).data('client_id');
+        console.log(client_id);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'get_client_details' %}",
+            data: {client_id:client_id},
+            datatype: "html",
+            success: function (data) {
+                console.log(data);
+                var content = "";
+                content += "<table class='table table-hover'><thead class='text-warning'><th>名称</th><th>内容</th></thead><tbody>";
+                if (data.type == 0){ //公司客户
+                    content += "<tr><td>编号</td><td>"+data.No+"</td></tr>"+
+                        "<tr><td>公司名称</td><td>"+data.co_name+"</td></tr>"+
+                        "<tr><td>公司电话</td><td>"+data.co_tel+"</td></tr>";
+                }else{
+                    content += "<tr><td>编号</td><td>"+data.No+"</td></tr>"+
+                        "<tr><td>姓名</td><td>"+data.contact_name+"</td></tr>"+
+                        "<tr><td>电话</td><td>"+data.contact_tel+"</td></tr>"+
+                        "<tr><td>职位</td><td>"+data.contact_role+"</td></tr>";
+                }
+                content += "</tbody></table>";
+                console.log(content);
+                myShowTableInfo("客户信息", content);
+            },
+        })
+    });
+
+
 </script>
 {% endblock %}

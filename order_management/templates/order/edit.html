@@ -1,0 +1,230 @@
+{% extends 'order/base.html' %}
+{% block style %}
+    <style>
+    .card-content .material-icons{
+        width: 25px;
+        color: rgb(85,85,85);
+    }
+    .card-content .form-group{
+        display: inline-block;
+        width:85%;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title" style="display: inline-block;" id="title_info">Edit Order</h4>
+                        <p class="category" id="note">编辑订单</p>
+                    </div>
+                    <div class="card-content">
+                        <form class="form" enctype="multipart/form-data" id="supplier_info_form" onsubmit="return false;">
+                            {% csrf_token %}
+                            <div class="col-sm-12">
+                                <span>
+                                        <i class="material-icons">face</i>
+                                </span>
+                                <div class="form-group label-floating" title="客户">
+                                    <label class="control-label">客户</label>
+                                    <input type="text" class="form-control" id="client_name" value="{{ client_name }}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">face</i>
+                                </span>
+                                <div class="form-group label-floating" title="收件人姓名">
+
+                                    <label class="control-label">收件人姓名</label>
+                                    <input type="text" class="form-control" id="rec_name" value="{{ rec_name }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">call</i>
+                                </span>
+                                <div class="form-group label-floating" title="收件人电话">
+                                    <label class="control-label">收件人电话</label>
+                                    <input type="text" class="form-control" id="rec_tel" value="{{ rec_tel }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">local_shipping</i>
+                                </span>
+                                <div class="form-group label-floating" title="货物名称">
+                                    <label class="control-label">货物名称</label>
+                                    <input type="text" class="form-control" id="cargo_name" value="{{ cargo_name }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">domain</i>
+                                </span>
+                                <div class="form-group label-floating" title="起运城市">
+                                    <label class="control-label">起运城市</label>
+                                    <input type="text" class="form-control" id="dep_city" value="{{ dep_city }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <span>
+                                        <i class="material-icons">place</i>
+                                </span>
+                                <div class="form-group label-floating" title="起运地">
+                                    <label class="control-label">起运地</label>
+                                    <input type="text" class="form-control" id="dep_place" value="{{ dep_place }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">domain</i>
+                                </span>
+                                <div class="form-group label-floating" title="目的城市">
+                                    <label class="control-label">目的城市</label>
+                                    <input type="text" class="form-control" id="des_city" value="{{ des_city }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <span>
+                                        <i class="material-icons">place</i>
+                                </span>
+                                <div class="form-group label-floating" title="目的地">
+                                    <label class="control-label">目的地</label>
+                                    <input type="text" class="form-control" id="des_place" value="{{ des_place }}">
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">fitness_center</i>
+                                </span>
+                                <div class="form-group label-floating" title="货物重量">
+                                    <label class="control-label">货物重量(公斤)</label>
+                                    <input type="text" class="form-control" id="cargo_weight" value="{{ cargo_weight }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">equalizer</i>
+                                </span>
+                                <div class="form-group label-floating" title="货物数量">
+                                    <label class="control-label">货物数量</label>
+                                    <input type="text" class="form-control" id="cargo_quantity" value="{{ cargo_quantity }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <span>
+                                        <i class="material-icons">equalizer</i>
+                                </span>
+                                <div class="form-group label-floating" title="货物体积">
+                                    <label class="control-label">货物体积（方）</label>
+                                    <input type="text" class="form-control" id="cargo_size" value="{{ cargo_size }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <span>
+                                        <i class="material-icons">message</i>
+                                </span>
+                                <div class="form-group label-floating" title="备注">
+                                    <label class="control-label">备注</label>
+                                    <textarea class="form-control" rows="5" name="remark" id="remark" >{{ remark }}</textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="submit_button" style="float:right;">提交</button>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="tablecase"></table>
+
+{% endblock %}
+
+{% block jscode %}
+    <script>
+
+        $("#submit_button").click(function(){
+            var if_valid = true; //如果有问题就修改这个变量
+
+            var dep_city      = $("#dep_city").val();
+            var dep_place     = $("#dep_place").val();
+            var des_city      = $("#des_city").val();
+            var des_place     = $("#des_place").val();
+            var cargo_name    = $("#cargo_name").val();
+            var cargo_weight  = $("#cargo_weight").val();
+            var cargo_quantity= $("#cargo_quantity").val();
+            var remark        = $("#remark").val();
+            var rec_name      = $("#rec_name").val();
+            var rec_tel       = $("#rec_tel").val();
+            var cargo_size    = $("#cargo_size").val();
+
+            if(dep_city==""){
+                toastr.error("请输入出发地信息");
+                if_valid = false;
+            }
+            if(des_city==""){
+                toastr.error("请输入目的地信息");
+                if_valid = false;
+            }
+            if(rec_name==""){
+                toastr.error("请输入收件人姓名");
+                if_valid = false;
+            }
+            if(rec_tel==""){
+                toastr.error("请输入收件人电话");
+                if_valid = false;
+            }
+            if(cargo_name==""){
+                toastr.error("请输入货物名称");
+                if_valid = false;
+            }
+            if(cargo_weight!="" && isNaN(cargo_weight)){
+                toastr.error("请输入正确的货物重量");
+                if_valid = false;
+            }
+            if(cargo_size!="" && isNaN(cargo_size)){
+                toastr.error("请输入正确的货物体积");
+                if_valid = false;
+            }
+            if(remark.length > 500){
+                toastr.error("备注长度不能超过500");
+                if_valid = false;
+            }
+
+
+
+            var data = {
+                No:      "{{ No }}",
+                dep_city:  dep_city,
+                dep_place: dep_place,
+                des_city:  des_city,
+                des_place: des_place,
+                cargo_name:     cargo_name,
+                cargo_weight:   Number(cargo_weight),
+                cargo_quantity: cargo_quantity,
+                cargo_size:     Number(cargo_size),
+                remark:         remark,
+                rec_name:       rec_name,
+                rec_tel:        rec_tel,
+            };
+            //console.log(data);
+            // 按照这样的方式可以传输json格式的数据
+            if(if_valid)
+                $.StandardPost('{% url "order_edit" %}',data);
+        });
+
+
+
+    </script>
+{% endblock %}

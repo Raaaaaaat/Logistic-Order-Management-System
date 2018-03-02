@@ -1,0 +1,259 @@
+{% extends 'finance/base.html' %}
+{% block style %}
+    <style>
+
+    .card-content .form-group{
+        display: inline-block;
+        margin: 0px 0 0 0;
+        padding-bottom: 10px;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-nav-tabs">
+                        <div class="card-header" data-background-color="purple">
+                                    <div class="nav-tabs-navigation">
+                                        <div class="nav-tabs-wrapper">
+                                            <span class="nav-tabs-title">财务管理:</span>
+                                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                                <li class="">
+                                                    <a href="/finance?type=recv">
+                                                        <i class="material-icons">bug_report</i> 应收账款
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                                <li class="">
+                                                    <a href="/finance?type=paya">
+                                                        <i class="material-icons">code</i> 应付账款
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                                <li class="active">
+                                                    <a href="#" data-toggle="tab">
+                                                        <i class="material-icons">code</i> 票务管理
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                        <div class="card-content table-responsive ">
+                            <div class="row">
+                            <div class="col-md-3 col-lg-3">
+                                <div class="input-group" title="搜索票号">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">date_range</i>
+                                    </span>
+                                    <input class="form-control" type="text" placeholder="票号" id="f_invoice">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <div class="input-group" title="创建开始日期">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">date_range</i>
+                                    </span>
+                                    <input class="datepicker form-control" type="text" placeholder="开始日期" id="f_start_time">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-lg-3">
+                                <div class="input-group" title="创建结束日期">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">arrow_forward</i>
+                                    </span>
+                                    <input class="datepicker form-control" type="text" placeholder="结束日期" id="f_end_time">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="input-group" title="按客户进行搜索">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">person</i>
+                                    </span>
+                                    <select id="f_client" class="form-control" style="width: 180px"></select>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-xs" id="btn_submit" style="float:right;margin-right: 20px;">Search</button>
+                                </div>
+                            <table id="table_invoice" style=" table-layout: fixed;" class = "bt_table"></table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jscode %}
+<script>
+    $(function(){
+        $("#f_client").select2({
+            placeholder: "按客户进行筛选",
+            allowClear: true,
+            ajax: {
+                url: "{% url 'get_client_options' %}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 0,
+        });
+
+        $('#table_invoice').bootstrapTable({
+            url: "{% url 'get_invoice_list' %}",    //请求数据的地址
+            method: 'get',
+            striped: true,
+            cache: false,
+            pagination: true,
+            sortable: false,
+            clickToSelect: true,
+            sortOrder: "desc",
+            pageNumber:1,
+            pageSize: 10,
+            pageList: [10, 25, 50, 100, 500],
+            sidePagination: "server",
+            queryParams: function(params){
+                if($("#f_client").val()!=null)
+                    params.f_client     = $("#f_client").val();
+                else
+                    params.f_client     = "";
+                params.f_start_time = $('#f_start_time').val();
+                params.f_end_time   = $('#f_end_time').val();
+                params.f_invoice    = $('#f_invoice').val();
+                return params;
+            },
+            contentType: 'application/json',
+            resizable: true,
+            showColumns: true,
+            //Indicate which field is an identity field.
+            idField : "id",
+                //接单时间、单号、客户姓名、供应商姓名、起运地、目的地、应付金额、已付金额、已付油卡、付款时间、状态（已核销\未核销）
+                columns: [{
+                    field: 'index',
+                    title: '编号',
+                    align: 'center',
+                    width: 50,
+                }, {
+                    field: 'invoice',
+                    title: '票号',
+                    align: 'center',
+                    width: 150,
+                }, {
+                    field: 'client_name',
+                    title: '客户',
+                    align: 'center',
+                    width: 120,
+                    formatter: function(index, row){
+                        return '<span rel="tooltip" title="'+row.client_name+'">'+row.client_name+'</span>';
+                    }
+                }, {
+                    field: 'create_time',
+                    title: '出票时间',
+                    align: 'center',
+                    width: 120,
+                }, {
+                    field: 'create_user',
+                    title: '创建人',
+                    align: 'center',
+                }, {
+                    field: 'remark',
+                    title: '备注',
+                    align: 'center',
+                    halign:'center',
+                    width: 80,
+                    formatter: function(index, row){
+                        if(row.description  != "")
+                            return '<span rel="tooltip" title="'+row.remark+'" data-html="true" >'+row.remark+'</span>';
+                        else
+                            return "";
+                    },
+                },  {
+                    title: '操作',
+                    align: 'center',
+                    halign:'center',
+                    width: 80,
+                    formatter: function(index, row){
+                        return '<a data-id="'+row.id+'" class = "invoice_edit_btn"><i class="fa fa-pencil"></i></a> '+
+                               '<a data-id="'+row.id+'" class = "invoice_delete_btn"><i class="fa fa-trash"></i></a>';
+                    },
+                },  {
+                    title: '-',
+                }],
+            onPostBody: function(){
+                //更新浮动title标签
+                $('[rel="tooltip"]').tooltip();
+            }
+        });
+
+        $('#btn_submit').click(function(){
+            $('#table_invoice').bootstrapTable('refresh');
+            toastr.success('刷新成功');
+
+        });
+
+        $('body').on('click', '.invoice_edit_btn', function(){
+            var id = $(this).data("id");
+            myInputContent("修改备注","备注：",function(){
+                var remark = $("#modal_input").val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'edit_invoice' %}",
+                    data: {invoice_id: id, remark: remark},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("修改成功");
+                            $('#table_invoice').bootstrapTable("refresh");
+                        }
+                        else
+                            toastr.error(data.info);
+
+                    },
+                    error: function(){
+                        toastr.error("修改失败:网络错误");
+                    }
+                });
+            });
+
+        });
+
+        $('body').on('click', '.invoice_delete_btn', function(){
+            var id = $(this).data("id");
+            myConfirm("确定删除此条发票吗", function(){
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'delete_invoice' %}",
+                    data: {invoice_id: id},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("修改成功");
+                            $('#table_invoice').bootstrapTable("refresh");
+                        }
+                        else
+                            toastr.error(data.info);
+                    },
+                    error: function(){
+                        toastr.error("修改失败:网络错误");
+                    }
+                });
+            });
+
+        });
+    })
+</script>
+{% endblock %}
