@@ -74,6 +74,17 @@ def get_recv_list(request):
             line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')
             if line["clear_time"] != None:
                 line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+            invoice_id = line["invoice"]
+            if invoice_id!=None:
+                if invoice_id==0:
+                    line["invoice"] = "不出票"
+                else:
+                    try:
+                        invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
+                        line["invoice"]=invoice_obj.invoice
+                    except:
+                        line["invoice"]="已删除"
+
             rows.append(line)
         return JsonResponse({"data":rows})
 

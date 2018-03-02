@@ -182,6 +182,15 @@
                             return "";
                     },
                 },  {
+                    title: '操作',
+                    align: 'center',
+                    halign:'center',
+                    width: 80,
+                    formatter: function(index, row){
+                        return '<a data-id="'+row.id+'" class = "invoice_edit_btn"><i class="fa fa-pencil"></i></a> '+
+                               '<a data-id="'+row.id+'" class = "invoice_delete_btn"><i class="fa fa-trash"></i></a>';
+                    },
+                },  {
                     title: '-',
                 }],
             onPostBody: function(){
@@ -193,6 +202,56 @@
         $('#btn_submit').click(function(){
             $('#table_invoice').bootstrapTable('refresh');
             toastr.success('刷新成功');
+
+        });
+
+        $('body').on('click', '.invoice_edit_btn', function(){
+            var id = $(this).data("id");
+            myInputContent("修改备注","备注：",function(){
+                var remark = $("#modal_input").val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'edit_invoice' %}",
+                    data: {invoice_id: id, remark: remark},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("修改成功");
+                            $('#table_invoice').bootstrapTable("refresh");
+                        }
+                        else
+                            toastr.error(data.info);
+
+                    },
+                    error: function(){
+                        toastr.error("修改失败:网络错误");
+                    }
+                });
+            });
+
+        });
+
+        $('body').on('click', '.invoice_delete_btn', function(){
+            var id = $(this).data("id");
+            myConfirm("确定删除此条发票吗", function(){
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'delete_invoice' %}",
+                    data: {invoice_id: id},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("修改成功");
+                            $('#table_invoice').bootstrapTable("refresh");
+                        }
+                        else
+                            toastr.error(data.info);
+                    },
+                    error: function(){
+                        toastr.error("修改失败:网络错误");
+                    }
+                });
+            });
 
         });
     })

@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from order_management.models import RECV_INVOICE
 from order_management.models import CLIENT
+from order_management.models import ORDER
+from order_management.models import RECEIVEABLES
 from django.db.models import Q
 from django.utils.timezone import localtime
 import datetime
@@ -18,8 +20,8 @@ def get_invoice_list(request):
         f_client     = request.GET.get('f_client')
         f_start_time = request.GET.get('f_start_time')
         f_end_time   = request.GET.get('f_end_time')
-        limit        = request.GET.get("limit");
-        offset       = request.GET.get("offset");
+        limit        = int(request.GET.get("limit"))
+        offset       = int(request.GET.get("offset"))
 
         query = Q()
         if f_start_time != "":
@@ -32,7 +34,7 @@ def get_invoice_list(request):
             query = query & Q(invoice__contains=f_invoice)
 
         total = RECV_INVOICE.objects.filter(query).count()
-        invoice_objs = RECV_INVOICE.objects.filter(query).values()
+        invoice_objs = RECV_INVOICE.objects.filter(query).values()[offset:offset+limit]
         rows = []
         index = 1
         for line in invoice_objs:
@@ -48,12 +50,50 @@ def get_invoice_list(request):
             line["index"] = index
             index += 1
             rows.append(line)
-        return  JsonResponse({'rows':rows})
+        return  JsonResponse({'rows':rows, 'total':total})
 
 def edit_invoice(request):
     if request.method == "POST":
-        return  JsonResponse({})
+        invoice_id = request.POST.get("invoice_id")
+        remark     = request.POST.get("remark")
+        try:
+            invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
+            invoice_obj.remark = remark
+            invoice_obj.save()
+            if_success = 1
+            info = ""
+        except:
+            if_success = 0
+            info = ""
+        return  JsonResponse({"if_success":if_success, "info":info})
 
 def delete_invoice(request):
     if request.method == "POST":
-        return  JsonResponse({})
+        invoice_id = request.POST.get("invoice_id")
+        #查看invoidobj是否存在
+        # 筛选出来invoice对应的所有的receiveables
+        #筛选出来receiveables对应的所有的order_id
+        #逐条检查order_id的状态，如果需要就变更状态，最后删除invoice_obj
+        try:
+            invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
+        except:
+            return JsonResponse({"if_success":0, "info":"发票不存在"})
+
+        recv_objs = RECEIVEABLES.objects.filter(invoice=invoice_id)
+        order_ids = []
+        for single in recv_objs:
+            order_ids.append(single.order_id)
+            single.invoice = None
+            single.save()
+        order_ids = list(set(order_ids))
+        for single in order_ids:
+            try:
+                order_obj = ORDER.objects.get(id=single)
+                if order_obj.status==5:
+                    order_obj.status=4
+                    order_obj.save()
+                    #待办，此处应增加对于完成订单的控制
+            except:
+                continue
+        invoice_obj.delete()
+        return  JsonResponse({"if_success":1})
