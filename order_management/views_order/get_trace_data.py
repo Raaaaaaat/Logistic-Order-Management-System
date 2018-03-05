@@ -11,7 +11,8 @@ def get_trace_data(request):
         rows.append({
             "trace_id":line.id,
             "status": line.status,
-            "create_time": datetime.datetime.strftime(localtime(line.create_time), '%Y-%m-%d %H:%M:%S'),
+            "create_time": datetime.datetime.strftime(localtime(line.create_time), '%m-%d %H:%M:%S'),
+            "select_time": datetime.datetime.strftime(localtime(line.select_time), '%m/%d/%Y'),
             "desc": line.desc,
             "create_user": line.create_user,
         })

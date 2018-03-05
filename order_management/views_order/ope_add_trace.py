@@ -24,8 +24,10 @@ def ope_add_trace(request):
         #已收款
         status  = request.POST.get("status")
         create_time    = request.POST.get("create_time")
+        select_time    = request.POST.get("select_time")
         desc    = request.POST.get("desc","")
         create_time    = datetime.datetime.strptime(create_time,'%Y-%m-%d %H:%M:%S')
+        select_time    = datetime.datetime.strptime(select_time, '%m/%d/%Y')
 
         if_success = 0
         if_update_status = False
@@ -33,6 +35,8 @@ def ope_add_trace(request):
         if (status == "提货"):
             if current_order_status == 1:
                 if_success = 1
+                order_obj.pick_up_time=select_time
+                order_obj.save()
                 if_update_status = True
             else:
                 info = "添加失败：对于’未提货‘的订单才能进行提货操作"
@@ -67,6 +71,8 @@ def ope_add_trace(request):
                 if count_arr == count_dep:
                     if_update_status = True
                     if_success = 1
+                    order_obj.delivery_time = select_time
+                    order_obj.save()
                 else:
                     info = "添加失败：只有当所有车辆都已到达目的地才可确定签收"
             else:
@@ -82,6 +88,7 @@ def ope_add_trace(request):
                 order_id=order_id, status=status,
                 create_time=create_time, desc=desc,
                 create_user= request.user.username,
+                select_time=select_time,
             )
             t_id = obj.id
             if if_update_status:    #可以对于订单状态进行更新

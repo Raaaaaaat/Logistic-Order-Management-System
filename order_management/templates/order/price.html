@@ -399,16 +399,16 @@ $(function(){   //应付账款
                             step:        data.rows[i].step_name,
                             step_name:   data.rows[i].step_name,
                             step_id:     data.rows[i].step,
-                            supplier:    data.rows[i].supplier_name,
+                            supplier:    "<span rel='tooltip' title='"+data.rows[i].supplier_name+"'>"+data.rows[i].supplier_name+"</span>",
                             supplier_id: data.rows[i].supplier_id,
                             supplier_name:data.rows[i].supplier_name,
                             description: "<span rel='tooltip' title='"+data.rows[i].description+"'>"+data.rows[i].description+"</span>",
                             payables:    "<span class='pay_price_num'>"+data.rows[i].payables+"</span>",
                             mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
                             operation: "<a href='#' class='pay_edit_btn' data-id='"+data.rows[i].id+"'>" +
-                                       "<span class='glyphicon glyphicon-pencil' title='编辑'></span></a>" +
+                                       "<span class='glyphicon glyphicon-pencil' title='编辑'></span></a> " +
                                        "<a href='#' class='pay_edit_price_btn' data-id='"+data.rows[i].id+"'>" +
-                                       "<span class='glyphicon glyphicon-usd' title='修改价格'></span></a>" +
+                                       "<span class='glyphicon glyphicon-usd' title='修改价格'></span></a> " +
                                        "<a href='#' class='pay_delete_btn' data-id='"+data.rows[i].id+"'>" +
                                        "<span class='glyphicon glyphicon-trash' title='删除'></span></a>"
                         });
@@ -424,7 +424,7 @@ $(function(){   //应付账款
         var id = $(this).data("id");    //这个id是应付款的对应的id
         $(this).parent().prev().prev().children().editable();
 
-        var data = $("#table_payables").bootstrapTable("getRowByUniqueId", id);
+        var data = $table_payables.bootstrapTable("getRowByUniqueId", id);
         //console.log(data);
         $(this).parent().prev().prev().prev().html("<select id='pay_supplier_edit_"+id+"' style='width: 80%'></select>");
         $(this).parent().html(
@@ -471,7 +471,7 @@ $(function(){   //应付账款
                 if(data.if_success===1){
                     toastr.success(data.info);
                     $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
-                        supplier:new_supplier_name,
+                        supplier:"<span rel='tooltip' title='"+new_supplier_name+"'>"+new_supplier_name+"</span>",
                         supplier_name: new_supplier_name,
                         supplier_id: new_supplier_id,
                         description: "<span rel='tooltip' title='"+new_desc+"'>"+new_desc+"</span>",

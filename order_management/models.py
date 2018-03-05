@@ -75,10 +75,7 @@ class ORDER(models.Model):
     delivery_time  = models.DateTimeField(null=True)
     if_delete      = models.SmallIntegerField()
     class Meta:
-        permissions=(
-            ("view_order", "Can access information of orders"),
-            ("view_trash_order", "Can access information of trash box"),
-        ),
+
         ordering = ['-id']
 
 class SUP_STEP(models.Model): #供应商操作环节的列表
@@ -114,6 +111,7 @@ class RECEIVEABLES(models.Model):
 class LOG_TRACE(models.Model):
     order_id = models.IntegerField()
     status = models.CharField(max_length=50)
+    select_time   = models.DateTimeField(null=True)
     create_time   = models.DateTimeField()
     create_user   = models.CharField(max_length=100, null=True)
     desc   = models.CharField(max_length=50, null=True) #描述

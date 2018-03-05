@@ -183,10 +183,11 @@
             $("#add_log_info").click(function(){
                 var order_id     = "{{ id }}";
                 var status = $log_status_select.val();
-                var time   = (new Date().Format("yyyy-MM-dd hh:mm:ss"));
+                var create_time   = (new Date().Format("yyyy-MM-dd hh:mm:ss"));
+                var select_time   = $log_date_input.val();
                 var desc   = $("#log_desc_input").val();
                 var update_user = "{{ user.username }}";
-                console.log([order_id, status, time, desc, "{{ user.username }}"]);
+                //console.log([order_id, status, time, desc, "{{ user.username }}"]);
                 if(status==null){
                     toastr.error("物流信息状态不能为空");
                     return;
@@ -197,14 +198,16 @@
                 $.ajax({
                     type: "POST",
                     url: "{% url 'ope_add_trace' %}",
-                    data: {order_id:order_id, status:status, create_time:time, desc:desc},
+                    data: {order_id:order_id, status:status, create_time:create_time, select_time:select_time, desc:desc},
                     datatype: "html",
                     success: function (data) {
                         if(data.if_success === 1){
                             toastr.success(data.info);
                             show_status(data.order_status);
                             $("#log_table_data").append('<tr><td>'+(log_trace_index++)+'</td><td>'+ status +'</td>' +
-                                                  '<td>'+ time +'</td>' +
+                                                  '<td>'+ select_time +'</td>' +
+                                                  '<td><span title="'+desc+'">'+ desc +'</span></td>' +
+                                                  '<td>'+ create_time +'</td>' +
                                                   '<td>'+ update_user +'</td>' +
                                                   '<td><span title="'+desc+'">'+ desc +'</span></td>' +
                                                   '<td>' +
@@ -253,12 +256,15 @@
                         var rows = data.rows;
                         for (index in rows){
                             $("#log_table_data").append('<tr><td>'+(parseInt(index)+1)+'</td><td>'+ rows[index].status +'</td>' +
+                                                  '<td>'+ rows[index].select_time +'</td>' +
+                                                  '<td><span title="'+rows[index].desc+'">'+ rows[index].desc +'</span></td>' +
                                                   '<td>'+ rows[index].create_time +'</td>' +
                                                   '<td>'+ rows[index].create_user +'</td>' +
-                                                  '<td><span title="'+rows[index].desc+'">'+ rows[index].desc +'</span></td>' +
                                                   '<td>' +
                                                   '<a href="#" class="log_edit_btn" data-trace_id="'+rows[index].trace_id+'"><span class="glyphicon glyphicon-edit"></span></a>'+
-                                                  '</td></tr>');
+                                                  '</td>' +
+
+                                '</tr>');
                         }
 
                     },
@@ -267,22 +273,8 @@
             //从view参数里加载状态到模板里
             function show_status(status){
                 status = parseInt(status);
-                var str = "";
-                if(status==1)
-                    str = "未发货";
-                else if(status==2)
-                    str = "已提货";
-                else if(status==3)
-                    str = "在途中";
-                else if(status==4)
-                    str = "已签收";
-                else if(status==5)
-                    str = "已出票";
-                else if(status==6)
-                    str = "已收款";
-                else
-                    return;
-                $("#order_status").html(str);
+
+                $("#order_status").html(order_status_switch(status));
             }
 
 
