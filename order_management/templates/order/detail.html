@@ -30,10 +30,6 @@
                             <h4 class="title" style="display: inline-block;float:right;border:2px solid;border-radius:5px;" id = "order_status"></h4>
                         </div>
                         <div class="card-content">
-                            <div style = "overflow:hidden;">
-                                <div style="width:30%; display:inline">状态：<span id = ""></span></div>
-                            </div>
-
                             <div class="table_div">
 
                                 <div class="td_div" style="width:10%">托运日期</div>
@@ -41,7 +37,7 @@
                                 <div class="td_div" style="width:10%">运行区间</div>
                                 <div class="td_div" style="width:40%">{{ dep_city }} -> {{ des_city }}</div>
                                 <div class="td_div" style="width:10%">托运人</div>
-                                <div class="td_div" style="width:40%">{{ client_name }}</div>
+                                <div class="td_div" style="width:40%"><span rel="tooltip" title="{{ client_name }}">{{ client_name }}</span></div>
                                 <div class="td_div" style="width:10%">联系方式</div>
                                 <div class="td_div" style="width:40%">{{ client_tel }}</div>
                                 <div class="td_div" style="width:10%">收货人</div>
@@ -50,9 +46,9 @@
                                 <div class="td_div" style="width:40%">{{ rec_tel }}</div>
 
                                 <div class="td_div" style="width:10%">起运地址</div>
-                                <div class="td_div" style="width:90%">{{ dep_place }}</div>
+                                <div class="td_div" style="width:90%"><span rel="tooltip" title="{{ dep_place }}">{{ dep_place }}</span></div>
                                 <div class="td_div" style="width:10%">目的地址</div>
-                                <div class="td_div" style="width:90%">{{ des_place }}</div>
+                                <div class="td_div" style="width:90%"><span rel="tooltip" title="{{ des_place }}">{{ des_place }}</span></div>
                                 <div class="td_div" style="width:10%">货物名称</div>
                                 <div class="td_div" style="width:15%">{{ cargo_name }}</div>
                                 <div class="td_div" style="width:10%">货物重量(KG)</div>
@@ -127,19 +123,20 @@
                             <table class="table table-hover" style="table-layout: fixed;">
                                 <thead class="text-warning">
                                     <th style="width:8%">序号</th>
-                                    <th style="width:20%">状态</th>
-                                    <th style="width:25%">更新时间</th>
+                                    <th style="width:15%">状态</th>
+                                    <th style="width:15%">日期</th>
+                                    <th style="width:25%">描述</th>
+                                    <th style="width:20%">更新时间</th>
                                     <th style="width:15%">更新人员</th>
-                                    <th style="width:30%">描述</th>
                                     <th style="width:10%">操作</th>
                                 </thead>
                                 <tbody id="log_table_data">
                                 <tr>
                                     <td></td>
                                     <td><select id="log_status_select" style="width: 80%"></select></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><input id="log_desc_input" style="width: 80%"></input></td>
+                                    <td><input id="log_date_input" style="width: 80%"></td>
+                                    <td><input id="log_desc_input" style="width: 80%"></td>
+                                    <td></td><td></td>
                                     <td><a id="add_log_info" ><span class='glyphicon glyphicon-plus'></span></a></td>
                                 </tr>
                                 </tbody>
@@ -158,6 +155,7 @@
 
 
         $(function(){
+            $('[rel="tooltip"]').tooltip();
             //填充备注栏
             var ht = "{{ remark }}".replace(/-rrr-/g, '<br>');
             $("#remark_park").html("<p style='font-size:0.9em; line-height:100%'>"+ht+"</p>");
@@ -166,16 +164,25 @@
             show_status("{{ status }}");    //加载页面的时候填入状态
 
             //状态选择初始化
-            $("#log_status_select").select2({
+            var $log_status_select = $("#log_status_select")
+            $log_status_select.select2({
                 data: [{ id: "提货", text: "提货" }, { id: "出发", text: "出发" }, {id:"途径",text:"途径"}
                     , {id:"到达",text:"到达"}, {id:"签收",text:"签收"}, {id:"异常",text:"异常"}],
                 allowClear: true,
                 placeholder: "请选择",
             });
-            $("#log_status_select").val(null).trigger('change');
+            $log_status_select.val(null).trigger('change');
+            var $log_date_input =  $("#log_date_input");
+            $log_date_input.datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000,
+            });
+            $log_date_input.datepicker('setDate', new Date());
             $("#add_log_info").click(function(){
                 var order_id     = "{{ id }}";
-                var status = $("#log_status_select").val();
+                var status = $log_status_select.val();
                 var time   = (new Date().Format("yyyy-MM-dd hh:mm:ss"));
                 var desc   = $("#log_desc_input").val();
                 var update_user = "{{ user.username }}";
@@ -185,7 +192,7 @@
                     return;
                 }
 
-                $("#log_status_select").val(null).trigger('change');
+                $log_status_select.val(null).trigger('change');
                 $("#log_desc_input").val('');
                 $.ajax({
                     type: "POST",
@@ -193,7 +200,7 @@
                     data: {order_id:order_id, status:status, create_time:time, desc:desc},
                     datatype: "html",
                     success: function (data) {
-                        if(data.if_success == 1){
+                        if(data.if_success === 1){
                             toastr.success(data.info);
                             show_status(data.order_status);
                             $("#log_table_data").append('<tr><td>'+(log_trace_index++)+'</td><td>'+ status +'</td>' +

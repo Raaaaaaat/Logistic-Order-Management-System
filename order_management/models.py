@@ -71,13 +71,15 @@ class ORDER(models.Model):
     cargo_size     = models.FloatField(max_length=100, null=True)
     remark         = models.CharField(max_length=500, null=True)
     create_time    = models.DateTimeField(auto_now_add=True)
-    clear_time     = models.DateTimeField(null=True)
+    pick_up_time   = models.DateTimeField(null=True)
+    delivery_time  = models.DateTimeField(null=True)
     if_delete      = models.SmallIntegerField()
     class Meta:
         permissions=(
             ("view_order", "Can access information of orders"),
             ("view_trash_order", "Can access information of trash box"),
-        )
+        ),
+        ordering = ['-id']
 
 class SUP_STEP(models.Model): #供应商操作环节的列表
     name = models.CharField(max_length=100)

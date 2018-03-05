@@ -18,9 +18,8 @@
                         <div class="card-header" data-background-color="purple">
                             <h4 class="title" style="display: inline-block;">Client List</h4>
                             <li class="active" style="display: inline-block; float:right; margin-right: 20px">
-                                <a href="/client_add">
-                                    <i class="material-icons">note_add</i>
-                                    添加
+                                <a href="/client_add" title="添加客户">
+                                    <i class="material-icons">add</i>
                                     <div class="ripple-container"></div></a>
                             </li>
                         </div>
@@ -53,17 +52,17 @@
 
 function operation_formatter(index, row){
     //console.log(row);
-    return '<a class="edit_button"   data-no="'+row.No+'"><i class="fa fa-pencil"></i></a>' +
-           '<a class="delete_button" data-no="'+row.No+'" style="margin-left: 10px;"><i class="fa fa-trash"></i></a>';
-};
+    return '<a class="edit_button"   data-no="'+row.No+'" title="编辑"><i class="fa fa-pencil"></i></a>' +
+           '<a class="delete_button" data-no="'+row.No+'" title="删除" style="margin-left: 10px;"><i class="fa fa-trash"></i></a>';
+}
 function type_formatter(index, row){
-    if(row.type=="0")
-        return "公司客户";
+    if(row.type===0)
+        return "公司";
     else
-        return "个人客户";
+        return "个人";
 }
 function file_formatter(index, row){
-    if(row.contract_file != "")
+    if(row.contract_file !== "")
         return '<i class="fa fa-file-text"></i><a href="'+row.contract_file+'" download> 附件</a>';
     else
         return '';
@@ -101,10 +100,9 @@ $(function(){
         sidePagination: "server",
         queryParams: function(params){
             //params.csrfmiddlewaretoken = '{{ csrf_token }}';
-            console.log(params);
-            var search = $('#search_input_info').val();
-            params.search = search;
-            console.log(params);
+            //console.log(params);
+            params.search = $('#search_input_info').val();
+            //console.log(params);
             return params;
         },
         contentType: 'application/json',
@@ -123,7 +121,7 @@ $(function(){
                 title: '类型',
                 formatter: type_formatter,
                 align: 'center',
-                width: 80,
+                width: 50,
             }, {
                 field: 'co_name',
                 title: '公司名称',
@@ -146,7 +144,7 @@ $(function(){
                 field: 'contact_role',
                 title: '联系人职位',
                 align: 'center',
-                width: 110,
+                width: 100,
             },  {
                 field: 'co_addr',
                 title: '公司地址',
@@ -182,7 +180,7 @@ $(function(){
                 visible: false,
             },  {
                 field: 'account_bank',
-                title: '开户行',
+                title: '开户行网点',
                 align: 'left',
                 halign:'center',
                 width: 150,
@@ -209,8 +207,8 @@ $(function(){
             },  {
                 title: '备注',
                 formatter: function(index, row){
-                    if(row.remark  != "")
-                        return '<a class="edit_button"  rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
+                    if(row.remark  !== "")
+                        return '<a rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
                     else
                         return "";
                 },
@@ -229,17 +227,17 @@ $(function(){
             $('[rel="tooltip"]').tooltip();
         },
     });
-
+    var $body = $('body');
     //绑定编辑按钮动作事件
-    $('body').on('click', '.edit_button', function(){
+    $body.on('click', '.edit_button', function(){
         //使用 $('.edit_button').click(function(){})这样的绑定方法无效因为绑事件的语句执行的时候该div还没有生成，所以只能全局绑定
         $.StandardPost('{% url "client_edit" %}',{No: $(this).data('no')});
     });
 
     //绑定删除按钮动作事件
-    $('body').on('click', '.delete_button', function(){
+    $body.on('click', '.delete_button', function(){
         var No = $(this).data('no');
-        myConfirm("是否确定删除？",function(){
+        myConfirm("是否确定删除 "+No+"？",function(){
             //alert("deleteIng"+No);
             $.ajax({
                 type: "POST",
@@ -248,12 +246,15 @@ $(function(){
                 datatype: "html",
                 success: function (data) {//这里检查data.info的值，如果删除成功就为1，否则为0，2代表没有权限，在这里做一样的判断
                     //console.log(data);
-                    if(data.if_success==1){
+                    if(data.if_success===1){
                         toastr.success('删除成功');
                         $('#tablecase').bootstrapTable("refresh");
-                    }else if(data.if_success==0){
+                    }else if(data.if_success===0){
                         toastr.error(data.info);
                     }else{}
+                },
+                error: function(){
+                    toastr.error("网络错误，请稍后再试");
                 },
             });
         });

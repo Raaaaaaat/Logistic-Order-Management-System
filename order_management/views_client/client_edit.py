@@ -18,7 +18,9 @@ def client_edit(request):
             perm_contract = True
 
         No = request.POST.get("No")
-        to_be_edit_obj = CLIENT.objects.get(No=No)
+        to_be_edit_obj = CLIENT.objects.filter(No=No).first()
+        if to_be_edit_obj==None:
+            return redirect('/error?info=查询对象不存在')
         return render(request, 'client/add.html', {
             'No'            : to_be_edit_obj.No,
             "type"          : to_be_edit_obj.type,

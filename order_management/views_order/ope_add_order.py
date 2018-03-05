@@ -1,12 +1,9 @@
 from django.shortcuts import redirect
 import json,time, datetime
-from order_management.models import ORDER
+from order_management.models import ORDER, CLIENT
 from order_management.models import PAYABLES
 
 def ope_add_order(request):
-
-
-
     if request.method=="POST":
         client_id = request.POST.get("client_id")
         dep_city  = request.POST.get("dep_city")
@@ -22,11 +19,29 @@ def ope_add_order(request):
         rec_tel        = request.POST.get("rec_tel", "")
         if_edit        = request.POST.get("if_edit")
 
+        #检查是否在有效期内：
+        client_obj = CLIENT.objects.filter(id=client_id).first()
+        if client_obj==None:
+            return redirect('/order?info=所选择的客户不存在')
+        else:
+            start_time = client_obj.contract_start
+            end_time = client_obj.contract_end
+            now = datetime.datetime.now()
+            if start_time!="":
+                start_time = datetime.datetime.strptime(start_time, "%m/%d/%Y")
+                if now < start_time:
+                    return redirect('/order?info=所选择的客户未到合同有效期')
+
+            if end_time!="":
+                end_time = datetime.datetime.strptime(end_time, "%m/%d/%Y")+datetime.timedelta(days=1)
+                if now > end_time:
+                    return redirect('/order?info=所选择的客户已过合同有效期')
+
+
         if if_edit=="0": #添加模式
-            No = ""  # 自动生成下一个该有的客户编号
+            # 自动生成下一个该有的客户编号
             last_one = ORDER.objects.last()
             currentMonth = time.strftime("%Y%m", time.localtime())
-
             if last_one != None:  # 说明之前已经有记录
                 if last_one.No[2:8]==currentMonth:
                     No = last_one.No[8:]
@@ -44,5 +59,5 @@ def ope_add_order(request):
                                  remark=remark, rec_name=rec_name, rec_tel=rec_tel)
 
             info = "添加成功"
-        return redirect('/price_management?No=' + No)
+        return redirect('/price_management?No=' + No+"&info="+info)
 

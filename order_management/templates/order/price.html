@@ -42,7 +42,8 @@
 
 
 $(function(){   //应收账款
-    $("#table_receiveables").bootstrapTable({
+    var $table_receiveables = $("#table_receiveables");
+    $table_receiveables.bootstrapTable({
         uniqueId: "id",
         striped: true,
         columns: [{
@@ -92,6 +93,9 @@ $(function(){   //应收账款
                         else
                             toastr.error(data.info);
                     },
+                    error: function(){
+                        toastr.error("添加失败：网络错误，请刷新后重新尝试")
+                    },
                 })
             });
 
@@ -101,6 +105,7 @@ $(function(){   //应收账款
                 rec_count_total += Number($(this).html());
             });
             $("#rec_price_display").html("￥"+rec_count_total.toFixed(2));
+            $('[rel="tooltip"]').tooltip();
         },
     });
 //$("#table_receiveables").bootstrapTable('remove', {field: 'mark', values: 1});
@@ -113,13 +118,13 @@ $(function(){   //应收账款
             data: {order_id:"{{ order_id }}"},
             datatype: "html",
             success: function (data) {
-                $("#table_receiveables").bootstrapTable('remove', {field: 'mark', values: [1]});
-                if(data.rows!=undefined){
+                $table_receiveables.bootstrapTable('remove', {field: 'mark', values: [1]});
+                if(data.rows!==undefined){
                     var to_append_data = [];
                     for(var i = 0; i<data.rows.length; i++){
                         to_append_data.push({
                             id: data.rows[i].id,
-                            description:  "<span>"+data.rows[i].description+"</span>",
+                            description:  "<span rel='tooltip' title='"+data.rows[i].description+"'>"+data.rows[i].description+"</span>",
                             receiveables: "<span class='rec_price_num'>"+data.rows[i].receiveables+"</span>",
                             mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
                             operation: "<a href='#' class='rec_edit_btn' data-id='"+data.rows[i].id+"'>" +
@@ -130,7 +135,7 @@ $(function(){   //应收账款
                                        "<span class='glyphicon glyphicon-trash' title='删除'></span></a> "
                         });
                     }
-                    $("#table_receiveables").bootstrapTable("append", to_append_data);
+                    $table_receiveables.bootstrapTable("append", to_append_data);
                 }
             },
         })
@@ -149,7 +154,7 @@ $(function(){   //应收账款
         var id = $(this).data("id");
         var new_desc = $(this).parent().prev().prev().children().editable('getValue', true);
         var $this = $(this);
-        if(new_desc == ""){
+        if(new_desc === ""){
             toastr.error("描述内容不能为空");
             return;
         }
@@ -159,22 +164,23 @@ $(function(){   //应收账款
             data: {rec_id: id, desc: new_desc},
             datatype: "html",
             success: function (data) {
-                toastr.success(data.info);
+                if(data.if_success===1){
+                    toastr.success(data.info);
+                    $table_receiveables.bootstrapTable("updateByUniqueId",{"id":id, "row": {
+                        description: "<span rel='tooltip' title='"+new_desc+"'>"+new_desc+"</span>",
+                    }});
+                }else
+                    toastr.error(data.info);
             },
             error: function(){
                 toastr.error("修改失败:网络错误");
-            },
-            complete: function(){
-                $("#table_receiveables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
-                        description: new_desc,
-                    }});
             },
         })
     })
 
     $('body').on('click', '.rec_edit_cancel_btn', function(){
         var id = $(this).data("id");
-        $("#table_receiveables").bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
+        $table_receiveables.bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
     })
 
 
@@ -191,7 +197,7 @@ $(function(){   //应收账款
         var id = $(this).data("id");
         var new_price = $(this).parent().prev().children().editable('getValue', true);
 
-        if (new_price == "" ||  isNaN(new_price)){
+        if (new_price === "" ||  isNaN(new_price)){
             toastr.error("价格输入错误");
             return;
         }
@@ -201,22 +207,23 @@ $(function(){   //应收账款
             data: {rec_id: id, price: new_price},
             datatype: "html",
             success: function (data) {
-                toastr.success(data.info);
+                if(data.if_success===1){
+                    toastr.success(data.info);
+                    $table_receiveables.bootstrapTable("updateByUniqueId",{"id":id, "row": {
+                        receiveables: "<span class='rec_price_num'>"+new_price+"</span>",
+                    }});
+                }else
+                    toastr.error(data.info);
             },
             error: function(){
                 toastr.error("修改失败:网络错误");
-            },
-            complete: function(){
-                $("#table_receiveables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
-                        receiveables: new_price,
-                    }});
-            },
+            }
         })
     })
 
     $('body').on('click', '.rec_edit_price_cancel_btn', function(){
         var id = $(this).data("id");
-        $("#table_receiveables").bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
+        $table_receiveables.bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
     })
 
     //改应收账款删除操作部分代码， 包括以下一个函数
@@ -229,8 +236,11 @@ $(function(){   //应收账款
                 data: {rec_id: id},
                 datatype: "html",
                 success: function (data) {
-                    toastr.success(data.info);
-                    $("#table_receiveables").bootstrapTable('removeByUniqueId', id);
+                    if(data.if_success===1){
+                        toastr.success(data.info);
+                        $table_receiveables.bootstrapTable('removeByUniqueId', id);
+                    }else
+                        toastr.error(data.info);
                 },
                 error: function(){
                     toastr.error("修改失败:网络错误");
@@ -245,7 +255,8 @@ $(function(){   //应收账款
 
 
 $(function(){   //应付账款
-    $("#table_payables").bootstrapTable({
+    var $table_payables = $("#table_payables");
+    $table_payables.bootstrapTable({
         uniqueId: "id",
         striped: true,
         columns: [{
@@ -293,11 +304,11 @@ $(function(){   //应付账款
                     toastr.error("必须选择供应商");
                     return;
                 }
-                if(price=="" || isNaN(price)){
+                if(price==="" || isNaN(price)){
                     toastr.error("价格输入错误");
                     return;
                 }
-                console.log([step, supplier, desc, price]);
+                //console.log([step, supplier, desc, price]);
 
                 $.ajax({
                     type: "POST",
@@ -305,12 +316,15 @@ $(function(){   //应付账款
                     data: {order_id:"{{ order_id }}", description: desc, price:Number(price).toFixed(2), step: step, supplier_id: supplier},
                     datatype: "html",
                     success: function (data) {
-                        if(data.if_success == 1){
+                        if(data.if_success === 1){
                             toastr.success(data.info);
                             load_paya_data();
                         }
                         else
                             toastr.error(data.info);
+                    },
+                    error: function(){
+                        toastr.error("添加失败:网络错误");
                     },
                 })
             });
@@ -364,6 +378,7 @@ $(function(){   //应付账款
                 pay_count_total += Number($(this).html());
             });
             $("#pay_price_display").html("￥"+pay_count_total.toFixed(2));
+            $('[rel="tooltip"]').tooltip();
         }
     });
     //加载数据到table里面
@@ -375,7 +390,7 @@ $(function(){   //应付账款
             data: {order_id:"{{ order_id }}"},
             datatype: "html",
             success: function (data) {
-                $("#table_payables").bootstrapTable('remove', {field: 'mark', values: [1]});
+                $table_payables.bootstrapTable('remove', {field: 'mark', values: [1]});
                 if(data.rows!=undefined){
                     var to_append_data = [];
                     for(var i = 0; i<data.rows.length; i++){
@@ -387,7 +402,7 @@ $(function(){   //应付账款
                             supplier:    data.rows[i].supplier_name,
                             supplier_id: data.rows[i].supplier_id,
                             supplier_name:data.rows[i].supplier_name,
-                            description: "<span>"+data.rows[i].description+"</span>",
+                            description: "<span rel='tooltip' title='"+data.rows[i].description+"'>"+data.rows[i].description+"</span>",
                             payables:    "<span class='pay_price_num'>"+data.rows[i].payables+"</span>",
                             mark: 1,    //清空的時候清空這個字段爲1的，代表後來加入的數據
                             operation: "<a href='#' class='pay_edit_btn' data-id='"+data.rows[i].id+"'>" +
@@ -410,7 +425,7 @@ $(function(){   //应付账款
         $(this).parent().prev().prev().children().editable();
 
         var data = $("#table_payables").bootstrapTable("getRowByUniqueId", id);
-        console.log(data);
+        //console.log(data);
         $(this).parent().prev().prev().prev().html("<select id='pay_supplier_edit_"+id+"' style='width: 80%'></select>");
         $(this).parent().html(
             "<a href='#' class='pay_edit_confirm_btn' data-id='"+id+"'><span class='glyphicon glyphicon-ok'></span></a> "+
@@ -453,25 +468,26 @@ $(function(){   //应付账款
             data: {pay_id: id, desc: new_desc, supplier_id: new_supplier_id},
             datatype: "html",
             success: function (data) {
-                toastr.success(data.info);
-            },
-            error: function(){
-                toastr.error("修改失败:网络错误");
-            },
-            complete: function(){
-                $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
+                if(data.if_success===1){
+                    toastr.success(data.info);
+                    $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
                         supplier:new_supplier_name,
                         supplier_name: new_supplier_name,
                         supplier_id: new_supplier_id,
-                        description: new_desc,
-                }});
+                        description: "<span rel='tooltip' title='"+new_desc+"'>"+new_desc+"</span>",
+                    }});
+                }else
+                    toastr.error(data.info);
+            },
+            error: function(){
+                toastr.error("修改失败:网络错误");
             },
         })
     })
 
     $('body').on('click', '.pay_edit_cancel_btn', function(){
         var id = $(this).data("id");
-        $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
+        $table_payables.bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
     })
 
 
@@ -498,22 +514,23 @@ $(function(){   //应付账款
             data: {pay_id: id, price: new_price},
             datatype: "html",
             success: function (data) {
-                toastr.success(data.info);
+                if(data.if_success===1){
+                    toastr.success(data.info);
+                    $table_payables.bootstrapTable("updateByUniqueId",{"id":id, "row": {
+                        payables: "<span class='pay_price_num'>"+new_price+"</span>",
+                    }});
+                }else
+                    toastr.error(data.info);
             },
             error: function(){
                 toastr.error("修改失败:网络错误");
-            },
-            complete: function(){
-                $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {
-                        payables: new_price,
-                }});
             },
         })
     })
 
     $('body').on('click', '.pay_edit_price_cancel_btn', function(){
         var id = $(this).data("id");
-        $("#table_payables").bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
+        $table_payables.bootstrapTable("updateByUniqueId",{"id":id, "row": {"id":id}});
     })
 
     //改应收账款删除操作部分代码， 包括以下一个函数
@@ -526,12 +543,15 @@ $(function(){   //应付账款
                 data: {pay_id: id},
                 datatype: "html",
                 success: function (data) {
-                    toastr.success(data.info);
-                    $("#table_payables").bootstrapTable('removeByUniqueId', id);
+                    if(data.if_success===1){
+                        toastr.success(data.info);
+                        $table_payables.bootstrapTable('removeByUniqueId', id);
+                    }else
+                        toastr.error(data.info);
                 },
                 error: function(){
                     toastr.error("修改失败:网络错误");
-                },
+                }
 
             })
         });

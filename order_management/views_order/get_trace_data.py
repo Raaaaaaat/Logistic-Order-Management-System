@@ -17,4 +17,4 @@ def get_trace_data(request):
         })
     return JsonResponse({
         "rows": rows,
-    });
+    })
