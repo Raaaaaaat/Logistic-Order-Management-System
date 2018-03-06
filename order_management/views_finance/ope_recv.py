@@ -48,7 +48,7 @@ def get_recv_list(request):
         else:
             query = query & Q(status=0)
 
-        recv_obj = RECEIVEABLES.objects.filter(query).values()
+        recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()
         #除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
         rows = []
@@ -71,7 +71,7 @@ def get_recv_list(request):
             line["des_city"] = order_obj.des_city
 
 
-            line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')
+            line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
             if line["clear_time"] != None:
                 line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
             invoice_id = line["invoice"]
@@ -111,6 +111,9 @@ def mark_recv_invoice(request):
             #这里假设应收款的order_id一定可以查到order_obj
             order_obj = ORDER.objects.get(id=single.order_id)   #这里等待优化，首先确定order_id再检查他们对应的用户是否有重复
             recv_objs_clients.append(order_obj.client_id)
+            if order_obj.status!=4:
+                return JsonResponse({"if_success": 0, "info": "只有已签收状态的订单才可开票"})
+
         recv_objs_clients = list(set(recv_objs_clients))
         if len(recv_objs_clients) >1:
             return JsonResponse({"if_success": 0, "info": "一张发票只能对应单一供应商"})

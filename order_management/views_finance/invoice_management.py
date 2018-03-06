@@ -34,7 +34,7 @@ def get_invoice_list(request):
             query = query & Q(invoice__contains=f_invoice)
 
         total = RECV_INVOICE.objects.filter(query).count()
-        invoice_objs = RECV_INVOICE.objects.filter(query).values()[offset:offset+limit]
+        invoice_objs = RECV_INVOICE.objects.filter(query).order_by('-id').values()[offset:offset+limit]
         rows = []
         index = 1
         for line in invoice_objs:
@@ -49,6 +49,15 @@ def get_invoice_list(request):
             line["create_time"] = datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')
             line["index"] = index
             index += 1
+            #统计总已收款以及应收款
+            recv_objs = RECEIVEABLES.objects.filter(invoice=line["id"])
+            tot_receiveables = 0
+            tot_received  = 0
+            for single in recv_objs:
+                tot_receiveables += single.receiveables
+                tot_received+= single.received
+            line["tot_receiveables"]=tot_receiveables
+            line["tot_received"] = tot_received
             rows.append(line)
         return  JsonResponse({'rows':rows, 'total':total})
 
@@ -103,3 +112,19 @@ def delete_invoice(request):
                 continue
         invoice_obj.delete()
         return  JsonResponse({"if_success":1})
+
+def get_invoice_recv_bill(request):
+    if request.method == "POST":
+        invoice_id = request.POST.get('invoice_id')
+        recv_objs = RECEIVEABLES.objects.filter(invoice=invoice_id).order_by('order_id').values()
+        for line in recv_objs:
+            order_obj = ORDER.objects.get(id=line["order_id"])
+            line["dep_city"] = order_obj.dep_city
+            line["des_city"] = order_obj.des_city
+            line["order_No"] = order_obj.No
+            line["pick_up_time"]  = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
+            line["delivery_time"] = datetime.datetime.strftime(localtime(order_obj.delivery_time), '%Y-%m-%d')
+        data = []
+        for line in recv_objs:
+            data.append(line)
+        return JsonResponse({"data": data})

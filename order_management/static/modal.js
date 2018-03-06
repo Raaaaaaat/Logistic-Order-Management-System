@@ -44,7 +44,7 @@ function myConfirm(info,call_back_func)
 function myShowTableInfo(title, info)
 {
     var modalHtml = "\
-		<div class='modal-dialog'>\
+		<div class='modal-dialog modal-lg'>\
 			<div class='modal-content'>\
 				<div class='modal-header'>"+title+"\
 				</div>\

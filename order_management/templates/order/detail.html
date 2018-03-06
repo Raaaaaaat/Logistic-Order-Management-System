@@ -192,6 +192,10 @@
                     toastr.error("物流信息状态不能为空");
                     return;
                 }
+                if(select_time ===""){
+                    toastr.error("物流信息日期不能为空");
+                    return;
+                }
 
                 $log_status_select.val(null).trigger('change');
                 $("#log_desc_input").val('');
@@ -208,9 +212,7 @@
                                                   '<td>'+ select_time +'</td>' +
                                                   '<td><span title="'+desc+'">'+ desc +'</span></td>' +
                                                   '<td>'+ create_time +'</td>' +
-                                                  '<td>'+ update_user +'</td>' +
-                                                  '<td><span title="'+desc+'">'+ desc +'</span></td>' +
-                                                  '<td>' +
+                                                  '<td>'+ update_user +'</td>' +                                                  '<td>' +
                                                   '<a href="#" class="log_edit_btn" data-trace_id="'+data.trace_id+'"><span class="glyphicon glyphicon-edit"></span></a>'+
                                                   '</td></tr>');
                         }
@@ -220,6 +222,9 @@
 
 
                     },
+                    error: function(){
+                        toastr.error("网络错误，请稍后再试");
+                    }
                 });
             });
 

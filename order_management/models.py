@@ -75,7 +75,12 @@ class ORDER(models.Model):
     delivery_time  = models.DateTimeField(null=True)
     if_delete      = models.SmallIntegerField()
     class Meta:
-
+        permissions = (
+            ("get", "Can access information of supplier"),
+            # ("add_supplier",             "Can insert new supplier"),
+            # ("change_supplier",          "Can change normal info of supplier"),
+            # ("delete_supplier",          "Can delete a supplier"),
+        )
         ordering = ['-id']
 
 class SUP_STEP(models.Model): #供应商操作环节的列表

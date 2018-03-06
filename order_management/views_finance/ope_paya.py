@@ -50,7 +50,7 @@ def get_paya_list(request):
         else:
             query = query & Q(status=0)
 
-        pay_obj = PAYABLES.objects.filter(query).values()
+        pay_obj = PAYABLES.objects.filter(query).order_by('-id').values()
         #除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
 
@@ -86,7 +86,7 @@ def get_paya_list(request):
 
 
 
-            line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')
+            line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
             if line["clear_time"] != None:
                 line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
             rows.append(line)
