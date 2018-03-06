@@ -390,16 +390,16 @@ $(function(){
             for (var i =0; i<select_lines.length; i++){
                 selections.push(select_lines[i].id);
             }
-            myInputInvoice(function(){
-                var invoice = $('#modal_input').val();
+            myInputContent("确定申请开票","备注信息：",function(){
+                var remark = $('#modal_input').val();
                 $.ajax({
                     type: "POST",
                     url: "{% url 'mark_recv_invoice' %}",
-                    data: {recv_ids:selections.join(","), invoice: invoice},
+                    data: {recv_ids:selections.join(","), remark: remark},
                     datatype: "html",
                     success: function (data) {
                         if(data.if_success == 1){
-                            toastr.success("票号录入成功");
+                            toastr.success("申请开票录入成功");
                             $('#table_recv').bootstrapTable('refresh');
                         }else{
                             toastr.error(data.info);

@@ -98,12 +98,19 @@ def mark_paya_invoice(request):
         paya_ids = request.POST.get("paya_ids","")
         paya_ids = paya_ids.split(",")
         invoice  = request.POST.get("invoice")
-
-        try:
-            paya_obj = PAYABLES.objects.filter(id__in=paya_ids).update(invoice=invoice)
-        except:
-            return JsonResponse({"if_success": 0})
-        return JsonResponse({"if_success": 1})
+        paya_objs = PAYABLES.objects.filter(id__in=paya_ids)
+        if invoice == "":#删除发票
+            # 检查发票对应的应收账款，只要有一条有已收，就不允许删除发票
+            for single in paya_objs:
+                if single.paid_oil != 0 or single.paid_cash!=0:
+                    return JsonResponse({"if_success": 0, "info": "有已核销的发票不允许删除，请先反核销"})
+            paya_objs.update(invoice=None)
+        else:#新增发票
+            try:
+                paya_objs.update(invoice=invoice)
+            except:
+                return JsonResponse({"if_success": 0, "info":"更新失败"})
+        return JsonResponse({"if_success": 1,"info":"开票成功"})
 
 def paya_verify(request):
     #三个参数分别是数组为payables的id，以及要type（0为现金，1为油卡）， 以及总的金额

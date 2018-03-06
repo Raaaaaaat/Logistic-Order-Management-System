@@ -55,16 +55,18 @@ def get_invoice_list(request):
 def edit_invoice(request):
     if request.method == "POST":
         invoice_id = request.POST.get("invoice_id")
+        invoice    = request.POST.get("invoice")
         remark     = request.POST.get("remark")
         try:
             invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
+            invoice_obj.invoice = invoice
             invoice_obj.remark = remark
             invoice_obj.save()
             if_success = 1
-            info = ""
+            info = "修改成功"
         except:
             if_success = 0
-            info = ""
+            info = "修改失败"
         return  JsonResponse({"if_success":if_success, "info":info})
 
 def delete_invoice(request):
@@ -80,6 +82,10 @@ def delete_invoice(request):
             return JsonResponse({"if_success":0, "info":"发票不存在"})
 
         recv_objs = RECEIVEABLES.objects.filter(invoice=invoice_id)
+        #检查发票对应的应收账款，只要有一条有已收，就不允许删除发票
+        for single in recv_objs:
+            if single.received != 0:
+                return JsonResponse({"if_success": 0, "info": "有已核销的发票不允许删除，请先反核销"})
         order_ids = []
         for single in recv_objs:
             order_ids.append(single.order_id)

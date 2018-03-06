@@ -92,7 +92,7 @@ class PAYABLES(models.Model):
     paid_oil    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
-    invoice     = models.CharField(max_length=200, null=True)
+    invoice     = models.CharField(max_length=200, null=True, default="")
     remark      = models.CharField(max_length=500, null=True)
 
 

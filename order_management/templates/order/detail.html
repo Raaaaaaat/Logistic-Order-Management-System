@@ -226,7 +226,7 @@
 
             $('body').on('click', '.log_edit_btn', function(){
                 var trace_id     = $(this).data('trace_id');
-                var $this = $(this).parent().prev().children();
+                var $this = $(this).parent().prev().prev().prev().children();
                 console.log($this);
                 $this.editable({
                     emptytext: "---",

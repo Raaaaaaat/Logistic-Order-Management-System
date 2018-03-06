@@ -116,6 +116,7 @@
         $('#table_invoice').bootstrapTable({
             url: "{% url 'get_invoice_list' %}",    //请求数据的地址
             method: 'get',
+            uniqueId: "id",
             striped: true,
             cache: false,
             pagination: true,
@@ -207,12 +208,19 @@
 
         $('body').on('click', '.invoice_edit_btn', function(){
             var id = $(this).data("id");
-            myInputContent("修改备注","备注：",function(){
-                var remark = $("#modal_input").val();
+            var row = $('#table_invoice').bootstrapTable("getRowByUniqueId", id);
+            console.log(row);
+            myInputTwoContent("修改发票","票号：", "备注：", row.invoice, row.remark ,function(){
+                var invoice = $("#modal_input1").val();
+                var remark  = $("#modal_input2").val();
+                if(invoice ===""){
+                    toastr.error("票号不能为空");
+                    return;
+                }
                 $.ajax({
                     type: "POST",
                     url: "{% url 'edit_invoice' %}",
-                    data: {invoice_id: id, remark: remark},
+                    data: {invoice_id: id, invoice:invoice, remark: remark},
                     datatype: "html",
                     success: function (data) {
                         if(data.if_success === 1){

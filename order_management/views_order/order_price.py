@@ -26,21 +26,37 @@ def get_receiveables(request):
 
 def add_receiveables(request):
     if request.method == "POST":
+        #如果订单状态是5或者6则需要变更回来到4
         order_id = request.POST.get("order_id")
-        description = request.POST.get("description")
-        price = request.POST.get("price")
-        RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
+        order_obj = ORDER.objects.filter(id=order_id).first()
+        if order_obj == None:
+            if_success = 0
+            info = "订单对象不存在"
+        else:
+            if order_obj.status != 4:
+                order_obj.status=4
+                order_obj.save()
+            description = request.POST.get("description","")
+            price = request.POST.get("price")
+            RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
                                     receiveables=price, received=0)
-        return JsonResponse({"if_success":1, "info":"添加成功"})
+            if_success = 1
+            info = "添加成功"
+        return JsonResponse({"if_success":if_success, "info":info})
 
 def delete_receiveables(request):
     if request.method == "POST":
         rec_id = request.POST.get("rec_id",0)
+        #确定是否开票，如果是则不允许删除
         try:
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
-            rec_obj.delete()
-            if_success = 1
-            info = "删除成功"
+            if rec_obj.invoice == None:
+                rec_obj.delete()
+                if_success = 1
+                info = "删除成功"
+            else:
+                if_success = 0
+                info = "已开票的分录无法删除，请先删除发票信息"
         except:
             info = "删除失败：记录不存在"
             if_success = 0
@@ -61,7 +77,7 @@ def update_receiveables_desc(request):
             info = "修改成功"
         except:
             info = "修改失败：记录不存在"
-    return JsonResponse({"if_success":if_success, "info":info})
+        return JsonResponse({"if_success":if_success, "info":info})
 
 def update_receiveables_price(request):
     if request.method == "POST":
@@ -71,13 +87,17 @@ def update_receiveables_price(request):
         info = ""
         try:
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
-            rec_obj.receiveables = price
-            rec_obj.save()
-            if_success = 1
-            info = "修改成功"
+            if rec_obj.invoice == None:
+                rec_obj.receiveables = price
+                rec_obj.save()
+                if_success = 1
+                info = "修改成功"
+            else:
+                if_success = 0
+                info = "已开票的分录无法修改价格，请先删除发票信息"
         except:
             info = "修改失败：记录不存在"
-    return JsonResponse({"if_success":if_success, "info":info})
+        return JsonResponse({"if_success":if_success, "info":info})
 
 
 
@@ -125,9 +145,13 @@ def delete_payables(request):
         pay_id = request.POST.get("pay_id",0)
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
-            pay_obj.delete()
-            if_success = 1
-            info = "删除成功"
+            if pay_obj.invoice == None or pay_obj.invoice=="":
+                pay_obj.delete()
+                if_success = 1
+                info = "删除成功"
+            else:
+                if_success = 0
+                info = "已经开票的分录无法删除，请先清空发票信息"
         except:
             info = "删除失败：记录不存在"
             if_success = 0
@@ -150,7 +174,7 @@ def update_payables_info(request):
             info = "修改成功"
         except:
             info = "修改失败：记录不存在"
-    return JsonResponse({"if_success":if_success, "info":info})
+        return JsonResponse({"if_success":if_success, "info":info})
 
 def update_payables_price(request):
     if request.method == "POST":
@@ -160,10 +184,14 @@ def update_payables_price(request):
         info = ""
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
-            pay_obj.payables = price
-            pay_obj.save()
-            if_success = 1
-            info = "修改成功"
+            if pay_obj.invoice == None or pay_obj.invoice == "":
+                pay_obj.payables = price
+                pay_obj.save()
+                if_success = 1
+                info = "修改成功"
+            else:
+                if_success = 0
+                info = "已经开票的分录无法修改价格，请先清空发票信息"
         except:
             info = "修改失败：记录不存在"
-    return JsonResponse({"if_success":if_success, "info":info})
+        return JsonResponse({"if_success":if_success, "info":info})
