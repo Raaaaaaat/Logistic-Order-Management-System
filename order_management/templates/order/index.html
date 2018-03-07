@@ -25,13 +25,11 @@
                         <div class="card-header" data-background-color="purple">
                             <h4 class="title" style="display: inline-block;">Order List</h4>
                             <li class="active" style="display: inline-block; float:right; margin-right: 20px">
-                                <a id="advanced_filter_collapse_btn">
+                                <a id="advanced_filter_collapse_btn" title = "高级筛选">
                                     <i class="material-icons">zoom_in</i>
-                                    高级筛选
                                     <div class="ripple-container"></div></a>
-                                <a href="/order_add">
-                                    <i class="material-icons">note_add</i>
-                                    添加
+                                <a href="/order_add" title = "添加">
+                                    <i class="material-icons">add</i>
                                     <div class="ripple-container"></div></a>
                             </li>
                         </div>
@@ -48,7 +46,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-3">
-                                        <div class="input-group" title="开始日期">
+                                        <div class="input-group" title="下单开始日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">date_range</i>
                                             </span>
@@ -180,14 +178,15 @@
             },
             minimumInputLength: 0,
         });
-        $("#filter_pay_status").select2({
+        var $filter_pay_status =$("#filter_pay_status");
+        $filter_pay_status.select2({
             minimumResultsForSearch: Infinity,
             allowClear: true,
             placeholder: "按付款状态搜索",
             data: [{ id: 0,  text: "未付款"},
                    { id: 1,  text: "已付款"}],
         });
-        $("#filter_pay_status").val(null).trigger("change");
+        $filter_pay_status.val(null).trigger("change");
         $("#filter_status").select2({
             placeholder: "按订单状态进行筛选",
             allowClear: true,
@@ -207,13 +206,11 @@
         });
 
         $('#submit_button').click(function(){
-                toastr.success('刷新成功');
-                $('#tablecase').bootstrapTable('refresh');
+            toastr.success('刷新成功');
+            $('#tablecase').bootstrapTable('refresh');
 
         });
     });
-
-    $("#filter_client")
 
     $('#tablecase').bootstrapTable({
         url: "{% url 'order_index' %}",    //请求数据的地址
@@ -237,10 +234,9 @@
         //分页方式：client客户端分页，server服务端分页（*）
         sidePagination: "server",
         queryParams: function(params){
-            console.log(params);
             var filter_end_time = $("#filter_end_time").val();
             params.filter_end_time = "";
-            if(filter_end_time!=""){
+            if(filter_end_time!==""){
                 if(/^\d\d\/\d\d\/\d\d\d\d$/.test(filter_end_time))
                     params.filter_end_time = filter_end_time;
                 else{
@@ -250,34 +246,35 @@
             }
             var filter_start_time = $("#filter_start_time").val();
             params.filter_start_time = "";
-            if(filter_start_time!=""){
+            if(filter_start_time!==""){
                 if(/^\d\d\/\d\d\/\d\d\d\d$/.test(filter_start_time))
                     params.filter_start_time = filter_start_time;
                 else{
                     toastr.info("开始日期格式有误");
                 }
             }
-
-            if($("#filter_client").val()!=null)
-                params.filter_client     = $("#filter_client").val();
-            else
+            params.filter_client     = $("#filter_client").val();
+            if(params.filter_client === null)
                 params.filter_client     = "";
-            if($("#filter_supplier").val()!=null)
-                params.filter_supplier   = $("#filter_supplier").val();
-            else
+
+            params.filter_supplier   = $("#filter_supplier").val();
+            if(params.filter_supplier===null)
                 params.filter_supplier   = "";
+
+
             if($("#filter_status").val()!=null)
                 params.filter_status     = JSON.stringify($("#filter_status").val());
             else
                 params.filter_status     = JSON.stringify([]);
-            if($("#filter_pay_status").val()!=null)
-                params.filter_pay_status = $("#filter_pay_status").val();
-            else
+
+            params.filter_pay_status = $("#filter_pay_status").val();
+            if(params.filter_pay_status===null)
                 params.filter_pay_status = "";
+
             params.filter_No             = $("#filter_No").val();
             params.filter_dep_city       = $("#filter_dep_city").val();
             params.filter_des_city       = $("#filter_des_city").val();
-            console.log(params);
+            //console.log(params);
             return params;
         },
         contentType: 'application/json',
@@ -297,7 +294,7 @@
                 field: 'status',
                 title: '状态',
                 align: 'center',
-                width: 100,
+                width: 80,
                 formatter: function(index, row){
                     return order_status_switch(row.status);
                 }
@@ -317,13 +314,28 @@
                 title: '下单时间',
                 align: 'center',
                 halign:'center',
-                width: 150,
+                width: 100,
+           },  {
+                field: 'pick_up_time',
+                title: '提货日期',
+                align: 'center',
+                halign:'center',
+                width: 100,
+           },  {
+                field: 'delivery_time',
+                title: '送货日期',
+                align: 'center',
+                halign:'center',
+                width: 100,
            },  {
                 field: 'cargo_name',
                 title: '货物名称',
                 align: 'center',
                 halign:'center',
                 width: 80,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.cargo_name+'">'+row.cargo_name+'</span>';
+                }
            },  {
                 field: 'cargo_weight',
                 title: '货物重量(KG)',
@@ -368,7 +380,7 @@
                 width: 90,
             }, {
                 field: 'dep_place',
-                title: '起运地址',
+                title: '起运详细地址',
                 align: 'left',
                 halign:'center',
                 width: 120,
@@ -377,7 +389,7 @@
                 }
             },  {
                 field: 'des_place',
-                title: '目的地址',
+                title: '目的详细地址',
                 align: 'left',
                 halign:'center',
                 width: 120,
@@ -391,7 +403,7 @@
                 halign:'center',
                 width: 50,
                 formatter: function(index, row){
-                    if(row.remark  != "")
+                    if(row.remark  !== "")
                         return '<a rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
                     else
                         return "";
@@ -400,7 +412,8 @@
                 title: '操作',
                 formatter: function(index, row){
                     //console.log(row);
-                    return '<a data-no="'+row.No+'" href = "/order_edit?No='+row.No+'"><i class="fa fa-pencil"></i></a>';
+                    return '<a data-no="'+row.No+'" href = "/order_edit?No='+row.No+'" title="编辑"><i class="fa fa-pencil"></i></a>' +
+                           '<a data-no="'+row.No+'" class = "delete_order_button" title="删除" style="margin-left: 10px;"><i class="fa fa-trash"></i></a>';
                 },
                 align: 'center',
                 width: 50,
@@ -416,7 +429,8 @@
         $('.collapse').collapse("toggle");
     });
 
-    $('body').on("click",".client_detail", function(){
+    var $body = $('body');
+    $body.on("click",".client_detail", function(){
         var client_id = $(this).data('client_id');
         console.log(client_id);
         $.ajax({
@@ -425,10 +439,10 @@
             data: {client_id:client_id},
             datatype: "html",
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 var content = "";
                 content += "<table class='table table-hover'><thead class='text-warning'><th>名称</th><th>内容</th></thead><tbody>";
-                if (data.type == 0){ //公司客户
+                if (data.type === "0"){ //公司客户
                     content += "<tr><td>编号</td><td>"+data.No+"</td></tr>"+
                         "<tr><td>公司名称</td><td>"+data.co_name+"</td></tr>"+
                         "<tr><td>公司电话</td><td>"+data.co_tel+"</td></tr>";
@@ -439,10 +453,38 @@
                         "<tr><td>职位</td><td>"+data.contact_role+"</td></tr>";
                 }
                 content += "</tbody></table>";
-                console.log(content);
+                //console.log(content);
                 myShowTableInfo("客户信息", content);
             },
+            error: function(){
+                toastr.error("网络错误，请稍后再试");
+            },
         })
+    });
+
+    $body.on('click', '.delete_order_button', function(){
+        var No = $(this).data('no');
+        myConfirm("是否确定删除订单： "+No+"？<br>注：<br>此操作将删除订单所有相关应收应付款以及物流信息，并且<strong>无法撤回</strong>",function(){
+            //alert("deleteIng"+No);
+            $.ajax({
+                type: "POST",
+                url: "{% url 'ope_drop_order' %}",
+                data: {No: No},
+                datatype: "html",
+                success: function (data) {//这里检查data.info的值，如果删除成功就为1，否则为0，2代表没有权限，在这里做一样的判断
+                    //console.log(data);
+                    if(data.if_success===1){
+                        toastr.success('删除成功');
+                        $('#tablecase').bootstrapTable("refresh");
+                    }else if(data.if_success===0){
+                        toastr.error(data.info);
+                    }else{}
+                },
+                error: function(){
+                    toastr.error("网络错误，请稍后再试");
+                },
+            });
+        });
     });
 
 

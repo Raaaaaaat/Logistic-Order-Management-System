@@ -6,23 +6,23 @@ from django.contrib.auth.decorators import permission_required
 
 @login_required
 def ope_delete_client(request):
-    if_success = 0
-    if not request.user.has_perm("order_management.delete_client"):
-        if_success = 0
-        info = "操作失败：没有进行此操作的权限"
-    else:
-        No = request.POST.get("No","")
-
-        if No == "":
+    if request.method == "POST":
+        if not request.user.has_perm("order_management.delete_client"):
             if_success = 0
-            info = "操作失败：参数错误"
+            info = "操作失败：没有进行此操作的权限"
         else:
-            try:
-                CLIENT.objects.get(No=No).delete()
-                if_success = 1
-                info=""
-            except:
-                if_success = 0
-                info = "删除操作失败"
+            No = request.POST.get("No","")
 
-    return JsonResponse({'if_success':if_success, 'info':info})
+            if No == "":
+                if_success = 0
+                info = "操作失败：参数错误"
+            else:
+                try:
+                    CLIENT.objects.get(No=No).delete()
+                    if_success = 1
+                    info=""
+                except:
+                    if_success = 0
+                    info = "删除操作失败"
+
+        return JsonResponse({'if_success':if_success, 'info':info})

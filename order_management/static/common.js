@@ -5,7 +5,7 @@ STANO2STASTR = {
     4:"已签收",
     5:"已出票",
     6:"已收款",
-}
+};
 
 STASTR2STANO = {
     "未发货":1,
@@ -14,7 +14,7 @@ STASTR2STANO = {
     "已签收":4,
     "已出票":5,
     "已收款":6,
-}
+};
 
 function order_status_switch(a){
     if(isNaN(a))

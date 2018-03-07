@@ -5,7 +5,12 @@ from order_management.models import RECEIVEABLES
 from order_management.models import PAYABLES
 from order_management.models import SUP_STEP
 from order_management.models import SUPPLIER
+from order_management.models import OPERATE_LOG
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
+@login_required
+@permission_required('order_management.view_order', login_url='/error?info=没有查看订单的权限，请联系管理员')
 def index_price(request):
     if request.method == "GET":
         No = request.GET.get('No', '')
@@ -15,75 +20,129 @@ def index_price(request):
             "order_id": order_obj.id,
         })
 
+@login_required
 def get_receiveables(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.view_order"):
+            return JsonResponse({'rows': []})
         order_id = request.POST.get("order_id")
         rec_obj = RECEIVEABLES.objects.filter(order_id=order_id).values()
         rows = []
         for line in rec_obj:
             rows.append(line)
         return JsonResponse({"rows":rows})
-
+@login_required
 def add_receiveables(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.recv_manage"):
+            return JsonResponse({"if_success":0, "info":"没有管理应收账款的权限"})
+        #如果订单状态是5或者6则需要变更回来到4
         order_id = request.POST.get("order_id")
-        description = request.POST.get("description")
-        price = request.POST.get("price")
-        RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
+        order_obj = ORDER.objects.filter(id=order_id).first()
+        if order_obj == None:
+            if_success = 0
+            info = "订单对象不存在"
+        else:
+            if order_obj.status != 4:
+                order_obj.status=4
+                order_obj.save()
+            description = request.POST.get("description","")
+            price = request.POST.get("price")
+            RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
                                     receiveables=price, received=0)
-        return JsonResponse({"if_success":1, "info":"添加成功"})
-
+            detail = "增加 "+order_obj.No+" 应收款："+str(price)+" 描述："+description
+            OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+            if_success = 1
+            info = "添加成功"
+        return JsonResponse({"if_success":if_success, "info":info})
+@login_required
 def delete_receiveables(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.recv_manage"):
+            return JsonResponse({"if_success":0, "info":"没有管理应收账款的权限"})
         rec_id = request.POST.get("rec_id",0)
+        #确定是否开票，如果是则不允许删除
         try:
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
-            rec_obj.delete()
-            if_success = 1
-            info = "删除成功"
+            if rec_obj.invoice == None:
+                order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+                if order_obj == None:
+                    detail = "删除应收款：发生错误"
+                else:
+                    detail = "删除 " + order_obj.No + " 应收款：" + str(rec_obj.receiveables) + " 描述：" + rec_obj.description
+                OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+                rec_obj.delete()
+                if_success = 1
+                info = "删除成功"
+            else:
+                if_success = 0
+                info = "已开票的分录无法删除，请先删除发票信息"
         except:
             info = "删除失败：记录不存在"
             if_success = 0
         return JsonResponse({"if_success":if_success, "info":info})
     return JsonResponse({})
-
+@login_required
 def update_receiveables_desc(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.recv_manage"):
+            return JsonResponse({"if_success":0, "info":"没有管理应收账款的权限"})
         rec_id = request.POST.get("rec_id",0)
         desc = request.POST.get("desc","")
         if_success = 0
         info = ""
         try:
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
+            order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+            if order_obj == None:
+                detail = "更新应收款描述：发生错误"
+            else:
+                detail = "更新 " + order_obj.No + " 应收款描述：" + str(rec_obj.receiveables) + " 旧描述：" + rec_obj.description +" 为新描述："+str(desc)
+            OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
             rec_obj.description = desc
             rec_obj.save()
             if_success = 1
             info = "修改成功"
         except:
             info = "修改失败：记录不存在"
-    return JsonResponse({"if_success":if_success, "info":info})
-
+        return JsonResponse({"if_success":if_success, "info":info})
+@login_required
 def update_receiveables_price(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.recv_manage"):
+            return JsonResponse({"if_success":0, "info":"没有管理应收账款的权限"})
         rec_id = request.POST.get("rec_id")
         price = request.POST.get("price")
         if_success = 0
         info = ""
         try:
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
-            rec_obj.receiveables = price
-            rec_obj.save()
-            if_success = 1
-            info = "修改成功"
+            if rec_obj.invoice == None:
+                order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+                if order_obj == None:
+                    detail = "更新应收款价格：发生错误"
+                else:
+                    detail = "更新 " + order_obj.No + " 应收款价格：" + rec_obj.description + " 旧价格：" + str(rec_obj.receiveables) + " 为新价格：" + str(price)
+                OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+                rec_obj.receiveables = price
+                rec_obj.save()
+                if_success = 1
+                info = "修改成功"
+            else:
+                if_success = 0
+                info = "已开票的分录无法修改价格，请先删除发票信息"
         except:
             info = "修改失败：记录不存在"
-    return JsonResponse({"if_success":if_success, "info":info})
+        return JsonResponse({"if_success":if_success, "info":info})
 
 
 
 #应付账款part
+@login_required
 def get_payables(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.view_order"):
+            return JsonResponse({'rows': []})
         order_id = request.POST.get("order_id")
         pay_obj = PAYABLES.objects.filter(order_id=order_id).values()
         #除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
@@ -108,34 +167,54 @@ def get_payables(request):
                 line["supplier_name"] = "该供应商已删除"
             rows.append(line)
         return JsonResponse({"rows":rows})
-
+@login_required
 def add_payables(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.paya_manage"):
+            return JsonResponse({"if_success":0, "info":"没有管理应付账款的权限"})
         order_id = request.POST.get("order_id")
+
         step = request.POST.get("step")
         supplier_id = request.POST.get("supplier_id")
         description = request.POST.get("description")
         price = request.POST.get("price")
         PAYABLES.objects.create(status=0, order_id=order_id,description=description,
                                 payables=price, paid_cash=0, paid_oil=0, step=step, supplier_id=supplier_id)
+        order_obj = ORDER.objects.get(id=order_id)
+        detail = "增加 " + order_obj.No + " 应付款：" + str(price) + " 供应商：" + SUPPLIER.objects.get(id=supplier_id).No + " 描述：" + description
+        OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
         return JsonResponse({"if_success":1, "info":"添加成功"})
-
+@login_required
 def delete_payables(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.paya_manage"):
+            return JsonResponse({"if_success":0, "info":"没有管理应付账款的权限"})
         pay_id = request.POST.get("pay_id",0)
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
-            pay_obj.delete()
-            if_success = 1
-            info = "删除成功"
+            if pay_obj.invoice == None or pay_obj.invoice=="":
+                order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+                if order_obj == None:
+                    detail = "删除应收款：发生错误"
+                else:
+                    detail = "删除 " + order_obj.No + " 应付款：" + str(pay_obj.payables) + " 描述：" + pay_obj.description
+                OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
+                pay_obj.delete()
+                if_success = 1
+                info = "删除成功"
+            else:
+                if_success = 0
+                info = "已经开票的分录无法删除，请先清空发票信息"
         except:
             info = "删除失败：记录不存在"
             if_success = 0
         return JsonResponse({"if_success":if_success, "info":info})
     return JsonResponse({})
-
+@login_required
 def update_payables_info(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.paya_manage"):
+            return JsonResponse({"if_success":0, "info":"没有管理应付账款的权限"})
         pay_id = request.POST.get("pay_id",0)
         desc = request.POST.get("desc","")
         supplier_id = request.POST.get("supplier_id")
@@ -143,6 +222,12 @@ def update_payables_info(request):
         info = ""
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
+            order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+            if order_obj == None:
+                detail = "更新应收款价格：发生错误"
+            else:
+                detail = "更新 " + order_obj.No + " 应付款信息：" + str(pay_obj.payables) + " 旧描述：" + pay_obj.description + " 为新描述：" + desc + " 旧供应商：" + SUPPLIER.objects.get(id=pay_obj.supplier_id).No + " 为新供应商：" + SUPPLIER.objects.get(id=supplier_id).No
+            OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
             pay_obj.description = desc
             pay_obj.supplier_id = supplier_id
             pay_obj.save()
@@ -150,20 +235,33 @@ def update_payables_info(request):
             info = "修改成功"
         except:
             info = "修改失败：记录不存在"
-    return JsonResponse({"if_success":if_success, "info":info})
-
+        return JsonResponse({"if_success":if_success, "info":info})
+@login_required
 def update_payables_price(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.paya_manage"):
+            return JsonResponse({"if_success":0, "info":"没有管理应付账款的权限"})
         pay_id = request.POST.get("pay_id")
         price = request.POST.get("price")
         if_success = 0
         info = ""
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
-            pay_obj.payables = price
-            pay_obj.save()
-            if_success = 1
-            info = "修改成功"
+            if pay_obj.invoice == None or pay_obj.invoice == "":
+                #增加日志
+                order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+                if order_obj == None:
+                    detail = "更新应收款价格：发生错误"
+                else:
+                    detail = "更新 " + order_obj.No + " 应付款价格：" + pay_obj.description + " 旧价格：" + str(pay_obj.payables) + " 为新价格：" + str(price)
+                OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
+                pay_obj.payables = price
+                pay_obj.save()
+                if_success = 1
+                info = "修改成功"
+            else:
+                if_success = 0
+                info = "已经开票的分录无法修改价格，请先清空发票信息"
         except:
             info = "修改失败：记录不存在"
-    return JsonResponse({"if_success":if_success, "info":info})
+        return JsonResponse({"if_success":if_success, "info":info})

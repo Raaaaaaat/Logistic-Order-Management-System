@@ -3,7 +3,7 @@ from django.shortcuts import render
 from order_management.models import CLIENT
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import Group
+
 
 @login_required
 @permission_required('order_management.change_client', login_url='/no_perm/')
@@ -18,7 +18,9 @@ def client_edit(request):
             perm_contract = True
 
         No = request.POST.get("No")
-        to_be_edit_obj = CLIENT.objects.get(No=No)
+        to_be_edit_obj = CLIENT.objects.filter(No=No).first()
+        if to_be_edit_obj==None:
+            return redirect('/error?info=查询对象不存在')
         return render(request, 'client/add.html', {
             'No'            : to_be_edit_obj.No,
             "type"          : to_be_edit_obj.type,

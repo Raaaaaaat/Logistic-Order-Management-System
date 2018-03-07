@@ -1,0 +1,192 @@
+{% extends 'manage/base.html' %}
+{% block style %}
+    <style>
+
+    .card-content .form-group{
+        display: inline-block;
+        margin: 0px 0 0 0;
+        padding-bottom: 10px;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-nav-tabs">
+                        <div class="card-header" data-background-color="purple">
+                                    <div class="nav-tabs-navigation">
+                                        <div class="nav-tabs-wrapper">
+                                            <span class="nav-tabs-title">管理中心:</span>
+                                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                                <li class="active">
+                                                    <a href="#">
+                                                        <i class="material-icons">bug_report</i> 操作日志
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        <i class="material-icons">code</i> 废弃订单
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                        <div class="card-content table-responsive ">
+                            <div class="row">
+
+                                <div class="col-md-3 col-lg-3">
+                                        <div class="input-group" title="创建开始日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">date_range</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="创建开始日期" id="f_time_start">
+                                        </div>
+                                </div>
+
+                                <div class="col-md-3 col-lg-3">
+                                        <div class="input-group" title="创建结束日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">arrow_forward</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="创建结束日期" id="f_time_end">
+                                        </div>
+                                </div>
+                                <div class="col-md-3 col-lg-3">
+                                        <div class="input-group" title="搜索模块">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">date_range</i>
+                                            </span>
+                                            <input class="form-control" type="text" placeholder="搜索模块" id="f_field">
+                                        </div>
+                                </div>
+
+                                <div class="col-md-3 col-lg-3">
+                                        <div class="input-group" title="搜索详情">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">arrow_forward</i>
+                                            </span>
+                                            <input class="form-control" type="text" placeholder="搜索详情" id="f_detail">
+                                        </div>
+                                </div>
+
+                                <div class="col-md-3 col-lg-3">
+                                        <div class="input-group" title="搜索人员">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">arrow_forward</i>
+                                            </span>
+                                            <input class="form-control" type="text" placeholder="搜索人员" id="f_user">
+                                        </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="tab-content">
+                                <div class="">
+                                    <div class="col-sm-12" style ="align-items:Center;">
+                                        <button class="btn btn-primary btn-xs" id="btn_submit" style="float:right;margin-right: 20px;">Search</button>
+                                    </div>
+                                    <table id="table_operate_log" style=" table-layout: fixed;" class = "bt_table"></table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block jscode %}
+    <script>
+
+    $(function(){
+        $('.datepicker').datepicker({
+
+            weekStart:1, //1代表从一周周一开始，0代表从周天开始
+            autoclose:true,
+            clearBtn:true,
+            zIndexOffset: 10000,
+        });
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+        $("#table_operate_log").bootstrapTable({
+            url: "{% url 'operate_log' %}",    //请求数据的地址
+            method: 'post',
+            striped: true,
+            cache: false,
+            pagination: true,
+            sortable: false,
+            clickToSelect: true,
+            sortOrder: "desc",
+            pageNumber:1,
+            pageSize: 10,
+            pageList: [10, 25, 50, 100, 500],
+            sidePagination: "server",
+            queryParams: function(params){
+                params.time_start = $('#f_time_start').val();
+                params.time_end   = $('#f_time_end').val();
+                params.field      = $('#f_field').val();
+                params.detail     = $('#f_detail').val();
+                params.user       = $('#f_user').val();
+                return params;
+            },
+            contentType: 'application/json',
+            resizable: true,
+            showColumns: true,
+            //Indicate which field is an identity field.
+            idField : "id",
+                //接单时间、单号、客户姓名、供应商姓名、起运地、目的地、应付金额、已付金额、已付油卡、付款时间、状态（已核销\未核销）
+                columns: [{
+                    field: 'index',
+                    title: '编号',
+                    align: 'center',
+                    width: 50,
+                }, {
+                    field: 'time',
+                    title: '操作时间',
+                    align: 'center',
+                    width: 150,
+                }, {
+                    field: 'user',
+                    title: '操作人员',
+                    align: 'center',
+                    width: 80,
+                }, {
+                    field: 'field',
+                    title: '操作模块',
+                    align: 'center',
+                    width: 120,
+
+                },  {
+                    field: 'detail',
+                    title: '详情',
+                    align: 'left',
+                    halign: 'center',
+                    width: 500,
+                    formatter: function(index, row){
+                        return '<span rel="tooltip" title="'+row.detail+'">'+row.detail+'</span>';
+                    }
+                },  {
+                    title: '-',
+                }],
+            onPostBody: function(){
+                //更新浮动title标签
+                $('[rel="tooltip"]').tooltip();
+            },
+
+        });
+        $('#btn_submit').click(function(){
+            $('#table_operate_log').bootstrapTable('refresh');
+            toastr.success('刷新成功');
+
+        });
+    })
+    </script>
+{% endblock %}
+

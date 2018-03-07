@@ -5,6 +5,12 @@ from order_management.models import PAYABLES
 from django.utils.timezone import localtime
 import datetime
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+
+
+@login_required
+@permission_required('order_management.view_order', login_url='/error?info=没有查看订单的权限，请联系管理员')
 def order_detail(request):
     if request.method == "GET":
         No = request.GET.get('No', '')
