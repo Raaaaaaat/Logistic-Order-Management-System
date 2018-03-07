@@ -32,7 +32,7 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
                 conflict_check = CLIENT.objects.filter(co_name=co_name).exists()
             else:
                 conflict_check = CLIENT.objects.filter(contact_name=contact_name).exists()
-            if not conflict_check == 0:  # 没有重复冲突
+            if not conflict_check:  # 没有重复冲突
                 No = ""  #自动生成下一个该有的客户编号
                 last_one = CLIENT.objects.last()
                 if last_one != None:    #说明之前已经有记录

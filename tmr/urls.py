@@ -18,7 +18,7 @@ from django.urls import path
 from order_management import views as tmr_views
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    path('error/', tmr_views.error),
     #log_in part
     path('', tmr_views.page_index), #临时
     path('log_in/', tmr_views.log_in_index),
