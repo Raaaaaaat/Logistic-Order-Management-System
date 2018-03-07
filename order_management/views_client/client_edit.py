@@ -3,7 +3,7 @@ from django.shortcuts import render
 from order_management.models import CLIENT
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import Group
+
 
 @login_required
 @permission_required('order_management.change_client', login_url='/no_perm/')

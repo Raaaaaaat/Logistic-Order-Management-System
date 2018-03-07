@@ -2,8 +2,14 @@ from django.http import JsonResponse
 from order_management.models import LOG_TRACE
 import json,time, datetime
 from django.utils.timezone import localtime
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
+
+@login_required
 def get_trace_data(request):
+    if not request.user.has_perm("order_management.change_log_trace"):
+        return JsonResponse({'rows': []})
     id = request.POST.get("id")
     objs = LOG_TRACE.objects.filter(order_id=id)
     rows = []

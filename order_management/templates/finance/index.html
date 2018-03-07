@@ -90,6 +90,14 @@
                                             <input type="text" class="form-control" placeholder="按单号进行搜索" id="f_order_No">
                                         </div>
                                 </div>
+                                <div class="col-md-7 col-lg-3">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">receipt</i>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="按票号进行搜索" id="f_invoice">
+                                        </div>
+                                </div>
                                 <div class="col-md-6 col-lg-3">
                                         <div class="input-group" title="按客户进行搜索">
                                             <span class="input-group-addon">
@@ -106,6 +114,9 @@
                                             <select id="f_supplier" class="form-control" style="width: 180px;"></select>
                                         </div>
                                 </div>
+
+                            </div>
+                            <div class="row">
                                 <div class="col-md-3 col-lg-3" >
                                     <div class="checkbox input-group" style = "margin-left:20px;">
                                         <label>
@@ -246,6 +257,7 @@ $(function(){
             params.f_create_end_time   = $('#f_create_end_time').val();
             params.f_clear_start_time  = $('#f_clear_start_time').val();
             params.f_clear_end_time    = $('#f_clear_end_time').val();
+            params.f_invoice           = $('#f_invoice').val();
             return params;
         },
         contentType: 'application/json',
@@ -503,7 +515,7 @@ $(function(){
             params.f_create_end_time   = $('#f_create_end_time').val();
             params.f_clear_start_time  = $('#f_clear_start_time').val();
             params.f_clear_end_time    = $('#f_clear_end_time').val();
-
+            params.f_invoice           = $('#f_invoice').val();
             return params;
         },
         contentType: 'application/json',

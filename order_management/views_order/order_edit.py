@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect
 from order_management.models import ORDER
 from order_management.models import CLIENT
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
+
+@login_required
+@permission_required('order_management.change_order', login_url='/error?info=没有修改订单的权限，请联系管理员')
 def order_edit(request):
     if request.method == "GET": #这是通过点击添加按钮进来的地方
         No = request.GET.get("No","")

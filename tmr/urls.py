@@ -89,4 +89,7 @@ urlpatterns = [
     path('edit_invoice/',         tmr_views.edit_invoice,        name='edit_invoice'),
     path('delete_invoice/',       tmr_views.delete_invoice,      name='delete_invoice'),
     path('get_invoice_recv_bill/',tmr_views.get_invoice_recv_bill,name='get_invoice_recv_bill'),
+
+    #manage part
+    path('operate_log/',  tmr_views.operate_log_index,  name='operate_log'),
 ]

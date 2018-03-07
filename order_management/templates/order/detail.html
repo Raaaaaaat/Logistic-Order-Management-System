@@ -242,8 +242,13 @@
                             data: {trace_id:trace_id, desc:newValue},
                             datatype: "html",
                             success: function (data) {
-                                toastr.success("修改成功")
-                                $this.editable("destroy");
+                                if(data.if_success===1){
+                                    toastr.success("修改成功");
+                                    $this.editable("destroy");
+                                }else{
+                                    toastr.error(data.info);
+                                }
+
                             },
                         });
                     }

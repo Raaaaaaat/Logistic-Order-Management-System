@@ -41,3 +41,4 @@ from order_management.views_finance.ope_paya import *
 from order_management.views_finance.ope_recv import *
 from order_management.views_finance.invoice_management import *
 
+from order_management.views_manage.operate_log_index import *

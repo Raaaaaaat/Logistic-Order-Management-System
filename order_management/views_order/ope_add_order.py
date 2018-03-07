@@ -3,6 +3,12 @@ import json,time, datetime
 from order_management.models import ORDER, CLIENT
 from order_management.models import PAYABLES
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+
+
+@login_required
+@permission_required('order_management.add_order', login_url='/error?info=没有添加订单的权限，请联系管理员')
 def ope_add_order(request):
     if request.method=="POST":
         client_id = request.POST.get("client_id")

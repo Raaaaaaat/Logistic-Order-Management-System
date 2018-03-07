@@ -7,15 +7,22 @@ from order_management.models import RECEIVEABLES
 from django.db.models import Q
 from django.utils.timezone import localtime
 import datetime
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+from order_management.models import OPERATE_LOG
 
+@login_required
+@permission_required('order_management.recv_invoice', login_url='/error?info=没有访问票务管理的权限，请联系管理员')
 def invoice_management(request):
 
     if request.method == "GET":
-
         return render(request, 'finance/invoice.html')
 
+@login_required
 def get_invoice_list(request):
     if request.method == "GET":
+        if not request.user.has_perm("order_management.recv_invoice"):
+            return JsonResponse({'rows': [],'total':0})
         f_invoice    = request.GET.get("f_invoice")
         f_client     = request.GET.get('f_client')
         f_start_time = request.GET.get('f_start_time')
@@ -61,13 +68,18 @@ def get_invoice_list(request):
             rows.append(line)
         return  JsonResponse({'rows':rows, 'total':total})
 
+@login_required
 def edit_invoice(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.change_recv_invoice"):
+            return JsonResponse({"if_success":0, "info":"没有进行此操作的权限，请联系管理员"})
         invoice_id = request.POST.get("invoice_id")
         invoice    = request.POST.get("invoice")
         remark     = request.POST.get("remark")
         try:
             invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
+            detail = "修改应收账款发票: 开票时间： " + datetime.datetime.strftime(localtime(invoice_obj.create_time), '%Y-%m-%d %H:%M:%S') + " 修改前票号：" + str(invoice_obj.invoice) + " 修改后票号： " + str(invoice) + " 修改前备注：" + str(invoice_obj.remark) + " 修改后备注： " + str(remark)
+            OPERATE_LOG.objects.create(user=request.user.username, field="票务中心", detail=detail)
             invoice_obj.invoice = invoice
             invoice_obj.remark = remark
             invoice_obj.save()
@@ -78,8 +90,11 @@ def edit_invoice(request):
             info = "修改失败"
         return  JsonResponse({"if_success":if_success, "info":info})
 
+@login_required
 def delete_invoice(request):
     if request.method == "POST":
+        if not request.user.has_perm("order_management.delete_recv_invoice"):
+            return JsonResponse({"if_success":0, "info":"没有进行此操作的权限，请联系管理员"})
         invoice_id = request.POST.get("invoice_id")
         #查看invoidobj是否存在
         # 筛选出来invoice对应的所有的receiveables
@@ -110,9 +125,12 @@ def delete_invoice(request):
                     #待办，此处应增加对于完成订单的控制
             except:
                 continue
+        detail = "删除应收账款发票: 开票时间： " + datetime.datetime.strftime(localtime(invoice_obj.create_time), '%Y-%m-%d %H:%M:%S') + "删除前票号：" + str(invoice_obj.invoice) + " 删除前备注：" + str(invoice_obj.remark)
+        OPERATE_LOG.objects.create(user=request.user.username, field="票务中心", detail=detail)
         invoice_obj.delete()
         return  JsonResponse({"if_success":1})
 
+@login_required
 def get_invoice_recv_bill(request):
     if request.method == "POST":
         invoice_id = request.POST.get('invoice_id')

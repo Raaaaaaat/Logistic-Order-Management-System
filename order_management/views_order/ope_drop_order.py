@@ -4,8 +4,16 @@ from order_management.models import ORDER
 from order_management.models import PAYABLES, RECEIVEABLES, LOG_TRACE
 from django.http import JsonResponse
 
-def ope_drop_order(request):
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
+
+@login_required
+def ope_drop_order(request):
+    if not request.user.has_perm("order_management.delete_order"):
+        if_success = 0
+        info = "操作失败：没有删除订单的权限，请联系管理员"
+        return JsonResponse({'if_success': if_success, 'info': info})
     if request.method=="POST":
         No = request.POST.get("No","")
         #联系删除这个ORDER所对应的所有应收应付款以及物流信息
