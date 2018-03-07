@@ -29,10 +29,10 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
             #新增模式
             # 检查重复
             if type == "0":
-                conflict_check = CLIENT.objects.filter(co_name=co_name).count()
+                conflict_check = CLIENT.objects.filter(co_name=co_name).exists()
             else:
-                conflict_check = CLIENT.objects.filter(contact_name=contact_name).count()
-            if conflict_check == 0:  # 没有重复冲突
+                conflict_check = CLIENT.objects.filter(contact_name=contact_name).exists()
+            if not conflict_check == 0:  # 没有重复冲突
                 No = ""  #自动生成下一个该有的客户编号
                 last_one = CLIENT.objects.last()
                 if last_one != None:    #说明之前已经有记录
@@ -42,8 +42,11 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
                 else:
                     No = "C001"
                 contract_file = request.FILES.get("contract_file", None)
-                file_path = "";
+                file_path = ""
                 if contract_file != None:
+                    if contract_file.size > 10485760:
+                        info = "文件过大"
+                        return redirect('/supplier?info=' + info)
                     file_path = contract_file._name #获取到源文件的名字
                     file_path = file_path.split(".").pop() #获取文件后缀
                     file_path = "/static/tmp_file/client/"+No+"."+file_path
@@ -65,10 +68,10 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
             #编辑模式
             # 检查重复
             if type == "0":
-                conflict_check = CLIENT.objects.filter(~Q(No=if_edit)&Q(co_name=co_name)).count()
+                conflict_check = CLIENT.objects.filter(~Q(No=if_edit)&Q(co_name=co_name)).exists()
             else:
-                conflict_check = CLIENT.objects.filter(~Q(No=if_edit)&Q(contact_name=contact_name)).count()
-            if conflict_check == 0:  # 没有重复冲突
+                conflict_check = CLIENT.objects.filter(~Q(No=if_edit)&Q(contact_name=contact_name)).exists()
+            if not conflict_check:  # 没有重复冲突
                 No = if_edit
                 try:
                     target_obj = CLIENT.objects.get(No=No)
@@ -93,6 +96,9 @@ def ope_edit_client(request):     #这个方法可以用来增加单条数据或
                         contract_file = request.FILES.get("contract_file", None)
                         file_path = ""
                         if contract_file != None:
+                            if contract_file.size > 10485760:
+                                info = "文件过大"
+                                return redirect('/supplier?info=' + info)
                             file_path = contract_file._name  # 获取到源文件的名字
                             file_path = file_path.split(".").pop()  # 获取文件后缀
                             file_path = "/static/tmp_file/client/" + No + "." + file_path

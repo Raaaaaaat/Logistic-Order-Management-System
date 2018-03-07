@@ -87,6 +87,7 @@
             </div>
         </div>
     </div>
+
 {% endblock %}
 
 {% block jscode %}
@@ -116,6 +117,7 @@
         $('#table_invoice').bootstrapTable({
             url: "{% url 'get_invoice_list' %}",    //请求数据的地址
             method: 'get',
+            uniqueId: "id",
             striped: true,
             cache: false,
             pagination: true,
@@ -164,19 +166,41 @@
                     field: 'create_time',
                     title: '出票时间',
                     align: 'center',
-                    width: 120,
+                    width: 150,
                 }, {
                     field: 'create_user',
                     title: '创建人',
                     align: 'center',
+                    width: 80,
+                }, {
+                    field: 'tot_receiveables',
+                    title: '总金额',
+                    align: 'center',
+                    width: 80,
+                }, {
+                    title: "收款进度",
+                    align: 'center',
+                    width: 200,
+                    formatter: function(index, row){
+                        var ratio = 100;
+                        if(row.tot_receiveables!==0){
+                            ratio = row.tot_received / row.tot_receiveables;
+                            ratio = ratio.toFixed(4) * 100;
+                        }
+                        return "<div class='progress progress-line-primary' style='width: 90%; margin-bottom: 0px; background-color: #76a8d3; margin:0 auto;' rel='tooltip' title='"+row.tot_received+" / "+row.tot_receiveables+"'>" +
+                            "<div class='progress-bar' role='progressbar' style='width: "+ratio+"%;'>" +
+
+                            "</div>" +
+                            "</div>";
+                    }
                 }, {
                     field: 'remark',
                     title: '备注',
                     align: 'center',
                     halign:'center',
-                    width: 80,
+                    width: 150,
                     formatter: function(index, row){
-                        if(row.description  != "")
+                        if(row.description  !== "")
                             return '<span rel="tooltip" title="'+row.remark+'" data-html="true" >'+row.remark+'</span>';
                         else
                             return "";
@@ -187,8 +211,9 @@
                     halign:'center',
                     width: 80,
                     formatter: function(index, row){
-                        return '<a data-id="'+row.id+'" class = "invoice_edit_btn"><i class="fa fa-pencil"></i></a> '+
-                               '<a data-id="'+row.id+'" class = "invoice_delete_btn"><i class="fa fa-trash"></i></a>';
+                        return '<a data-id="'+row.id+'" title="详细信息" class = "invoice_bill_btn"><i class="fa fa-bars"></i></a> '+
+                               '<a data-id="'+row.id+'" title="编辑" class = "invoice_edit_btn"><i class="fa fa-pencil"></i></a> '+
+                               '<a data-id="'+row.id+'" title="删除" class = "invoice_delete_btn"><i class="fa fa-trash"></i></a>';
                     },
                 },  {
                     title: '-',
@@ -207,12 +232,19 @@
 
         $('body').on('click', '.invoice_edit_btn', function(){
             var id = $(this).data("id");
-            myInputContent("修改备注","备注：",function(){
-                var remark = $("#modal_input").val();
+            var row = $('#table_invoice').bootstrapTable("getRowByUniqueId", id);
+            console.log(row);
+            myInputTwoContent("修改发票","票号：", "备注：", row.invoice, row.remark ,function(){
+                var invoice = $("#modal_input1").val();
+                var remark  = $("#modal_input2").val();
+                if(invoice ===""){
+                    toastr.error("票号不能为空");
+                    return;
+                }
                 $.ajax({
                     type: "POST",
                     url: "{% url 'edit_invoice' %}",
-                    data: {invoice_id: id, remark: remark},
+                    data: {invoice_id: id, invoice:invoice, remark: remark},
                     datatype: "html",
                     success: function (data) {
                         if(data.if_success === 1){
@@ -252,6 +284,37 @@
                     }
                 });
             });
+
+        });
+
+        $('body').on('click', '.invoice_bill_btn', function(){
+            var id = $(this).data("id");
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'get_invoice_recv_bill' %}",
+                    data: {invoice_id: id},
+                    datatype: "html",
+                    success: function (data) {
+                        data = data.data;
+                        console.log(data);
+                        var content = "";
+                        content += "<table class='table table-hover' style='table-layout: fixed;'><thead class='text-warning'><th>单号</th><th>提货日期</th><th>送货日期</th><th>起运地</th><th>目的地</th><th style='width:200px'>描述</th><th>应收金额</th></thead><tbody>";
+                        for (var i=0;i<data.length;i++){
+                            content += "<tr><td>"+data[i].order_No+"</td><td>"+data[i].pick_up_time+"</td>"+
+                                "<td>"+data[i].delivery_time+"</td><td>"+data[i].dep_city+"</td>"+
+                                "<td>"+data[i].des_city+"</td><td title='"+data[i].description+"'>"+data[i].description+"</td>"+
+                                "<td>"+data[i].receiveables+"</td></tr>";
+                        }
+
+                        content += "</tbody></table>";
+                        //console.log(content);
+                        myShowTableInfo("开票对账单", content);
+                    },
+                    error: function(){
+                        toastr.error("修改失败:网络错误");
+                    }
+                });
 
         });
     })

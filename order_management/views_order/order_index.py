@@ -10,6 +10,9 @@ from django.db.models import Q
 import datetime,time
 from django.utils.timezone import localtime
 
+
+@login_required
+@permission_required('order_management.view_order', login_url='/error?info=没有查看订单的权限，请联系管理员')
 def order_index(request):
 
     if request.method == "GET":
@@ -19,21 +22,21 @@ def order_index(request):
     elif request.method == "POST":
         bo_data = json.loads(request.body.decode())
         #这里通过POST.get()不能获取数据，数据以字典的形式放在请求的body部分，所以只能手动解析body
-        filter_No         = bo_data["filter_No"];
-        filter_client     = bo_data["filter_client"];
-        filter_supplier   = bo_data["filter_supplier"];
-        filter_dep_city   = bo_data["filter_dep_city"];
-        filter_des_city   = bo_data["filter_des_city"];
-        filter_pay_status = bo_data["filter_pay_status"];
-        filter_status     = json.loads(bo_data["filter_status"]);
-        filter_start_time = bo_data["filter_start_time"];
-        filter_end_time   = bo_data["filter_end_time"];
-        limit             = bo_data["limit"];
-        offset            = bo_data["offset"];
+        filter_No         = bo_data["filter_No"]
+        filter_client     = bo_data["filter_client"]
+        filter_supplier   = bo_data["filter_supplier"]
+        filter_dep_city   = bo_data["filter_dep_city"]
+        filter_des_city   = bo_data["filter_des_city"]
+        filter_pay_status = bo_data["filter_pay_status"]
+        filter_status     = json.loads(bo_data["filter_status"])
+        filter_start_time = bo_data["filter_start_time"]
+        filter_end_time   = bo_data["filter_end_time"]
+        limit             = bo_data["limit"]
+        offset            = bo_data["offset"]
         for i in range(len(filter_status)):
             filter_status[i] = int(filter_status[i])
 
-        query = Q()
+        query = Q(if_delete=0)
         if filter_No != "":
             query = query & Q(No__contains=filter_No)
         if filter_client != "":
@@ -90,11 +93,15 @@ def order_index(request):
                 line['remark'] = ""
             else:
                 line['remark'] = line['remark'].replace("\r\n", "<br>")
-            line["create_time"] = datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')
+            line["create_time"] = datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+            if line["pick_up_time"] != None:
+                line["pick_up_time"] = datetime.datetime.strftime(localtime(line["pick_up_time"]), '%Y-%m-%d')
+            if line["delivery_time"] != None:
+                line["delivery_time"] = datetime.datetime.strftime(localtime(line["delivery_time"]), '%Y-%m-%d')
             if line["client_id"] in client_names:
                 line["client_name"] = client_names[line["client_id"]]
             else:
-                line["client_name"] = "该客户已删除"
+                line["client_name"] = "已删除"
                 line["client_id"] = 0
         #返回表格的数据
         data = {

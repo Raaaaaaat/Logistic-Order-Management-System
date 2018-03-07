@@ -90,6 +90,14 @@
                                             <input type="text" class="form-control" placeholder="按单号进行搜索" id="f_order_No">
                                         </div>
                                 </div>
+                                <div class="col-md-7 col-lg-3">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">receipt</i>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="按票号进行搜索" id="f_invoice">
+                                        </div>
+                                </div>
                                 <div class="col-md-6 col-lg-3">
                                         <div class="input-group" title="按客户进行搜索">
                                             <span class="input-group-addon">
@@ -106,6 +114,9 @@
                                             <select id="f_supplier" class="form-control" style="width: 180px;"></select>
                                         </div>
                                 </div>
+
+                            </div>
+                            <div class="row">
                                 <div class="col-md-3 col-lg-3" >
                                     <div class="checkbox input-group" style = "margin-left:20px;">
                                         <label>
@@ -246,6 +257,7 @@ $(function(){
             params.f_create_end_time   = $('#f_create_end_time').val();
             params.f_clear_start_time  = $('#f_clear_start_time').val();
             params.f_clear_end_time    = $('#f_clear_end_time').val();
+            params.f_invoice           = $('#f_invoice').val();
             return params;
         },
         contentType: 'application/json',
@@ -266,7 +278,7 @@ $(function(){
                 field: 'create_time',
                 title: '接单时间',
                 align: 'center',
-                width: 150,
+                width: 80,
             }, {
                 field: 'order_No',
                 title: '单号',
@@ -296,7 +308,7 @@ $(function(){
                 title: '描述',
                 align: 'center',
                 halign:'center',
-                width: 80,
+                width: 150,
                 formatter: function(index, row){
                     if(row.description  != "")
                         return '<span rel="tooltip" title="'+row.description+'" data-html="true" >'+row.description+'</span>';
@@ -314,7 +326,7 @@ $(function(){
                 title: '已收金额',
                 align: 'center',
                 halign:'center',
-                width: 120,
+                width: 80,
             },  {
                 field: 'clear_time',
                 title: '收款时间',
@@ -351,6 +363,7 @@ $(function(){
         onPostBody: function(){
             //更新浮动title标签
             $('[rel="tooltip"]').tooltip();
+            fresh_count_recv_price();
         },
         onCheck: function(rows){
             fresh_count_recv_price();
@@ -375,7 +388,7 @@ $(function(){
                 t_receiveables += table_data[i].receiveables;
                 t_recvived += table_data[i].received;
             }
-            notice = "应收金额："+t_receiveables+"   已收金额："+t_recvived;
+            notice = "应收金额："+t_receiveables+"&nbsp;&nbsp;&nbsp;已收金额："+t_recvived;
         }else{
 
         }
@@ -390,16 +403,16 @@ $(function(){
             for (var i =0; i<select_lines.length; i++){
                 selections.push(select_lines[i].id);
             }
-            myInputInvoice(function(){
-                var invoice = $('#modal_input').val();
+            myInputContent("确定申请开票","备注信息：",function(){
+                var remark = $('#modal_input').val();
                 $.ajax({
                     type: "POST",
                     url: "{% url 'mark_recv_invoice' %}",
-                    data: {recv_ids:selections.join(","), invoice: invoice},
+                    data: {recv_ids:selections.join(","), remark: remark},
                     datatype: "html",
                     success: function (data) {
                         if(data.if_success == 1){
-                            toastr.success("票号录入成功");
+                            toastr.success("申请开票录入成功");
                             $('#table_recv').bootstrapTable('refresh');
                         }else{
                             toastr.error(data.info);
@@ -502,7 +515,7 @@ $(function(){
             params.f_create_end_time   = $('#f_create_end_time').val();
             params.f_clear_start_time  = $('#f_clear_start_time').val();
             params.f_clear_end_time    = $('#f_clear_end_time').val();
-
+            params.f_invoice           = $('#f_invoice').val();
             return params;
         },
         contentType: 'application/json',
@@ -523,7 +536,7 @@ $(function(){
                 field: 'create_time',
                 title: '接单时间',
                 align: 'center',
-                width: 150,
+                width: 80,
             }, {
                 field: 'order_No',
                 title: '单号',
@@ -562,7 +575,7 @@ $(function(){
                 title: '描述',
                 align: 'center',
                 halign:'center',
-                width: 80,
+                width: 150,
                 formatter: function(index, row){
                     if(row.description  != "")
                         return '<span rel="tooltip" title="'+row.description+'" data-html="true" >'+row.description+'</span>';
@@ -583,7 +596,7 @@ $(function(){
                 formatter: function(index, row){
                     return row.paid_cash+"/"+row.paid_oil;
                 },
-                width: 120,
+                width: 80,
             },  {
                 field: 'clear_time',
                 title: '付款时间',
@@ -621,6 +634,7 @@ $(function(){
             //更新浮动title标签
             $('#table_paya').find('span').tooltip();
             //console.log($('#table_paya').bootstrapTable("getData"));
+            fresh_count_pay_price();
         },
         onCheck: function(rows){
             fresh_count_pay_price();
@@ -647,7 +661,7 @@ $(function(){
                 t_paid_cash += table_data[i].paid_cash;
                 t_paid_oil += table_data[i].paid_oil;
             }
-            notice = "应付金额："+t_paya+"   已付金额："+t_paid_cash+"   已付油卡"+t_paid_oil;
+            notice = "应付金额："+t_paya+"&nbsp;&nbsp;&nbsp;已付金额："+t_paid_cash+"&nbsp;&nbsp;&nbsp;已付油卡"+t_paid_oil;
         }else{
 
         }

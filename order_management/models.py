@@ -71,13 +71,19 @@ class ORDER(models.Model):
     cargo_size     = models.FloatField(max_length=100, null=True)
     remark         = models.CharField(max_length=500, null=True)
     create_time    = models.DateTimeField(auto_now_add=True)
-    clear_time     = models.DateTimeField(null=True)
+    pick_up_time   = models.DateTimeField(null=True)
+    delivery_time  = models.DateTimeField(null=True)
     if_delete      = models.SmallIntegerField()
     class Meta:
-        permissions=(
+        permissions = (
             ("view_order", "Can access information of orders"),
-            ("view_trash_order", "Can access information of trash box"),
+            ("view_trash_order", "Can access information of orders dropped"),
+            ("view_order_finance", "Can access information of financal certer"),
+            # ("add_order",
+            # ("change_order",
+            # ("delete_order",
         )
+        ordering = ['-id']
 
 class SUP_STEP(models.Model): #供应商操作环节的列表
     name = models.CharField(max_length=100)
@@ -93,8 +99,14 @@ class PAYABLES(models.Model):
     paid_oil    = models.FloatField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
-    invoice     = models.CharField(max_length=200, null=True)
+    invoice     = models.CharField(max_length=200, null=True, default="")
     remark      = models.CharField(max_length=500, null=True)
+    class Meta:
+        permissions = (
+            ("paya_manage", "Can manage payables"),
+            ("paya_invoice","Can manage payables invoice"),
+            ("paya_verify", "Can verify payables"),
+        )
 
 
 class RECEIVEABLES(models.Model):
@@ -107,11 +119,18 @@ class RECEIVEABLES(models.Model):
     clear_time  = models.DateTimeField(null=True)
     invoice     = models.IntegerField(null=True)
     remark      = models.CharField(max_length=500, null=True)
+    class Meta:
+        permissions = (
+            ("recv_manage",  "Can manage receiveables"),
+            ("recv_invoice", "Can manage receiveables invoice"),#打开票务管理的权限
+            ("recv_verify",  "Can verify receiveables"),
+        )
 
 
 class LOG_TRACE(models.Model):
     order_id = models.IntegerField()
     status = models.CharField(max_length=50)
+    select_time   = models.DateTimeField(null=True)
     create_time   = models.DateTimeField()
     create_user   = models.CharField(max_length=100, null=True)
     desc   = models.CharField(max_length=50, null=True) #描述
@@ -123,3 +142,14 @@ class RECV_INVOICE(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     remark      = models.CharField(max_length=100, null=True)
     create_user = models.CharField(max_length=100)
+
+class OPERATE_LOG(models.Model):
+    time   = models.DateTimeField(auto_now_add=True)
+    user   = models.CharField(max_length=50)
+    field  = models.CharField(max_length=50)
+    detail = models.CharField(max_length=500, null=True)
+    class Meta:
+        permissions = (
+            ("view_operate_log", "can view operate log"),
+        )
+        ordering = ['-id']

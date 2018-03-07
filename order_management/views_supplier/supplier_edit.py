@@ -17,8 +17,10 @@ def supplier_edit(request):
         if request.user.has_perm('order_management.change_supplier_contract'):
             perm_contract = True
 
-        No = request.POST.get("No")
-        to_be_edit_obj = SUPPLIER.objects.get(No=No)
+        No = request.POST.get("No","")
+        to_be_edit_obj = SUPPLIER.objects.filter(No=No).first()
+        if to_be_edit_obj==None:
+            return redirect('/error?info=查询对象不存在')
         return render(request, 'supplier/add.html', {
             'No'            : to_be_edit_obj.No,
             "type"          : to_be_edit_obj.type,
