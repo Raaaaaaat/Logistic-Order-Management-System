@@ -246,6 +246,7 @@
                             success: function (data) {
                                 if(data.if_success===1){
                                     toastr.success("修改成功");
+                                    window.location.reload()
                                 }else{
                                     toastr.error(data.info);
                                 }
