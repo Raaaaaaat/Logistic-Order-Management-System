@@ -157,7 +157,7 @@ class OPERATE_LOG(models.Model):
 class EDIT_PRICE_REQUEST(models.Model): #只有对于上一个月以及之前的订单才需要进入这个表
     time         = models.DateTimeField(auto_now_add=True)
     user         = models.CharField(max_length=50)
-    type         = models.CharField(max_length=10) #recv 或者paya
+    type         = models.CharField(max_length=20) #recv 或者paya代表修改这个而价格，或者recv_delete或者paya_delete
     target_id    = models.IntegerField() #分录在各自表中的主码
     target_price = models.FloatField()
     class Meta:

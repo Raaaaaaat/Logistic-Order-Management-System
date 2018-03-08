@@ -91,6 +91,8 @@ urlpatterns = [
     path('get_invoice_recv_bill/',tmr_views.get_invoice_recv_bill,name='get_invoice_recv_bill'),
 
     #manage part
-    path('operate_log/',  tmr_views.operate_log_index,  name='operate_log'),
-    path('get_order_dropped/',  tmr_views.get_order_dropped,  name='get_order_dropped'),
+    path('operate_log/',         tmr_views.operate_log_index,   name='operate_log'),
+    path('get_order_dropped/',   tmr_views.get_order_dropped,   name='get_order_dropped'),
+    path('edit_price_request/',  tmr_views.edit_price_request,  name='edit_price_request'),
+    path('request_handler/',     tmr_views.request_handler,     name='request_handler'),
 ]

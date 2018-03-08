@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.utils.timezone import localtime
 
 @login_required
-@permission_required('order_management.view_operate_log', login_url='/no_perm/')
+@permission_required('order_management.view_operate_log', login_url='/error?info=没有查看操作日志的权限，请联系管理员')
 def operate_log_index(request):
 
     if request.method == "GET":
