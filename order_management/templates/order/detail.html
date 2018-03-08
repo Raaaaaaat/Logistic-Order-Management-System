@@ -231,29 +231,30 @@
 
             $('body').on('click', '.log_edit_btn', function(){
                 var trace_id     = $(this).data('trace_id');
-                var $this = $(this).parent().prev().prev().prev().children();
-                console.log($this);
-                $this.editable({
-                    emptytext: "---",
-                    success: function (response, newValue) {
-                        $.ajax({
+                var desc = $(this).parent().prev().prev().prev().children().html();
+                var date = $(this).parent().prev().prev().prev().prev().html();
+                console.log(desc);
+                console.log(date);
+                myInputDateAndContent("修改物流跟踪", "日期", "描述", date, desc, function(){
+                    var new_date = $("#modal_input1").val();
+                    var new_desc = $("#modal_input2").val();
+                    $.ajax({
                             type: "POST",
                             url: "{% url 'ope_edit_trace' %}",
-                            data: {trace_id:trace_id, desc:newValue},
+                            data: {trace_id:trace_id, desc:new_desc, date: new_date},
                             datatype: "html",
                             success: function (data) {
                                 if(data.if_success===1){
                                     toastr.success("修改成功");
-                                    $this.editable("destroy");
                                 }else{
                                     toastr.error(data.info);
                                 }
-
+                            },
+                            error: function(){
+                                toastr.error("网络错误");
                             },
                         });
-                    }
                 });
-
             });
 
             $.ajax({

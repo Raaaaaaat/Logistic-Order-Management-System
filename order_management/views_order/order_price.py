@@ -46,6 +46,9 @@ def add_receiveables(request):
             if_success = 0
             info = "订单对象不存在"
         else:
+            if order_obj.status > 4:
+                order_obj.status = 4
+                order_obj.save()
             description = request.POST.get("description","")
             price = request.POST.get("price")
             RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
