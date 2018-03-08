@@ -28,7 +28,7 @@
                         success: function (data) {  //这里检查data.info的值，如果登录成功就为1，否则为0，在这里做一样的判断
                             //console.log(data.info)
                             if(data.info==1){
-                                window.location.href="/client"    //这里跳转到正式界面
+                                window.location.href="/"    //这里跳转到正式界面
                             }else{
                                 $('#note').html("Wrong Username or Password")
                             }
