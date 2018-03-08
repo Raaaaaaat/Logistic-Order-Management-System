@@ -199,3 +199,35 @@ function myInputTwoContent(title, note1, note2, default1, default2, call_back_fu
     $('#modal_click').click(call_back_func);
     $('#popModal').modal();
 }
+
+function myInputDateAndContent(title, note1, note2, default1, default2, call_back_func)
+{
+    var modalHtml = "\
+		<div class='modal-dialog'>\
+			<div class='modal-content'>\
+				<div class='modal-header'>\
+				    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\
+				    <h4 class=\"modal-title\">"+title+"</h4>\
+				</div>\
+				<div class='modal-body'>\
+					<p>"+note1+"</p>\
+					<input type='text' id='modal_input1' value='"+default1+"'>\
+					<p>"+note2+"</p>\
+					<input type='text' id='modal_input2' value='"+default2+"'>\
+				</div>\
+				<div class='modal-footer'>\
+					<button type='button' class='btn btn-default' data-dismiss='modal'>取消</button>\
+					<button type='button' class='btn btn-default' id='modal_click' data-dismiss='modal'>确认</button>\
+				</div>\
+			</div>\
+	    </div>";
+    $('#popModal').html(modalHtml);
+    $('#modal_input1').datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000,
+            });
+    $('#modal_click').click(call_back_func);
+    $('#popModal').modal();
+}

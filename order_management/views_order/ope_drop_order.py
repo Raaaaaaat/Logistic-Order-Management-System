@@ -5,7 +5,6 @@ from order_management.models import PAYABLES, RECEIVEABLES, LOG_TRACE
 from django.http import JsonResponse
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
 
 
 @login_required
