@@ -103,9 +103,9 @@ class PAYABLES(models.Model):
     remark      = models.CharField(max_length=500, null=True)
     class Meta:
         permissions = (
-            ("paya_manage", "Can manage payables"),
-            ("paya_invoice","Can manage payables invoice"),
-            ("paya_verify", "Can verify payables"),
+            ("paya_manage", "Can manage(add/change/delete) payables"),
+            ("paya_invoice","Can manage(add/change/delete) payables invoice"),
+            ("paya_verify", "Can verify and unverify payables"),
         )
 
 
@@ -121,9 +121,9 @@ class RECEIVEABLES(models.Model):
     remark      = models.CharField(max_length=500, null=True)
     class Meta:
         permissions = (
-            ("recv_manage",  "Can manage receiveables"),
-            ("recv_invoice", "Can manage receiveables invoice"),#打开票务管理的权限
-            ("recv_verify",  "Can verify receiveables"),
+            ("recv_manage",  "Can manage(add/change/delete) receiveables"),
+            ("recv_invoice", "Can view list of receiveables invoice"),#打开票务管理的权限
+            ("recv_verify",  "Can verify and unverify receiveables"),
         )
 
 

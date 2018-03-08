@@ -1,0 +1,205 @@
+{% extends 'manage/base.html' %}
+{% block style %}
+    <style>
+
+    .card-content .form-group{
+        display: inline-block;
+        margin: 0px 0 0 0;
+        padding-bottom: 10px;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-nav-tabs">
+                        <div class="card-header" data-background-color="purple">
+                                    <div class="nav-tabs-navigation">
+                                        <div class="nav-tabs-wrapper">
+                                            <span class="nav-tabs-title">管理中心:</span>
+                                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                                <li>
+                                                    <a href="/operate_log">
+                                                        <i class="material-icons">bug_report</i> 操作日志
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                                <li class="active">
+                                                    <a href="#">
+                                                        <i class="material-icons">code</i> 废弃订单
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                        <div class="card-content table-responsive ">
+                            <div class="row">
+
+
+                            </div>
+
+
+                            <div class="tab-content">
+                                <div class="">
+
+                                    <table id="table_trash" style=" table-layout: fixed;" class = "bt_table"></table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block jscode %}
+    <script>
+
+    $(function(){
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+        $("#table_trash").bootstrapTable({
+            url: "{% url 'get_order_dropped' %}",    //请求数据的地址
+            method: 'post',
+            striped: true,
+            cache: false,
+            pagination: true,
+            sortable: false,
+            clickToSelect: true,
+            sortOrder: "desc",
+            pageNumber:1,
+            pageSize: 10,
+            pageList: [10, 25, 50, 100, 500],
+            sidePagination: "server",
+            queryParams: function(params){
+                return params;
+            },
+            contentType: 'application/json',
+            resizable: true,
+            showColumns: true,
+            //Indicate which field is an identity field.
+            idField : "id",
+                //接单时间、单号、客户姓名、供应商姓名、起运地、目的地、应付金额、已付金额、已付油卡、付款时间、状态（已核销\未核销）
+            columns: [{
+                field: 'No',
+                title: '编号',
+                align: 'center',
+                width: 100,
+            }, {
+                field: 'status',
+                title: '状态',
+                align: 'center',
+                width: 80,
+                formatter: function(index, row){
+                    return order_status_switch(row.status);
+                }
+            }, {
+                field: 'client_name',
+                title: '客户名称',
+                align: 'center',
+                width: 100,
+            }, {
+                field: 'create_time',
+                title: '下单时间',
+                align: 'center',
+                halign:'center',
+                width: 100,
+           },  {
+                field: 'cargo_name',
+                title: '货物名称',
+                align: 'center',
+                halign:'center',
+                width: 80,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.cargo_name+'">'+row.cargo_name+'</span>';
+                }
+           },  {
+                field: 'cargo_weight',
+                title: '货物重量(KG)',
+                align: 'right',
+                halign:'center',
+                width: 110,
+            },  {
+                field: 'cargo_quantity',
+                title: '货物数量',
+                align: 'right',
+                halign:'center',
+                width: 80,
+            },  {
+                field: 'cargo_size',
+                title: '货物体积(方)',
+                align: 'right',
+                halign:'center',
+                width: 110,
+            },  {
+                field: 'dep_city',
+                title: '起运城市',
+                align: 'center',
+                halign:'center',
+                width: 90,
+            },  {
+                field: 'des_city',
+                title: '目的城市',
+                align: 'center',
+                halign:'center',
+                width: 90,
+            }, {
+                field: 'rec_name',
+                title: '收件人姓名',
+                align: 'center',
+                halign:'center',
+                width: 90,
+            }, {
+                field: 'rec_tel',
+                title: '收件人电话',
+                align: 'center',
+                halign:'center',
+                width: 90,
+            }, {
+                field: 'dep_place',
+                title: '起运详细地址',
+                align: 'left',
+                halign:'center',
+                width: 120,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.dep_place+'">'+row.dep_place+'</span>';
+                }
+            },  {
+                field: 'des_place',
+                title: '目的详细地址',
+                align: 'left',
+                halign:'center',
+                width: 120,
+                formatter: function(index, row){
+                    return '<span rel="tooltip" title="'+row.des_place+'">'+row.des_place+'</span>';
+                }
+            },  {
+                field: 'remark',
+                title: '备注',
+                align: 'center',
+                halign:'center',
+                width: 50,
+                formatter: function(index, row){
+                    if(row.remark  !== "")
+                        return '<a rel="tooltip" title="<p align=\'left\'>'+row.remark+'</p>" data-html="true" ><i class="fa fa-comment"></i></a>';
+                    else
+                        return "";
+                },
+            }, {
+                title: '-',
+            }],
+            onPostBody: function(){
+                //更新浮动title标签
+                $('[rel="tooltip"]').tooltip();
+            },
+
+        });
+    })
+    </script>
+{% endblock %}
+

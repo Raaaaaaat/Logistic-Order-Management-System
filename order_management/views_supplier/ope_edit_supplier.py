@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 
 @login_required
-@permission_required('order_management.add_supplier', login_url='/no_perm/')
 def ope_edit_supplier(request):     #这个方法可以用来增加单条数据或者修改数据
     if request.method == "POST":
         if_edit     = request.POST.get("if_edit")       #是否是编辑模式 0代表新建，不是0代表编辑并且此值为客户编号
@@ -26,7 +25,9 @@ def ope_edit_supplier(request):     #这个方法可以用来增加单条数据�
         remark         = request.POST.get("remark")
         if if_edit=="0":
             #新增模式
-
+            if not request.user.has_perm("order_management.add_supplier"):
+                info = "操作失败：没有进行此操作的权限"
+                return redirect('/supplier?info=' + info)
             #检查重复
             if type=="0":
                 conflict_check = SUPPLIER.objects.filter(co_name=co_name).exists()
@@ -45,7 +46,7 @@ def ope_edit_supplier(request):     #这个方法可以用来增加单条数据�
                 file_path = ""
                 if contract_file != None:
                     if contract_file.size > 10485760:
-                        info = "文件过大"
+                        info = "文件过大,不可大于10M"
                         return redirect('/supplier?info=' + info)
                     file_path = contract_file._name #获取到源文件的名字
                     file_path = file_path.split(".").pop() #获取文件后缀
@@ -66,6 +67,9 @@ def ope_edit_supplier(request):     #这个方法可以用来增加单条数据�
                 info = "添加失败，该供应商已存在"
         else:
             #编辑模式
+            if not request.user.has_perm("order_management.change_supplier"):
+                info = "操作失败：没有进行此操作的权限"
+                return redirect('/supplier?info=' + info)
             # 检查重复
             if type == "0":
                 conflict_check = SUPPLIER.objects.filter(~Q(No=if_edit) & Q(co_name=co_name)).exists()
