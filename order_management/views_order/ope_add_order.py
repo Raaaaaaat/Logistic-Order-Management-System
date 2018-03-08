@@ -46,7 +46,7 @@ def ope_add_order(request):
 
         if if_edit=="0": #添加模式
             # 自动生成下一个该有的客户编号
-            last_one = ORDER.objects.last()
+            last_one = ORDER.objects.first()
             currentMonth = time.strftime("%Y%m", time.localtime())
             if last_one != None:  # 说明之前已经有记录
                 if last_one.No[2:8]==currentMonth:

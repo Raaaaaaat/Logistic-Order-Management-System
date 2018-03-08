@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from order_management.models import CLIENT
+from django.contrib.auth.decorators import login_required
 
-
-
+@login_required
 def get_client_details(request):
     if request.method == "POST":
         client_id = request.POST.get("client_id")

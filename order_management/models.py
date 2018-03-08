@@ -153,3 +153,15 @@ class OPERATE_LOG(models.Model):
             ("view_operate_log", "can view operate log"),
         )
         ordering = ['-id']
+
+class EDIT_PRICE_REQUEST(models.Model): #只有对于上一个月以及之前的订单才需要进入这个表
+    time         = models.DateTimeField(auto_now_add=True)
+    user         = models.CharField(max_length=50)
+    type         = models.CharField(max_length=10) #recv 或者paya
+    target_id    = models.IntegerField() #分录在各自表中的主码
+    target_price = models.FloatField()
+    class Meta:
+        permissions = (
+            ("handle_edit_price_request", "can accept or refuse request asking to edit price"),
+        )
+        ordering = ['-id']
