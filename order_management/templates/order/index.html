@@ -305,7 +305,7 @@
                 width: 100,
                 formatter: function(index, row){
                     if(row.client_id != 0)
-                        return '<a href="#" class = "client_detail" data-client_id = "'+row.client_id+'">'+row.client_name+'</a>';
+                        return '<a href="#" class = "client_detail" data-client_id = "'+row.client_id+'" rel="tooltip" title="'+row.client_name+'">'+row.client_name+'</a>';
                     else
                         return row.client_name;
                 }
