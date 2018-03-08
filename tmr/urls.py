@@ -96,3 +96,6 @@ urlpatterns = [
     path('edit_price_request/',  tmr_views.edit_price_request,  name='edit_price_request'),
     path('request_handler/',     tmr_views.request_handler,     name='request_handler'),
 ]
+
+handler404 = tmr_views.page_not_found
+handler500 = tmr_views.page_not_found

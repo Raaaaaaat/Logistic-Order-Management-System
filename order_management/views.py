@@ -50,3 +50,6 @@ from django.shortcuts import render
 def error(reqeust):
     info = reqeust.GET.get("info","")
     return render(reqeust, 'error.html',{"info":info})
+
+def page_not_found(request):
+    return render(request, '404.html')
