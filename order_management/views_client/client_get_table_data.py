@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 
 @login_required
-@permission_required('order_management.view_client', login_url='/no_perm/')
+@permission_required('order_management.view_client', login_url='/error?info=操作失败：没有查看客户的权限')
 def client_get_table_data(request):
     offset = int(request.GET.get('offset', 0))
     limit = int(request.GET.get('limit', 10))

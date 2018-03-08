@@ -2,7 +2,9 @@ from django.http import JsonResponse
 from order_management.models import SUPPLIER
 from django.db.models import Q
 
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def get_supplier_options(request):
     if request.method == "GET":
         query = request.GET.get("q","")

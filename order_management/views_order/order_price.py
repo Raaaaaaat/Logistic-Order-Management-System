@@ -6,8 +6,11 @@ from order_management.models import PAYABLES
 from order_management.models import SUP_STEP
 from order_management.models import SUPPLIER
 from order_management.models import OPERATE_LOG
+from order_management.models import EDIT_PRICE_REQUEST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
+import json,time, datetime
+import pytz
 
 @login_required
 @permission_required('order_management.view_order', login_url='/error?info=没有查看订单的权限，请联系管理员')
@@ -116,18 +119,34 @@ def update_receiveables_price(request):
         if_success = 0
         info = ""
         try:
+
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
             if rec_obj.invoice == None:
-                order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
-                if order_obj == None:
-                    detail = "更新应收款价格：发生错误"
+                # 检查创建时间是否是上个月，如果不是就直接修改，否则递交申请给财务
+                devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1,tzinfo=pytz.timezone('Asia/Shanghai'))
+                if rec_obj.create_time < devider:
+                    EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="recv", target_id=rec_obj.id,
+                                                      target_price=price)
+                    # 增加日志
+                    order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+                    if order_obj == None:
+                        detail = "申请更新应收款价格：发生错误"
+                    else:
+                        detail = "申请更新 " + order_obj.No+" 应收款价格："+rec_obj.description + " 旧价格：" + str(rec_obj.receiveables) + " 为新价格：" + str(price)
+                    OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+                    if_success = 0
+                    info = "由于分录创建时间为上个月，无法直接修改价格，已经向财务部分递交申请"
                 else:
-                    detail = "更新 " + order_obj.No + " 应收款价格：" + rec_obj.description + " 旧价格：" + str(rec_obj.receiveables) + " 为新价格：" + str(price)
-                OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
-                rec_obj.receiveables = price
-                rec_obj.save()
-                if_success = 1
-                info = "修改成功"
+                    order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+                    if order_obj == None:
+                        detail = "更新应收款价格：发生错误"
+                    else:
+                        detail = "更新 " + order_obj.No + " 应收款价格：" + rec_obj.description + " 旧价格：" + str(rec_obj.receiveables) + " 为新价格：" + str(price)
+                    OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+                    rec_obj.receiveables = price
+                    rec_obj.save()
+                    if_success = 1
+                    info = "修改成功"
             else:
                 if_success = 0
                 info = "已开票的分录无法修改价格，请先删除发票信息"
@@ -176,14 +195,32 @@ def add_payables(request):
 
         step = request.POST.get("step")
         supplier_id = request.POST.get("supplier_id")
+        #检查供应商的有效其是否生效
+        sup_obj = SUPPLIER.objects.filter(id=supplier_id).first()
+        if sup_obj==None:
+            return JsonResponse({"if_success": 0, "info": "供应商不存在"})
+        else:
+            start_time = sup_obj.contract_start
+            end_time = sup_obj.contract_end
+            now = datetime.datetime.now()
+            if start_time != "":
+                start_time = datetime.datetime.strptime(start_time, "%m/%d/%Y")
+                if now < start_time:
+                    return JsonResponse({"if_success": 0, "info": "供应商不在有效期"})
+
+            if end_time != "":
+                end_time = datetime.datetime.strptime(end_time, "%m/%d/%Y") + datetime.timedelta(days=1)
+                if now > end_time:
+                    return JsonResponse({"if_success": 0, "info": "供应商不在有效期"})
         description = request.POST.get("description")
         price = request.POST.get("price")
         PAYABLES.objects.create(status=0, order_id=order_id,description=description,
                                 payables=price, paid_cash=0, paid_oil=0, step=step, supplier_id=supplier_id)
         order_obj = ORDER.objects.get(id=order_id)
-        detail = "增加 " + order_obj.No + " 应付款：" + str(price) + " 供应商：" + SUPPLIER.objects.get(id=supplier_id).No + " 描述：" + description
+        detail = "增加 " + order_obj.No + " 应付款：" + str(price) + " 供应商：" + sup_obj.No + " 描述：" + description
         OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
         return JsonResponse({"if_success":1, "info":"添加成功"})
+
 @login_required
 def delete_payables(request):
     if request.method == "POST":
@@ -210,6 +247,7 @@ def delete_payables(request):
             if_success = 0
         return JsonResponse({"if_success":if_success, "info":info})
     return JsonResponse({})
+
 @login_required
 def update_payables_info(request):
     if request.method == "POST":
@@ -218,6 +256,23 @@ def update_payables_info(request):
         pay_id = request.POST.get("pay_id",0)
         desc = request.POST.get("desc","")
         supplier_id = request.POST.get("supplier_id")
+        # 检查供应商的有效其是否生效
+        sup_obj = SUPPLIER.objects.filter(id=supplier_id).first()
+        if sup_obj == None:
+            return JsonResponse({"if_success": 0, "info": "供应商不存在"})
+        else:
+            start_time = sup_obj.contract_start
+            end_time = sup_obj.contract_end
+            now = datetime.datetime.now()
+            if start_time != "":
+                start_time = datetime.datetime.strptime(start_time, "%m/%d/%Y")
+                if now < start_time:
+                    return JsonResponse({"if_success": 0, "info": "供应商不在有效期"})
+
+            if end_time != "":
+                end_time = datetime.datetime.strptime(end_time, "%m/%d/%Y") + datetime.timedelta(days=1)
+                if now > end_time:
+                    return JsonResponse({"if_success": 0, "info": "供应商不在有效期"})
         if_success = 0
         info = ""
         try:
@@ -236,6 +291,7 @@ def update_payables_info(request):
         except:
             info = "修改失败：记录不存在"
         return JsonResponse({"if_success":if_success, "info":info})
+
 @login_required
 def update_payables_price(request):
     if request.method == "POST":
@@ -248,17 +304,32 @@ def update_payables_price(request):
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
             if pay_obj.invoice == None or pay_obj.invoice == "":
-                #增加日志
-                order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
-                if order_obj == None:
-                    detail = "更新应收款价格：发生错误"
+                #检查创建时间是否是上个月，如果不是就直接修改，否则递交申请给财务
+                devider = datetime.datetime(datetime.date.today().year,datetime.date.today().month,1, tzinfo=pytz.timezone('Asia/Shanghai'))
+                if pay_obj.create_time < devider:
+                    EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="paya", target_id=pay_obj.id, target_price=price)
+                    # 增加日志
+                    order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+                    if order_obj == None:
+                        detail = "申请更新应收款价格：发生错误"
+                    else:
+                        detail = "申请更新 " + order_obj.No + " 应付款价格：" + pay_obj.description + " 旧价格：" + str(
+                            pay_obj.payables) + " 为新价格：" + str(price)
+                    OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
+                    if_success = 0
+                    info = "由于分录创建时间为上个月，无法直接修改价格，已经向财务部分递交申请"
                 else:
-                    detail = "更新 " + order_obj.No + " 应付款价格：" + pay_obj.description + " 旧价格：" + str(pay_obj.payables) + " 为新价格：" + str(price)
-                OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
-                pay_obj.payables = price
-                pay_obj.save()
-                if_success = 1
-                info = "修改成功"
+                    #增加日志
+                    order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+                    if order_obj == None:
+                        detail = "更新应收款价格：发生错误"
+                    else:
+                        detail = "更新 " + order_obj.No + " 应付款价格：" + pay_obj.description + " 旧价格：" + str(pay_obj.payables) + " 为新价格：" + str(price)
+                    OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
+                    pay_obj.payables = price
+                    pay_obj.save()
+                    if_success = 1
+                    info = "修改成功"
             else:
                 if_success = 0
                 info = "已经开票的分录无法修改价格，请先清空发票信息"
