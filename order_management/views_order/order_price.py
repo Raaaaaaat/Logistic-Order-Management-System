@@ -65,15 +65,29 @@ def delete_receiveables(request):
         try:
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
             if rec_obj.invoice == None:
-                order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
-                if order_obj == None:
-                    detail = "删除应收款：发生错误"
+                devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1, tzinfo=pytz.timezone('Asia/Shanghai'))
+                if rec_obj.create_time < devider:
+                    EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="recv_delete",target_id=rec_obj.id,target_price=0)
+                    # 增加日志
+                    order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+                    if order_obj == None:
+                        detail = "申请删除应收款：发生错误"
+                    else:
+                        detail = "申请删除 " + order_obj.No + " 应收款：" + str(
+                            rec_obj.receiveables) + " 描述：" + rec_obj.description
+                    OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+                    if_success = 2
+                    info = "由于分录创建时间为上个月，无法直接删除应付，已经向财务部分递交申请"
                 else:
-                    detail = "删除 " + order_obj.No + " 应收款：" + str(rec_obj.receiveables) + " 描述：" + rec_obj.description
-                OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
-                rec_obj.delete()
-                if_success = 1
-                info = "删除成功"
+                    order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+                    if order_obj == None:
+                        detail = "删除应收款：发生错误"
+                    else:
+                        detail = "删除 " + order_obj.No + " 应收款：" + str(rec_obj.receiveables) + " 描述：" + rec_obj.description
+                    OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+                    rec_obj.delete()
+                    if_success = 1
+                    info = "删除成功"
             else:
                 if_success = 0
                 info = "已开票的分录无法删除，请先删除发票信息"
@@ -227,15 +241,29 @@ def delete_payables(request):
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
             if pay_obj.invoice == None or pay_obj.invoice=="":
-                order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
-                if order_obj == None:
-                    detail = "删除应收款：发生错误"
+                devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1, tzinfo=pytz.timezone('Asia/Shanghai'))
+                if pay_obj.create_time < devider:
+                    EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="paya_delete", target_id=pay_obj.id,
+                                                      target_price=0)
+                    # 增加日志
+                    order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+                    if order_obj == None:
+                        detail = "申请删除应收款：发生错误"
+                    else:
+                        detail = "申请删除 " + order_obj.No + " 应付款：" + str(pay_obj.payables) + " 描述：" + pay_obj.description
+                    OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
+                    if_success = 2
+                    info = "由于分录创建时间为上个月，无法直接删除应付，已经向财务部分递交申请"
                 else:
-                    detail = "删除 " + order_obj.No + " 应付款：" + str(pay_obj.payables) + " 描述：" + pay_obj.description
-                OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
-                pay_obj.delete()
-                if_success = 1
-                info = "删除成功"
+                    order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+                    if order_obj == None:
+                        detail = "删除应收款：发生错误"
+                    else:
+                        detail = "删除 " + order_obj.No + " 应付款：" + str(pay_obj.payables) + " 描述：" + pay_obj.description
+                    OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
+                    pay_obj.delete()
+                    if_success = 1
+                    info = "删除成功"
             else:
                 if_success = 0
                 info = "已经开票的分录无法删除，请先清空发票信息"

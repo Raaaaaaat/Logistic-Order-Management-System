@@ -1,0 +1,230 @@
+{% extends 'manage/base.html' %}
+{% block style %}
+    <style>
+
+    .card-content .form-group{
+        display: inline-block;
+        margin: 0px 0 0 0;
+        padding-bottom: 10px;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-nav-tabs">
+                        <div class="card-header" data-background-color="purple">
+                                    <div class="nav-tabs-navigation">
+                                        <div class="nav-tabs-wrapper">
+                                            <span class="nav-tabs-title">管理中心:</span>
+                                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                                <li>
+                                                    <a href="/operate_log">
+                                                        <i class="material-icons">bug_report</i> 操作日志
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/get_order_dropped">
+                                                        <i class="material-icons">code</i> 废弃订单
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                                <li class="active">
+                                                    <a href="#">
+                                                        <i class="material-icons">code</i> 改价请求
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                        <div class="card-content table-responsive ">
+
+                            <div class="tab-content">
+                                <div class="">
+                                    <table id="table_request" style=" table-layout: fixed;" class = "bt_table"></table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block jscode %}
+    <script>
+
+    $(function(){
+        $('.datepicker').datepicker({
+
+            weekStart:1, //1代表从一周周一开始，0代表从周天开始
+            autoclose:true,
+            clearBtn:true,
+            zIndexOffset: 10000,
+        });
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+        $("#table_request").bootstrapTable({
+            url: "{% url 'edit_price_request' %}",    //请求数据的地址
+            method: 'post',
+            striped: true,
+            cache: false,
+            pagination: true,
+            sortable: false,
+            clickToSelect: true,
+            sortOrder: "desc",
+            pageNumber:1,
+            pageSize: 10,
+            pageList: [10, 25, 50, 100, 500],
+            sidePagination: "server",
+            queryParams: function(params){
+                return params;
+            },
+            contentType: 'application/json',
+            resizable: true,
+            showColumns: true,
+            //Indicate which field is an identity field.
+            idField : "id",
+                //接单时间、单号、客户姓名、供应商姓名、起运地、目的地、应付金额、已付金额、已付油卡、付款时间、状态（已核销\未核销）
+                columns: [{
+                    field: 'index',
+                    title: '编号',
+                    align: 'center',
+                    width: 50,
+                }, {
+                    field: 'time',
+                    title: '申请时间',
+                    align: 'center',
+                    width: 150,
+                }, {
+                    field: 'user',
+                    title: '申请人员',
+                    align: 'center',
+                    width: 70,
+                }, {
+                    title: '申请类型',
+                    align: 'center',
+                    width: 100,
+                    formatter: function(index, row){
+                        var type = row.type;
+                        if (type === "recv")
+                            type = "修改应收款";
+                        else if (type === "recv_delete")
+                            type = "删除应收款";
+                        else if (type === "paya")
+                            type = "修改应付款";
+                        else if (type === "paya_delete")
+                            type = "删除应付款";
+                        return type;
+
+                    }
+                },  {
+                    field: 'order_No',
+                    title: '单号',
+                    align: 'center',
+                    width: 120,
+
+                },  {
+                    field: 'target_create_time',
+                    title: '分录创建时间',
+                    align: 'center',
+                    halign: 'center',
+                    width: 150,
+
+                },  {
+                    field: 'description',
+                    title: '原始描述',
+                    align: 'left',
+                    halign: 'center',
+                    width: 100,
+
+                },  {
+                    field: 'old_price',
+                    title: '原始价格',
+                    align: 'center',
+                    halign: 'center',
+                    width: 80,
+
+                },  {
+                    field: 'target_price',
+                    title: '目标价格',
+                    align: 'center',
+                    halign: 'center',
+                    width: 80,
+
+                },  {
+                    title: '操作',
+                    align: 'center',
+                    halign:'center',
+                    width: 80,
+                    formatter: function(index, row){
+                        return '<a data-id="'+row.id+'" title="批准" class = "accept_btn"><i class="fa fa-check"></i></a> '+
+                               '<a data-id="'+row.id+'" title="拒绝" class = "refuse_btn"><i class="fa fa-close"></i></a>';
+                    },
+                },  {
+                    title: '-',
+                }],
+            onPostBody: function(){
+                //更新浮动title标签
+                $('[rel="tooltip"]').tooltip();
+            },
+
+        });
+
+        $("body").on("click",".refuse_btn",function(){
+            var id = $(this).data("id");
+            myConfirm("是否要拒绝此项操作",function(){
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'request_handler' %}",
+                    data: {id:id, if_accept:0},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("批准成功，申请已经被拒绝");
+                            $('#table_request').bootstrapTable('refresh');
+                        }else{
+                            toastr.error(data.info);
+                        }
+                    },
+                    error: function(){
+                        toastr.error("网络错误");
+                    },
+                });
+            });
+
+        });
+        $("body").on("click",".accept_btn",function(){
+            var id = $(this).data("id");
+            myConfirm("是否要批准此项操作",function(){
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'request_handler' %}",
+                    data: {id:id, if_accept:1},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("批准成功，申请已经生效");
+                            $('#table_request').bootstrapTable('refresh');
+                        }else{
+                            toastr.error(data.info);
+                        }
+                    },
+                    error: function(){
+                        toastr.error("网络错误");
+                    },
+                });
+            });
+
+        });
+
+    })
+    </script>
+{% endblock %}
+

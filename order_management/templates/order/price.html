@@ -28,12 +28,12 @@
                         <h3 class="title" style="display: inline; float:right; margin-right:20px;" id="pay_price_display">￥0.00</h3>
                         <table id="table_payables" style=" table-layout: fixed;"></table>
                     </div>
+                    <button class="btn btn-primary btn-xs" id="jump_detail">详细信息</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<table id="tablecase"></table>
 
 {% endblock %}
 
@@ -41,7 +41,11 @@
 <script>
 
 
-$(function(){   //应收账款
+$(function(){
+    $("#jump_detail").click(function(){
+        window.location.href="/order_detail?No={{ No }}";
+    });
+    //应收账款
     var $table_receiveables = $("#table_receiveables");
     $table_receiveables.bootstrapTable({
         uniqueId: "id",
@@ -525,7 +529,7 @@ $(function(){   //应付账款
                     }});
                 }else if(data.if_success===2){
                     toastr.info(data.info);
-                    $table_receiveables.bootstrapTable("updateByUniqueId",{"id":id});
+                    $table_payables.bootstrapTable("updateByUniqueId",{"id":id});
                 }else
                     toastr.error(data.info);
             },
