@@ -46,9 +46,6 @@ def add_receiveables(request):
             if_success = 0
             info = "订单对象不存在"
         else:
-            if order_obj.status != 4:
-                order_obj.status=4
-                order_obj.save()
             description = request.POST.get("description","")
             price = request.POST.get("price")
             RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
@@ -134,7 +131,7 @@ def update_receiveables_price(request):
                     else:
                         detail = "申请更新 " + order_obj.No+" 应收款价格："+rec_obj.description + " 旧价格：" + str(rec_obj.receiveables) + " 为新价格：" + str(price)
                     OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
-                    if_success = 0
+                    if_success = 2
                     info = "由于分录创建时间为上个月，无法直接修改价格，已经向财务部分递交申请"
                 else:
                     order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
@@ -316,7 +313,7 @@ def update_payables_price(request):
                         detail = "申请更新 " + order_obj.No + " 应付款价格：" + pay_obj.description + " 旧价格：" + str(
                             pay_obj.payables) + " 为新价格：" + str(price)
                     OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
-                    if_success = 0
+                    if_success = 2
                     info = "由于分录创建时间为上个月，无法直接修改价格，已经向财务部分递交申请"
                 else:
                     #增加日志

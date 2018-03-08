@@ -212,7 +212,11 @@ $(function(){   //应收账款
                     $table_receiveables.bootstrapTable("updateByUniqueId",{"id":id, "row": {
                         receiveables: "<span class='rec_price_num'>"+new_price+"</span>",
                     }});
-                }else
+                }else if(data.if_success===2){
+                    toastr.info(data.info);
+                    $table_receiveables.bootstrapTable("updateByUniqueId",{"id":id});
+                }
+                else
                     toastr.error(data.info);
             },
             error: function(){
@@ -519,6 +523,9 @@ $(function(){   //应付账款
                     $table_payables.bootstrapTable("updateByUniqueId",{"id":id, "row": {
                         payables: "<span class='pay_price_num'>"+new_price+"</span>",
                     }});
+                }else if(data.if_success===2){
+                    toastr.info(data.info);
+                    $table_receiveables.bootstrapTable("updateByUniqueId",{"id":id});
                 }else
                     toastr.error(data.info);
             },
