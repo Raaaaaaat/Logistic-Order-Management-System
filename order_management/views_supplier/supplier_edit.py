@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import permission_required
 
 
 @login_required
-@permission_required('order_management.change_supplier', login_url='/no_perm/')
+@permission_required('order_management.change_supplier', login_url='/error?info=操作失败：没有编辑供应商的权限')
 def supplier_edit(request):
     if request.method == "POST":
         #检查是否有修改各个部分的权限

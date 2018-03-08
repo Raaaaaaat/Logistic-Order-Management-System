@@ -92,4 +92,5 @@ urlpatterns = [
 
     #manage part
     path('operate_log/',  tmr_views.operate_log_index,  name='operate_log'),
+    path('get_order_dropped/',  tmr_views.get_order_dropped,  name='get_order_dropped'),
 ]

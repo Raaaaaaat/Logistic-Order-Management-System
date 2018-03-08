@@ -42,6 +42,7 @@ from order_management.views_finance.ope_recv import *
 from order_management.views_finance.invoice_management import *
 
 from order_management.views_manage.operate_log_index import *
+from order_management.views_manage.get_order_dropped import *
 
 from django.shortcuts import render
 def error(reqeust):

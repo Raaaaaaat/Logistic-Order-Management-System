@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import permission_required
 
 
 @login_required
-@permission_required('order_management.change_client', login_url='/no_perm/')
+@permission_required('order_management.change_client', login_url='/error?info=操作失败：没有编辑客户的权限')
 def client_edit(request):
     if request.method == "POST":
         #检查是否有修改各个部分的权限
