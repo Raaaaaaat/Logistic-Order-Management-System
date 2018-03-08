@@ -128,3 +128,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_URL = '/log_in'
 STATIC_ROOT = '/var/www/tmr/order_management/static'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
