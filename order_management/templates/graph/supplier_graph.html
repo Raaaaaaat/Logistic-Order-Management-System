@@ -1,0 +1,662 @@
+{% extends 'graph/base.html' %}
+
+{% block style %}
+    <style>
+
+    .card-content .form-group{
+        display: inline-block;
+        margin: 0px 0 0 0;
+        padding-bottom: 10px;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-nav-tabs">
+                        <div class="card-header" data-background-color="purple">
+                                    <div class="nav-tabs-navigation">
+                                        <div class="nav-tabs-wrapper">
+                                            <span class="nav-tabs-title">数据中心:</span>
+                                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                                <li>
+                                                    <a href="/graph_client">
+                                                        <i class="material-icons">face</i> 客户数据
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                                <li class="active">
+                                                    <a href="/graph_supplier">
+                                                        <i class="material-icons">train</i> 供应商数据
+                                                        <div class="ripple-container"></div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                        <div class="card-content">
+                            <button class="btn btn-primary" id="g_s_cost_btn">按总成本排序</button>
+                            <button class="btn btn-primary" id="g_s_card_rate_btn">按油卡支付比例</button>
+                            <button class="btn btn-primary" id="g_s_cost_rate_btn">按总成本占比</button>
+                            <button class="btn btn-primary" id="g_s_time_change_btn">按时间变化折现</button>
+                            <div id="graph_div">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block jscode %}
+    <script>
+    $(function(){
+        $("#g_s_cost_btn").click(function(){
+            var html_control = " <div class=\"col-md-3 col-lg-3\">\n" +
+                "<div class=\"input-group\" title=\"开始日期\">\n" +
+                "              <span class=\"input-group-addon\">\n" +
+                "                        <i class=\"material-icons\">date_range</i>\n" +
+                "                     </span>\n" +
+                "              <input class=\"datepicker form-control\" type=\"text\" placeholder=\"开始日期\" id=\"time_start\">\n" +
+                " </div>\n" +
+                " </div>\n" +
+                "\n" +
+                "                                <div class=\"col-md-3 col-lg-3\">\n" +
+                "                                        <div class=\"input-group\" title=\"结束日期\">\n" +
+                "                                            <span class=\"input-group-addon\">\n" +
+                "                                                <i class=\"material-icons\">arrow_forward</i>\n" +
+                "                                            </span>\n" +
+                "                                            <input class=\"datepicker form-control\" type=\"text\" placeholder=\"结束日期\" id=\"time_end\">\n" +
+                "                                        </div>\n" +
+                "                                </div>" +
+                "<button class=\"btn btn-primary btn-xs\" id='fresh_button' >Search</button>" +
+                "<div id='echart_container' style='height:400px;'><div>";
+
+            $("#graph_div").html(html_control);
+            var echart_div = echarts.init(document.getElementById('echart_container'));
+
+
+            var date_ = new Date();
+            var year = date_.getFullYear();
+            var month = date_.getMonth() + 1;
+            var firstdate =month + '/01/' +year;//当月第一天
+            var day = new Date(year,month,0);
+            var lastdate = month + '/' + day.getDate()+'/'+year;//当月最后
+            $("#time_start").datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000
+            });
+            $("#time_start").datepicker( "setDate",firstdate);
+
+            $("#time_end").datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000
+            });
+            $("#time_end").datepicker( "setDate",lastdate);
+            fresh_chart();
+            function fresh_chart(){
+                echart_div.showLoading();
+                var start_t = $("#time_start").val();
+                var end_t   = $("#time_end").val();
+                console.log(start_t + "-"+end_t);
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'graph_supplier_getbycost' %}",
+                    data: {start_t:start_t, end_t:end_t},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("查询成功");
+
+                            var labelOption = {
+                                normal: {
+                                    show: true,
+
+                                    formatter: '{c}  {name|{a}}',
+                                    fontSize: 16,
+                                    rich: {
+                                        name: {
+                                            textBorderColor: '#fff'
+                                        }
+                                    }
+                                }
+                            };
+                            var opt = {
+                                title: {
+                                    text: '按总成本排名'
+                                },
+
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        type: 'shadow'
+                                    }
+                                },
+                                legend: {
+                                    data: ['应付金额', '已付现金', '已付油卡']
+                                },
+                                toolbox: {
+                                    show: true,
+                                    orient: 'vertical',
+                                    left: 'right',
+                                    top: 'center',
+                                    feature: {
+                                        mark: {show: true},
+                                        dataView: {show: true, readOnly: false},
+                                        magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                                        restore: {show: true},
+                                        saveAsImage: {show: true}
+                                    }
+                                },
+                                calculable: true,
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        axisTick: {show: false},
+                                        axisLabel:{
+                                            interval:0,
+                                            rotate:35,
+                                            margin:2,
+                                            formatter: function (value, index) {
+                                                if (value.length > 6)
+                                                    return (value.substring(0,5)+"...");
+                                                return value;
+                                            },
+                                            textStyle:{
+                                                color:"#222"
+                                            }},
+                                        data: data.data.names
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value'
+                                    }
+                                ],
+                                series: [
+                                    {
+                                        name: '应付金额',
+                                        type: 'bar',
+
+                                        data: data.data.paya,
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: "top",
+                                            }
+                                        },
+                                    },
+                                    {
+                                        name: '已付现金',
+                                        type: 'bar',
+                                        stack: "已付",
+                                        data: data.data.cash,
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: "top",
+                                            }
+                                        },
+                                    },
+                                    {
+                                        name: '已付油卡',
+                                        type: 'bar',
+                                        data: data.data.oil,
+                                        stack: "已付",
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: "top",
+                                            }
+                                        },
+                                    }
+                                ]
+                            };
+
+                            echart_div.setOption(opt);
+                            echart_div.hideLoading();
+                        }
+                        else
+                            toastr.error(data.info);
+                    },
+                    error: function(){
+                        toastr.error("查询失败:网络错误");
+                    }
+                });
+            }
+
+            $("#fresh_button").click(function(){
+                fresh_chart();
+            });
+
+        });
+
+
+        $("#g_s_card_rate_btn").click(function(){
+            var html_control = " <div class=\"col-md-3 col-lg-3\">\n" +
+                "<div class=\"input-group\" title=\"开始日期\">\n" +
+                "              <span class=\"input-group-addon\">\n" +
+                "                        <i class=\"material-icons\">date_range</i>\n" +
+                "                     </span>\n" +
+                "              <input class=\"datepicker form-control\" type=\"text\" placeholder=\"开始日期\" id=\"time_start\">\n" +
+                " </div>\n" +
+                " </div>\n" +
+                "\n" +
+                "                                <div class=\"col-md-3 col-lg-3\">\n" +
+                "                                        <div class=\"input-group\" title=\"结束日期\">\n" +
+                "                                            <span class=\"input-group-addon\">\n" +
+                "                                                <i class=\"material-icons\">arrow_forward</i>\n" +
+                "                                            </span>\n" +
+                "                                            <input class=\"datepicker form-control\" type=\"text\" placeholder=\"结束日期\" id=\"time_end\">\n" +
+                "                                        </div>\n" +
+                "                                </div>" +
+                "<button class=\"btn btn-primary btn-xs\" id='fresh_button' >Search</button>" +
+                "<div id='echart_container' style='height:400px;'><div>";
+
+            $("#graph_div").html(html_control);
+            var echart_div = echarts.init(document.getElementById('echart_container'));
+
+
+            var date_ = new Date();
+            var year = date_.getFullYear();
+            var month = date_.getMonth() + 1;
+            var firstdate =month + '/01/' +year;//当月第一天
+            var day = new Date(year,month,0);
+            var lastdate = month + '/' + day.getDate()+'/'+year;//当月最后
+            $("#time_start").datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000
+            });
+            $("#time_start").datepicker( "setDate",firstdate);
+
+            $("#time_end").datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000
+            });
+            $("#time_end").datepicker( "setDate",lastdate);
+            fresh_chart();
+            function fresh_chart(){
+                echart_div.showLoading();
+                var start_t = $("#time_start").val();
+                var end_t   = $("#time_end").val();
+                console.log(start_t + "-"+end_t);
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'graph_supplier_getbycardrate' %}",
+                    data: {start_t:start_t, end_t:end_t},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("查询成功");
+
+                            var labelOption = {
+                                normal: {
+                                    show: true,
+
+                                    formatter: '{c}  {name|{a}}',
+                                    fontSize: 16,
+                                    rich: {
+                                        name: {
+                                            textBorderColor: '#fff'
+                                        }
+                                    }
+                                }
+                            };
+                            var opt = {
+                                title:{
+                                    text:"油卡支付比例排名"
+                                },
+                                color: ['#003366', '#006699'],
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        type: 'shadow'
+                                    }
+                                },
+                                toolbox: {
+                                    show: true,
+                                    orient: 'vertical',
+                                    left: 'right',
+                                    top: 'center',
+                                    feature: {
+                                        mark: {show: true},
+                                        dataView: {show: true, readOnly: false},
+                                        magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                                        restore: {show: true},
+                                        saveAsImage: {show: true}
+                                    }
+                                },
+                                calculable: true,
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        axisTick: {show: false},
+                                        axisLabel:{
+                                            interval:0,
+                                            rotate:15,
+                                            margin:2,
+                                            formatter: function (value, index) {
+                                                // 格式化成月/日，只在第一个刻度显示年份
+                                                if (value.length > 6)
+                                                    return (value.substring(0,5)+"...");
+                                                return value;
+                                            },
+                                            textStyle:{
+                                                color:"#222"
+                                            }},
+                                        data: data.data.names
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        max: 100,
+                                        min: 0
+                                    }
+                                ],
+                                series:
+                                    {
+                                        name: '油卡比例',
+                                        type: 'bar',
+                                        barGap: 0,
+                                        data: data.data.rate,
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: "top",
+                                            }
+                                        },
+                                    }
+
+
+                            };
+
+                            echart_div.setOption(opt);
+                            echart_div.hideLoading();
+                        }
+                        else
+                            toastr.error(data.info);
+                    },
+                    error: function(){
+                        toastr.error("查询失败:网络错误");
+                    }
+                });
+            }
+
+            $("#fresh_button").click(function(){
+                fresh_chart();
+            });
+
+        });
+
+        $("#g_s_time_change_btn").click(function(){
+            var html_control = "<div class=\"col-md-4 col-lg-3\">\n" +
+                "                                        <div class=\"input-group\" title=\"按供应商进行搜索\">\n" +
+                "                                            <span class=\"input-group-addon\">\n" +
+                "                                                <i class=\"material-icons\">person</i>\n" +
+                "                                            </span>\n" +
+                "                                            <select id=\"filter_supplier\" class=\"form-control\" style='width: 170px'></select>\n" +
+                "                                        </div>\n" +
+                "                                    </div> "+
+                "                                <div class=\"col-md-3 col-lg-3\">\n" +
+                "                                        <div class=\"input-group\" title=\"年份\">\n" +
+                "                                            <span class=\"input-group-addon\">\n" +
+                "                                                <i class=\"material-icons\">date_range</i>\n" +
+                "                                            </span>\n" +
+                "                                            <input class=\"datepicker form-control\" type=\"text\" placeholder=\"年份\" id=\"time_year\">\n" +
+                "                                        </div>\n" +
+                "                                </div>" +
+                "<button class=\"btn btn-primary btn-xs\" id='fresh_button' >Search</button>" +
+                "<div id='echart_container' style='height:400px;'><div>";
+
+            $("#graph_div").html(html_control);
+            $("#filter_supplier").select2({
+                placeholder: "按供应商进行筛选",
+                allowClear: true,
+
+                ajax: {
+                    url: "{% url 'get_supplier_options' %}",
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.data
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0,
+            });
+            var echart_div = echarts.init(document.getElementById('echart_container'));
+
+
+            $("#time_year").datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000,
+                format:"yyyy",
+                startView: 'decade',
+                minViewMode: 'decade',
+            });
+
+            //fresh_chart();
+            function fresh_chart(){
+
+                var supplier_id = $("#filter_supplier").val();
+                var year   = $("#time_year").val();
+                if(supplier_id == null || year.length===0 ||isNaN(year)){
+                    toastr.error("请输入筛选条件");
+                    return;
+                }
+                echart_div.showLoading();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'graph_supplier_getbytime' %}",
+                    data: {supplier_id:supplier_id, year:year},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("查询成功");
+
+
+                            var opt ={
+                                title: {
+                                    text: '随时间变化折线图'
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data:['应付成本','已付现金','已付油卡']
+                                },
+                                grid: {
+                                    left: '3%',
+                                    right: '4%',
+                                    bottom: '3%',
+                                    containLabel: true
+                                },
+                                toolbox: {
+                                    feature: {
+                                        saveAsImage: {}
+                                    }
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [
+                                    {
+                                        name:'应付成本',
+                                        type:'line',
+                                        data:data.data.payables
+                                    },
+                                    {
+                                        name:'已付现金',
+                                        type:'line',
+                                        data:data.data.paid_cash
+                                    },
+                                    {
+                                        name:'已付油卡',
+                                        type:'line',
+                                        data:data.data.paid_oil
+                                    }
+                                ]
+                            };
+
+                            echart_div.setOption(opt);
+                            echart_div.hideLoading();
+                        }
+                        else
+                            toastr.error(data.info);
+                    },
+                    error: function(){
+                        toastr.error("查询失败:网络错误");
+                    }
+                });
+            }
+
+            $("#fresh_button").click(function(){
+                fresh_chart();
+            });
+
+        });
+
+        $("#g_s_cost_rate_btn").click(function(){
+            var html_control = " <div class=\"col-md-3 col-lg-3\">\n" +
+                "<div class=\"input-group\" title=\"开始日期\">\n" +
+                "              <span class=\"input-group-addon\">\n" +
+                "                        <i class=\"material-icons\">date_range</i>\n" +
+                "                     </span>\n" +
+                "              <input class=\"datepicker form-control\" type=\"text\" placeholder=\"开始日期\" id=\"time_start\">\n" +
+                " </div>\n" +
+                " </div>\n" +
+                "\n" +
+                "                                <div class=\"col-md-3 col-lg-3\">\n" +
+                "                                        <div class=\"input-group\" title=\"结束日期\">\n" +
+                "                                            <span class=\"input-group-addon\">\n" +
+                "                                                <i class=\"material-icons\">arrow_forward</i>\n" +
+                "                                            </span>\n" +
+                "                                            <input class=\"datepicker form-control\" type=\"text\" placeholder=\"结束日期\" id=\"time_end\">\n" +
+                "                                        </div>\n" +
+                "                                </div>" +
+                "<button class=\"btn btn-primary btn-xs\" id='fresh_button' >Search</button>" +
+                "<div id='echart_container' style='height:400px;'><div>";
+
+            $("#graph_div").html(html_control);
+            var echart_div = echarts.init(document.getElementById('echart_container'));
+
+
+            var date_ = new Date();
+            var year = date_.getFullYear();
+            var month = date_.getMonth() + 1;
+            var firstdate =month + '/01/' +year;//当月第一天
+            var day = new Date(year,month,0);
+            var lastdate = month + '/' + day.getDate()+'/'+year;//当月最后
+            $("#time_start").datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000
+            });
+            $("#time_start").datepicker( "setDate",firstdate);
+
+            $("#time_end").datepicker({
+                weekStart:1, //1代表从一周周一开始，0代表从周天开始
+                autoclose:true,
+                clearBtn:true,
+                zIndexOffset: 10000
+            });
+            $("#time_end").datepicker( "setDate",lastdate);
+            fresh_chart();
+            function fresh_chart(){
+                echart_div.showLoading();
+                var start_t = $("#time_start").val();
+                var end_t   = $("#time_end").val();
+                console.log(start_t + "-"+end_t);
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'graph_supplier_getbycost' %}",
+                    data: {start_t:start_t, end_t:end_t},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success === 1){
+                            toastr.success("查询成功");
+                            var len = data.data.names.length;
+                            var show_data = [];
+                            console.log(data);
+                            for(var i =0;i<len;i++){
+                                show_data.push({value:data.data.paya[i], name:data.data.names[i]});
+                            }
+                            console.log(show_data);
+                            var opt = {
+                                title : {
+                                    text: '按总成本占比',
+                                    x:'left'
+                                },
+                                tooltip : {
+                                    trigger: 'item',
+                                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                },
+
+                                series : [
+                                    {
+                                        type: 'pie',
+                                        radius : '55%',
+                                        center: ['50%', '60%'],
+                                        data:show_data,
+                                        itemStyle: {
+                                            emphasis: {
+                                                shadowBlur: 10,
+                                                shadowOffsetX: 0,
+                                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                            }
+                                        }
+                                    }
+                                ]
+                            };
+
+                            echart_div.setOption(opt);
+                            echart_div.hideLoading();
+                        }
+                        else
+                            toastr.error(data.info);
+                    },
+                    error: function(){
+                        toastr.error("查询失败:网络错误");
+                    }
+                });
+            }
+
+            $("#fresh_button").click(function(){
+                fresh_chart();
+            });
+
+        });
+
+
+    });
+    </script>
+{% endblock %}

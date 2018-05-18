@@ -103,6 +103,12 @@ urlpatterns = [
     path('graph_client_getbypincome/',        tmr_views.graph_client_getbypincome, name='graph_client_getbypincome'),
     path('graph_client_getbytime/',           tmr_views.graph_client_getbytime, name='graph_client_getbytime'),
 
+    path('graph_supplier_getbycost/',       tmr_views.graph_supplier_getbycost,     name='graph_supplier_getbycost'),
+    path('graph_supplier_getbycardrate/',   tmr_views.graph_supplier_getbycardrate, name='graph_supplier_getbycardrate'),
+    path('graph_supplier_getbytime/',   tmr_views.graph_supplier_getbytime, name='graph_supplier_getbytime'),
+
+
+
 ]
 
 handler404 = tmr_views.page_not_found
