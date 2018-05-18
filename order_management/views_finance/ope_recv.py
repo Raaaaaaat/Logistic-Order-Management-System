@@ -27,6 +27,7 @@ def get_recv_list(request):
         f_clear_end_time    = bo_data["f_clear_end_time"]
         f_if_total          = bo_data["f_if_total"] #这个参数用来过滤是否将已结账的分录也展示出来
         f_invoice           = bo_data["f_invoice"]
+        f_status            = bo_data["f_status"]
 
         query = Q()
         if f_order_No != "":
@@ -58,6 +59,11 @@ def get_recv_list(request):
             query = query & Q(invoice__in=invoice_ids)
         if f_if_total == "1":
             query = query #搜索全部
+        if f_status != "0":
+            if f_status == "1":
+                query = query & Q(clear_time__isnull=False)
+            else:
+                query = query & Q(clear_time__isnull=True)
         else:
             query = query & Q(status=0)
 
