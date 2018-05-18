@@ -95,6 +95,14 @@ urlpatterns = [
     path('get_order_dropped/',   tmr_views.get_order_dropped,   name='get_order_dropped'),
     path('edit_price_request/',  tmr_views.edit_price_request,  name='edit_price_request'),
     path('request_handler/',     tmr_views.request_handler,     name='request_handler'),
+
+    #graph part
+    path('graph_client/',          tmr_views.graph_client,   name='graph_client'),
+    path('graph_supplier/',        tmr_views.graph_supplier, name='graph_supplier'),
+    path('graph_client_getbyincome/',         tmr_views.graph_client_getbyincome, name='graph_client_getbyincome'),
+    path('graph_client_getbypincome/',        tmr_views.graph_client_getbypincome, name='graph_client_getbypincome'),
+    path('graph_client_getbytime/',           tmr_views.graph_client_getbytime, name='graph_client_getbytime'),
+
 ]
 
 handler404 = tmr_views.page_not_found

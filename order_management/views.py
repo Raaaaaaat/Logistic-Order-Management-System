@@ -46,6 +46,9 @@ from order_management.views_manage.get_order_dropped import *
 from order_management.views_manage.edit_price_request import *
 from order_management.views_manage.request_handler import *
 
+from order_management.views_graph.graph_client import *
+from order_management.views_graph.graph_supplier import *
+
 from django.shortcuts import render
 def error(reqeust):
     info = reqeust.GET.get("info","")
