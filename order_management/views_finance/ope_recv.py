@@ -43,10 +43,20 @@ def get_recv_list(request):
             for single in t_order_objs:
                 ids.append(single.id)
             query = query & Q(order_id__in=ids)
-        if f_create_start_time != "":
-            query = query & Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
-        if f_create_end_time != "":
-            query = query & Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+        #if f_create_start_time != "":
+        #    query = query & Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
+        #if f_create_end_time != "":
+        #    query = query & Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+
+        if f_create_end_time != "" or f_create_start_time!="":
+            sub_q = Q()
+            if f_create_start_time!="":
+                sub_q = Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
+            if f_create_end_time!="":
+                sub_q = sub_q&Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            order_ids = ORDER.objects.filter(sub_q).values("id")
+            query = query & Q(order_id__in=order_ids)
+
         if f_clear_start_time != "":
             query = query & Q(clear_time__gte=datetime.datetime.strptime(f_clear_start_time, '%m/%d/%Y'))
         if f_clear_end_time != "":

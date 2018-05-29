@@ -29,6 +29,7 @@ def get_paya_list(request):
         f_status = bo_data["f_status"]
 
 
+
         query = Q()
         if f_order_No != "":
             #搜索order表，然后找到编号包含搜索内容的obj，然后整理出其【id】再进行搜索
@@ -45,10 +46,20 @@ def get_paya_list(request):
             query = query & Q(order_id__in=ids)
         if f_supplier != "":
             query = query & Q(supplier_id=f_supplier)
-        if f_create_start_time != "":
-            query = query & Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
-        if f_create_end_time != "":
-            query = query & Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+        #編輯與2018 5 29, 希望能通過次查詢篩選出訂單在此時間範圍內創建對應的記錄
+        #if f_create_start_time != "":
+        #    query = query & Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
+        #if f_create_end_time != "":
+        #    query = query & Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+        if f_create_end_time != "" or f_create_start_time!="":
+            sub_q = Q()
+            if f_create_start_time!="":
+                sub_q = Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
+            if f_create_end_time!="":
+                sub_q = sub_q&Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            order_ids = ORDER.objects.filter(sub_q).values("id")
+            query = query & Q(order_id__in=order_ids)
+
         if f_clear_start_time != "":
             query = query & Q(clear_time__gte=datetime.datetime.strptime(f_clear_start_time, '%m/%d/%Y'))
         if f_clear_end_time != "":

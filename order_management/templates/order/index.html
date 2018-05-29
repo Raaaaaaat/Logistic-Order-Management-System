@@ -413,10 +413,11 @@
                 formatter: function(index, row){
                     //console.log(row);
                     return '<a data-no="'+row.No+'" href = "/order_edit?No='+row.No+'" title="编辑"><i class="fa fa-pencil"></i></a>' +
-                           '<a data-no="'+row.No+'" class = "delete_order_button" title="删除" style="margin-left: 10px;"><i class="fa fa-trash"></i></a>';
+                           '<a data-no="'+row.No+'" class = "delete_order_button" title="删除" style="margin-left: 10px;"><i class="fa fa-trash"></i></a>' +
+                           '<a data-no="'+row.No+'" data-create_time="'+row.create_time+'" class = "delete_change_date_button" title="修改下单时间" style="margin-left: 10px;"><i class="fa fa-calendar"></i></a>';
                 },
                 align: 'center',
-                width: 50,
+                width: 70,
             },{
                 title: '-',
             }],
@@ -475,6 +476,30 @@
                     //console.log(data);
                     if(data.if_success===1){
                         toastr.success('删除成功');
+                        $('#tablecase').bootstrapTable("refresh");
+                    }else if(data.if_success===0){
+                        toastr.error(data.info);
+                    }else{}
+                },
+                error: function(){
+                    toastr.error("网络错误，请稍后再试");
+                },
+            });
+        });
+    });
+
+    $body.on('click', '.delete_change_date_button', function(){
+        var No = $(this).data('no');
+        myInputDate("修改下单日期","是否确定修改订单的创建时间： "+No+"？<br>注：<br>此操作将修改订单的创建日期并重新对订单进行编号<strong>无法撤回</strong>",$(this).data('create_time'),function(){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'ope_edit_order_create_time' %}",
+                data: {No: No, time: $("#modal_input").val()},
+                datatype: "html",
+                success: function (data) {//这里检查data.info的值，如果删除成功就为1，否则为0，2代表没有权限，在这里做一样的判断
+                    //console.log(data);
+                    if(data.if_success===1){
+                        toastr.success('修改成功');
                         $('#tablecase').bootstrapTable("refresh");
                     }else if(data.if_success===0){
                         toastr.error(data.info);

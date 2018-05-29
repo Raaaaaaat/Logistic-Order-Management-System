@@ -3,7 +3,9 @@ from order_management.models import ORDER
 from order_management.models import CLIENT
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
-
+from django.http import JsonResponse
+import datetime
+from django.utils.timezone import localtime
 
 @login_required
 @permission_required('order_management.change_order', login_url='/error?info=没有修改订单的权限，请联系管理员')
@@ -70,3 +72,32 @@ def order_edit(request):
             return redirect("/order?info=修改失败：订单不存在")
 
         return redirect('/order?info=修改成功')
+
+@login_required
+def ope_edit_order_create_time(request):
+    if not request.user.has_perm("order_management.edit_order_create_time"):
+        if_success = 0
+        info = "操作失败：没有修改订单創建時間的权限，请联系管理员"
+        return JsonResponse({'if_success': if_success, 'info': info})
+    if request.method == "POST":
+        No = request.POST.get("No", "")
+        create_time = request.POST.get("time")
+        create_time = datetime.datetime.strptime(create_time, '%Y-%m-%d')
+        #獲取訂單對象 然後，直接改訂單創建時間
+        order_obj = ORDER.objects.get(No=No)
+        time = localtime(order_obj.create_time)
+        time = time.replace(year = create_time.year, month = create_time.month, day = create_time.day)
+        if order_obj.create_time.month != time.month:
+            # 待完成：修改訂單編號
+            new_No = "PO" + str(time.year) + str(time.month).zfill(2)
+            last_obj = ORDER.objects.filter(No__startswith=new_No).first()
+            if last_obj == None:
+                new_No = new_No+"001"
+            else:
+                sequence = int(last_obj.No[8:])+1
+                new_No = new_No + str(sequence).zfill(3)
+            order_obj.No = new_No
+        order_obj.create_time = time
+        order_obj.save()
+
+        return JsonResponse({'if_success': 1, 'info': "修改成功"})

@@ -80,6 +80,7 @@ class ORDER(models.Model):
             ("view_trash_order", "Can access information of orders dropped"),
             ("view_order_finance", "Can access information of financal certer"),
             ("view_data_center", "Can access information of data certer"),
+            ("edit_order_create_time","edit create time of order objects"),
             # ("add_order",
             # ("change_order",
             # ("delete_order",
