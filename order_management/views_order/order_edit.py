@@ -90,12 +90,14 @@ def ope_edit_order_create_time(request):
         if order_obj.create_time.month != time.month:
             # 待完成：修改訂單編號
             new_No = "PO" + str(time.year) + str(time.month).zfill(2)
-            last_obj = ORDER.objects.filter(No__startswith=new_No).first()
-            if last_obj == None:
-                new_No = new_No+"001"
-            else:
-                sequence = int(last_obj.No[8:])+1
-                new_No = new_No + str(sequence).zfill(3)
+            objs = ORDER.objects.filter(No__startswith=new_No).values("No")
+            big = 0
+            for i in objs:
+                if int(i["No"][8:]) > big:
+                    big = int(i["No"][8:])
+
+            sequence = big+1
+            new_No = new_No + str(sequence).zfill(3)
             order_obj.No = new_No
         order_obj.create_time = time
         order_obj.save()
