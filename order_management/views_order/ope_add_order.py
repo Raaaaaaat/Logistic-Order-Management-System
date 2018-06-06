@@ -45,18 +45,28 @@ def ope_add_order(request):
 
 
         if if_edit=="0": #添加模式
-            # 自动生成下一个该有的客户编号
-            last_one = ORDER.objects.first()
             currentMonth = time.strftime("%Y%m", time.localtime())
-            if last_one != None:  # 说明之前已经有记录
-                if last_one.No[2:8]==currentMonth:
-                    No = last_one.No[8:]
-                    No = int(No) + 1
-                    No = "PO" + currentMonth + str(No).zfill(3)
-                else:
-                    No = "PO" + currentMonth + "001"
-            else:
-                No = "PO" + currentMonth + "001"
+            new_No = "PO" + currentMonth
+            objs = ORDER.objects.filter(No__startswith=new_No).values("No")
+            big = 0
+            for i in objs:
+                if int(i["No"][8:]) > big:
+                    big = int(i["No"][8:])
+
+            sequence = big + 1
+            No = new_No + str(sequence).zfill(3)
+            # 自动生成下一个该有的客户编号
+            #last_one = ORDER.objects.first()
+            #currentMonth = time.strftime("%Y%m", time.localtime())
+            #if last_one != None:  # 说明之前已经有记录
+            #    if last_one.No[2:8]==currentMonth:
+            #        No = last_one.No[8:]
+            #        No = int(No) + 1
+            #        No = "PO" + currentMonth + str(No).zfill(3)
+            #    else:
+            #        No = "PO" + currentMonth + "001"
+            #else:
+            #    No = "PO" + currentMonth + "001"
             obj = ORDER.objects.create(No=No, status=1, client_id=client_id,
                                  dep_city=dep_city, dep_place=dep_place,
                                  des_city=des_city, des_place=des_place,
