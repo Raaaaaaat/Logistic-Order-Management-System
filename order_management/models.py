@@ -81,6 +81,7 @@ class ORDER(models.Model):
             ("view_order_finance", "Can access information of financal certer"),
             ("view_data_center", "Can access information of data certer"),
             ("edit_order_create_time","edit create time of order objects"),
+            ("super_delete_order", "delete order inspite of limitions(dangerous)"),
             # ("add_order",
             # ("change_order",
             # ("delete_order",
@@ -114,6 +115,7 @@ class PAYABLES(models.Model):
 class RECEIVEABLES(models.Model):
     status      = models.SmallIntegerField()
     order_id    = models.IntegerField()
+    step        = models.IntegerField(null=True)
     description = models.CharField(max_length=200)
     receiveables= models.FloatField(null=True)
     received    = models.FloatField(null=True)

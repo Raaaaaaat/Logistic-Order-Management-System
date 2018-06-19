@@ -80,7 +80,7 @@ def delete_receiveables(request):
                             rec_obj.receiveables) + " 描述：" + rec_obj.description
                     OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
                     if_success = 2
-                    info = "由于分录创建时间为上个月，无法直接删除应付，已经向财务部分递交申请"
+                    info = "由于分录创建时间为上个月，无法直接删除应付，已经向财务部门递交申请"
                 else:
                     order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
                     if order_obj == None:

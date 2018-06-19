@@ -63,8 +63,9 @@ def get_invoice_list(request):
             for single in recv_objs:
                 tot_receiveables += single.receiveables
                 tot_received+= single.received
-            line["tot_receiveables"]=tot_receiveables
-            line["tot_received"] = tot_received
+            line["tot_receiveables"]=round(tot_receiveables,2)
+            line["tot_received"] = round(tot_received,2)
+            line["tot_torecv"] = round(tot_receiveables-tot_received,2)
             rows.append(line)
         return  JsonResponse({'rows':rows, 'total':total})
 

@@ -20,14 +20,15 @@ def get_paya_list(request):
         f_order_No          = bo_data["f_order_No"]
         f_client            = bo_data["f_client"]
         f_supplier          = bo_data["f_supplier"]
-        f_create_start_time = bo_data["f_create_start_time"]
-        f_create_end_time   = bo_data["f_create_end_time"]
+        f_pick_start_time   = bo_data["f_pick_start_time"]
+        f_pick_end_time     = bo_data["f_pick_end_time"]
         f_clear_start_time  = bo_data["f_clear_start_time"]
         f_clear_end_time    = bo_data["f_clear_end_time"]
         f_if_total          = bo_data["f_if_total"] #这个参数用来过滤是否将已结账的分录也展示出来
         f_invoice           = bo_data["f_invoice"]
-        f_status = bo_data["f_status"]
-
+        f_status            = bo_data["f_status"]
+        f_offset            = bo_data["offset"]
+        f_limit             = bo_data["limit"]
 
 
         query = Q()
@@ -51,12 +52,12 @@ def get_paya_list(request):
         #    query = query & Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
         #if f_create_end_time != "":
         #    query = query & Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
-        if f_create_end_time != "" or f_create_start_time!="":
+        if f_pick_end_time != "" or f_pick_start_time!="":
             sub_q = Q()
-            if f_create_start_time!="":
-                sub_q = Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
-            if f_create_end_time!="":
-                sub_q = sub_q&Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            if f_pick_start_time!="":
+                sub_q = Q(pick_up_time__gte=datetime.datetime.strptime(f_pick_start_time, '%m/%d/%Y'))
+            if f_pick_end_time!="":
+                sub_q = sub_q&Q(pick_up_time__lte=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
             order_ids = ORDER.objects.filter(sub_q).values("id")
             query = query & Q(order_id__in=order_ids)
 
@@ -76,7 +77,8 @@ def get_paya_list(request):
         else:
             query = query & Q(status=0)
 
-        pay_obj = PAYABLES.objects.filter(query).order_by('-id').values()
+        pay_obj = PAYABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset+f_limit]
+        paya_count = PAYABLES.objects.filter(query).count()
         #除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
 
@@ -88,7 +90,7 @@ def get_paya_list(request):
             elif  line.type==1: #个人供应商
                 supplier_dic[line.id] = line.No+" - "+line.contact_name
         rows = []
-        index = 1
+        index = int(f_offset)+1
         for line in pay_obj:
             order_obj = ORDER.objects.get(id=line["order_id"])
             client_id = order_obj.client_id
@@ -105,6 +107,8 @@ def get_paya_list(request):
             line["order_No"] = order_obj.No
             line["dep_city"] = order_obj.dep_city
             line["des_city"] = order_obj.des_city
+            line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
+            line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
             if line["supplier_id"] in supplier_dic:
                 line["supplier_name"] = supplier_dic[line["supplier_id"]]
             else:
@@ -116,7 +120,7 @@ def get_paya_list(request):
             if line["clear_time"] != None:
                 line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
             rows.append(line)
-        return JsonResponse({"data":rows})
+        return JsonResponse({"total":paya_count,"rows":rows})
 
 @login_required
 def mark_paya_invoice(request):
@@ -183,7 +187,7 @@ def paya_verify(request):
                 else:
                     list.append("描述："+paya_obj.description+"："+str(paya_obj.paid_oil) + "->" + str(round(paya_obj.paid_oil + paid_ammount,2)))
                     paya_obj.paid_oil += paid_ammount
-                if paya_obj.payables == paya_obj.paid_cash + paya_obj.paid_oil:
+                if paya_obj.payables == round(paya_obj.paid_cash + paya_obj.paid_oil,2):
                     paya_obj.clear_time=datetime.datetime.now()
                 paya_obj.save()
                 break
@@ -238,7 +242,7 @@ def paya_settle_accounts(request):
         for single in paya_ids:
             try:
                 paid_obj = PAYABLES.objects.get(id=single)
-                if paid_obj.status==0 and paid_obj.payables == paid_obj.paid_oil + paid_obj.paid_cash:
+                if paid_obj.status==0 and paid_obj.payables == round(paid_obj.paid_oil + paid_obj.paid_cash,2):
                     paid_obj.status=1
                     paid_obj.save()
                     count_suc = count_suc + 1

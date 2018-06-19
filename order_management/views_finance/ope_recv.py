@@ -21,13 +21,15 @@ def get_recv_list(request):
         bo_data             = json.loads(request.body.decode())
         f_order_No          = bo_data["f_order_No"]
         f_client            = bo_data["f_client"]
-        f_create_start_time = bo_data["f_create_start_time"]
-        f_create_end_time   = bo_data["f_create_end_time"]
+        f_pick_start_time   = bo_data["f_pick_start_time"]
+        f_pick_end_time     = bo_data["f_pick_end_time"]
         f_clear_start_time  = bo_data["f_clear_start_time"]
         f_clear_end_time    = bo_data["f_clear_end_time"]
         f_if_total          = bo_data["f_if_total"] #这个参数用来过滤是否将已结账的分录也展示出来
         f_invoice           = bo_data["f_invoice"]
         f_status            = bo_data["f_status"]
+        f_offset            = bo_data["offset"]
+        f_limit             = bo_data["limit"]
 
         query = Q()
         if f_order_No != "":
@@ -48,12 +50,12 @@ def get_recv_list(request):
         #if f_create_end_time != "":
         #    query = query & Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
 
-        if f_create_end_time != "" or f_create_start_time!="":
+        if f_pick_end_time != "" or f_pick_start_time!="":
             sub_q = Q()
-            if f_create_start_time!="":
-                sub_q = Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
-            if f_create_end_time!="":
-                sub_q = sub_q&Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            if f_pick_start_time!="":
+                sub_q = Q(pick_up_time__gte=datetime.datetime.strptime(f_pick_start_time, '%m/%d/%Y'))
+            if f_pick_end_time!="":
+                sub_q = sub_q&Q(pick_up_time__lte=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
             order_ids = ORDER.objects.filter(sub_q).values("id")
             query = query & Q(order_id__in=order_ids)
 
@@ -77,11 +79,12 @@ def get_recv_list(request):
         else:
             query = query & Q(status=0)
 
-        recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()
+        recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset+f_limit]
+        recv_count = RECEIVEABLES.objects.filter(query).count()
         #除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
         rows = []
-        index = 1
+        index = int(f_offset)+1
         for line in recv_obj:
             order_obj = ORDER.objects.get(id=line["order_id"])
             client_id = order_obj.client_id
@@ -96,6 +99,8 @@ def get_recv_list(request):
             line["index"] = index
             index += 1
             line["order_No"] = order_obj.No
+            line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
+            line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
             line["dep_city"] = order_obj.dep_city
             line["des_city"] = order_obj.des_city
 
@@ -115,7 +120,7 @@ def get_recv_list(request):
                         line["invoice"]="已删除"
 
             rows.append(line)
-        return JsonResponse({"data":rows})
+        return JsonResponse({"total":recv_count,"rows":rows})
 
 @login_required
 def mark_recv_invoice(request):
@@ -214,7 +219,7 @@ def recv_verify(request):
                 #一次付清款，退出循环
                 _list.append("描述：" + recv_obj.description + "：" + str(recv_obj.received) + "->" + str(round(recv_obj.received + received_ammount,2)))
                 recv_obj.received += received_ammount
-                if recv_obj.receiveables == recv_obj.received:
+                if round(recv_obj.receiveables,2) == round(recv_obj.received,2):
                     recv_obj.clear_time=datetime.datetime.now()
                 recv_obj.save()
                 break

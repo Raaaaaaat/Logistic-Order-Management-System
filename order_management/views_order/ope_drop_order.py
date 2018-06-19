@@ -21,13 +21,23 @@ def ope_drop_order(request):
         if order_obj==None:
             if_success = 0
             info = "订单信息不存在"
-        else:
+        else:#2018 6 19日修改为只要没有已收已付就可以删除（原本为只有未发货可以删除）
+
             if order_obj.status==1:
                 order_id = order_obj.id
                 PAYABLES.objects.filter(order_id=order_id).delete()
                 RECEIVEABLES.objects.filter(order_id=order_id).delete()
                 LOG_TRACE.objects.filter(order_id=order_id).delete()
                 order_obj.if_delete=1
+                order_obj.save()
+                if_success = 1
+                info = ""
+            elif request.user.has_perm("order_management.super_delete_order"):
+                order_id = order_obj.id
+                PAYABLES.objects.filter(order_id=order_id).delete()
+                RECEIVEABLES.objects.filter(order_id=order_id).delete()
+                LOG_TRACE.objects.filter(order_id=order_id).delete()
+                order_obj.if_delete = 1
                 order_obj.save()
                 if_success = 1
                 info = ""

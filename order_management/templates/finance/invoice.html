@@ -178,22 +178,34 @@
                     align: 'center',
                     width: 80,
                 }, {
-                    title: "收款进度",
+                    field: 'tot_received',
+                    title: '已收款',
                     align: 'center',
-                    width: 200,
-                    formatter: function(index, row){
-                        var ratio = 100;
-                        if(row.tot_receiveables!==0){
-                            ratio = row.tot_received / row.tot_receiveables;
-                            ratio = ratio.toFixed(4) * 100;
-                        }
-                        return "<div class='progress progress-line-primary' style='width: 90%; margin-bottom: 0px; background-color: #d6dcf5; margin:0 auto;' rel='tooltip' title='"+row.tot_received+" / "+row.tot_receiveables+"'>" +
-                            "<div class='progress-bar' role='progressbar' style='width: "+ratio+"%;'>" +
-
-                            "</div>" +
-                            "</div>";
-                    }
+                    width: 80,
                 }, {
+                    field: 'tot_torecv',
+                    title: '未收款',
+                    align: 'center',
+                    width: 80,
+                },
+              //      {
+              //      title: "收款进度",
+              //      align: 'center',
+              //      width: 200,
+              //      formatter: function(index, row){
+              //          var ratio = 100;
+              //          if(row.tot_receiveables!==0){
+              //              ratio = row.tot_received / row.tot_receiveables;
+              //              ratio = ratio.toFixed(4) * 100;
+              //          }
+              //          return "<div class='progress progress-line-primary' style='width: 90%; margin-bottom: 0px; background-color: #d6dcf5; margin:0 auto;' rel='tooltip' title='"+row.tot_received+" / "+row.tot_receiveables+"'>" +
+              //              "<div class='progress-bar' role='progressbar' style='width: "+ratio+"%;'>" +
+//
+              //              "</div>" +
+              //              "</div>";
+              //      }
+              //  },
+                    {
                     field: 'remark',
                     title: '备注',
                     align: 'center',

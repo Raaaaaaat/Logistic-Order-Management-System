@@ -46,20 +46,20 @@
                             <div class="row">
 
                                 <div class="col-md-3 col-lg-3">
-                                        <div class="input-group" title="创建开始日期">
+                                        <div class="input-group" title="提货开始日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">date_range</i>
                                             </span>
-                                            <input class="datepicker form-control" type="text" placeholder="创建开始日期" id="f_create_start_time">
+                                            <input class="datepicker form-control" type="text" placeholder="提货开始日期" id="f_pick_start_time">
                                         </div>
                                 </div>
 
                                 <div class="col-md-3 col-lg-3">
-                                        <div class="input-group" title="创建结束日期">
+                                        <div class="input-group" title="提货结束日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">arrow_forward</i>
                                             </span>
-                                            <input class="datepicker form-control" type="text" placeholder="创建结束日期" id="f_create_end_time">
+                                            <input class="datepicker form-control" type="text" placeholder="提货结束日期" id="f_pick_end_time">
                                         </div>
                                 </div>
                                 <div class="col-md-3 col-lg-3">
@@ -262,7 +262,7 @@ $(function(){
         pageNumber:1,
         pageSize: 25,
         pageList: [10, 25, 50, 100, 500],
-        sidePagination: "client",
+        sidePagination: "server",
         queryParams: function(params){
             params.f_if_total = $('#f_if_total').prop('checked') ? 1 : 0;
             params.f_order_No = $('#f_order_No').val();
@@ -270,8 +270,8 @@ $(function(){
                 params.f_client     = $("#f_client").val();
             else
                 params.f_client     = "";
-            params.f_create_start_time = $('#f_create_start_time').val();
-            params.f_create_end_time   = $('#f_create_end_time').val();
+            params.f_pick_start_time = $('#f_pick_start_time').val();
+            params.f_pick_end_time   = $('#f_pick_end_time').val();
             params.f_clear_start_time  = $('#f_clear_start_time').val();
             params.f_clear_end_time    = $('#f_clear_end_time').val();
             params.f_invoice           = $('#f_invoice').val();
@@ -293,8 +293,13 @@ $(function(){
                 align: 'center',
                 width: 50,
             }, {
-                field: 'create_time',
+                field: 'order_create_time',
                 title: '接单时间',
+                align: 'center',
+                width: 80,
+            }, {
+                field: 'order_pick_time',
+                title: '提货时间',
                 align: 'center',
                 width: 80,
             }, {
@@ -302,6 +307,9 @@ $(function(){
                 title: '单号',
                 align: 'center',
                 width: 120,
+                formatter: function(index, row){
+                    return '<a href="/order_detail?No='+row.order_No+'"+ target="_blank">'+row.order_No+'</a>';
+                }
             }, {
                 field: 'client_name',
                 title: '客户',
@@ -409,7 +417,8 @@ $(function(){
             }
             t_receiveables = t_receiveables.toFixed(2);
             t_recvived = t_recvived.toFixed(2);
-            notice = "应收金额："+t_receiveables+"&nbsp;&nbsp;&nbsp;已收金额："+t_recvived;
+            var t_torecv = (t_receiveables-t_recvived).toFixed(2);
+            notice = "应收金额："+t_receiveables+"&nbsp;&nbsp;&nbsp;未收金额："+t_torecv+"&nbsp;&nbsp;&nbsp;已收金额："+t_recvived;
         }else{
 
         }
@@ -519,7 +528,7 @@ $(function(){
         pageNumber:1,
         pageSize: 25,
         pageList: [10, 25, 50, 100, 500],
-        sidePagination: "client",
+        sidePagination: "server",
         queryParams: function(params){
             //params.csrfmiddlewaretoken = '{{ csrf_token }}';
             params.f_if_total = $('#f_if_total').prop('checked') ? 1 : 0;
@@ -532,8 +541,8 @@ $(function(){
                 params.f_supplier   = $("#f_supplier").val();
             else
                 params.f_supplier   = "";
-            params.f_create_start_time = $('#f_create_start_time').val();
-            params.f_create_end_time   = $('#f_create_end_time').val();
+            params.f_pick_start_time = $('#f_pick_start_time').val();
+            params.f_pick_end_time   = $('#f_pick_end_time').val();
             params.f_clear_start_time  = $('#f_clear_start_time').val();
             params.f_clear_end_time    = $('#f_clear_end_time').val();
             params.f_invoice           = $('#f_invoice').val();
@@ -555,8 +564,13 @@ $(function(){
                 align: 'center',
                 width: 50,
             }, {
-                field: 'create_time',
+                field: 'order_create_time',
                 title: '接单时间',
+                align: 'center',
+                width: 80,
+            }, {
+                field: 'order_pick_time',
+                title: '提货时间',
                 align: 'center',
                 width: 80,
             }, {
@@ -564,6 +578,9 @@ $(function(){
                 title: '单号',
                 align: 'center',
                 width: 120,
+                formatter: function(index, row){
+                    return '<a href="/order_detail?No='+row.order_No+'"+ target="_blank">'+row.order_No+'</a>';
+                }
             }, {
                 field: 'client_name',
                 title: '客户',
@@ -687,7 +704,8 @@ $(function(){
             t_paya = t_paya.toFixed(2);
             t_paid_oil = t_paid_oil.toFixed(2);
             t_paid_cash = t_paid_cash.toFixed(2);
-            notice = "应付金额："+t_paya+"&nbsp;&nbsp;&nbsp;已付金额："+t_paid_cash+"&nbsp;&nbsp;&nbsp;已付油卡"+t_paid_oil;
+            var t_topaya = (t_paya - t_paid_cash - t_paid_oil).toFixed(2);
+            notice = "应付金额："+t_paya+"&nbsp;&nbsp;&nbsp;未付金额："+t_topaya+"&nbsp;&nbsp;&nbsp;已付金额："+t_paid_cash+"&nbsp;&nbsp;&nbsp;已付油卡"+t_paid_oil;
         }else{
 
         }
