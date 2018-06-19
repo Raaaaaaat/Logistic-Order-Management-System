@@ -259,15 +259,19 @@ def recv_cancel_verify(request):
             return JsonResponse({"if_success": 0, "info": "核销失败：反核销分录必须先开发票"})
 
         recv_objs = RECEIVEABLES.objects.filter(id__in=recv_ids)
-        list = []
+        log_list = []
+        order_list = []
         for single in recv_objs:
             if single.status==0: #没有结账
-                list.append("描述：" + single.description + " 应收：" + str(single.receiveables) + " 已收：" + str(
+                log_list.append("描述：" + single.description + " 应收：" + str(single.receiveables) + " 已收：" + str(
                     single.received))
                 single.clear_time=None
                 single.received=0
                 single.save()
+                order_list.append(single.order_id)
                 count_suc += 1
-        detail = "对 " + str(recv_objs.count()) + " 条应收款进行反核销操作: 核销前金额分别为：" + str(list)
+        order_list = list(set(order_list))
+        ORDER.objects.filter(id__in=order_list).update(status=5)
+        detail = "对 " + str(recv_objs.count()) + " 条应收款进行反核销操作: 核销前金额分别为：" + str(log_list)
         OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
         return JsonResponse({"if_success": 1, "suc_num":count_suc})
