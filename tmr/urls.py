@@ -59,6 +59,7 @@ urlpatterns = [
     path('get_trace_data/',    tmr_views.get_trace_data,   name='get_trace_data'),
     path('ope_edit_trace/',    tmr_views.ope_edit_trace,   name='ope_edit_trace'),
     path('ope_edit_order_create_time/', tmr_views.ope_edit_order_create_time, name='ope_edit_order_create_time'),
+    path('ope_trigger_close_order/',    tmr_views.ope_trigger_close_order,    name='ope_trigger_close_order'),
 
     #price part
     path('price_management/',           tmr_views.index_price,               name='price_management'),

@@ -72,7 +72,7 @@ def ope_add_order(request):
                                  des_city=des_city, des_place=des_place,
                                  cargo_name=cargo_name, cargo_weight=cargo_weight,
                                  cargo_quantity=cargo_quantity, if_delete=0,cargo_size=cargo_size,
-                                 remark=remark, rec_name=rec_name, rec_tel=rec_tel)
+                                 remark=remark, rec_name=rec_name, rec_tel=rec_tel, if_close=0)
 
             info = "添加成功"
         return redirect('/price_management?No=' + No+"&info="+info)

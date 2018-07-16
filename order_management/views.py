@@ -34,6 +34,7 @@ from order_management.views_order.ope_add_trace import *
 from order_management.views_order.get_trace_data import *
 from order_management.views_order.ope_edit_trace import *
 from order_management.views_order.order_price import *
+from order_management.views_order.ope_trigger_close_order import *
 
 
 from order_management.views_finance.finance_index import *

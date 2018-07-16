@@ -91,9 +91,9 @@ def get_recv_list(request):
             try:
                 client_obj = CLIENT.objects.get(id=client_id)
                 if client_obj.type == 0:
-                    line["client_name"] = client_obj.No + " - " + client_obj.co_name
+                    line["client_name"] = client_obj.co_name
                 else:
-                    line["client_name"] = client_obj.No + " - " + client_obj.contact_name
+                    line["client_name"] = client_obj.contact_name
             except:
                 line["client_name"] = "客户已删除"
             line["index"] = index

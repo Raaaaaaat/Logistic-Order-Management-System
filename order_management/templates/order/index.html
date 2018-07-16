@@ -45,21 +45,58 @@
                                             <input type="text" class="form-control" placeholder="按单号进行搜索" id="filter_No">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-lg-3">
+                                    <div class="col-md-4 col-lg-3" hidden>
                                         <div class="input-group" title="下单开始日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">date_range</i>
                                             </span>
-                                            <input class="datepicker form-control" type="text" placeholder="开始日期" id="filter_start_time">
+                                            <input class="datepicker form-control" type="text" placeholder="下单开始日期" id="filter_start_time">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 col-lg-3" hidden>
+                                        <div class="input-group" title="下单结束日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">arrow_forward</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="下单结束日期" id="filter_end_time">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class = "row">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group" title="提货开始日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">date_range</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="提货开始日期" id="filter_pick_start_time">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 col-lg-3">
-                                        <div class="input-group" title="结束日期">
+                                        <div class="input-group" title="提货结束日期">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">arrow_forward</i>
                                             </span>
-                                            <input class="datepicker form-control" type="text" placeholder="结束日期" id="filter_end_time">
+                                            <input class="datepicker form-control" type="text" placeholder="提货结束日期" id="filter_pick_end_time">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group" title="送货开始日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">date_range</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="送货开始日期" id="filter_delivery_start_time">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group" title="送货结束日期">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">arrow_forward</i>
+                                            </span>
+                                            <input class="datepicker form-control" type="text" placeholder="送货结束日期" id="filter_delivery_end_time">
                                         </div>
                                     </div>
 
@@ -234,25 +271,14 @@
         //分页方式：client客户端分页，server服务端分页（*）
         sidePagination: "server",
         queryParams: function(params){
-            var filter_end_time = $("#filter_end_time").val();
-            params.filter_end_time = "";
-            if(filter_end_time!==""){
-                if(/^\d\d\/\d\d\/\d\d\d\d$/.test(filter_end_time))
-                    params.filter_end_time = filter_end_time;
-                else{
-                    toastr.info("结束日期格式有误");
-                }
+            params.filter_end_time = $("#filter_end_time").val();
+            params.filter_start_time = $("#filter_start_time").val();
 
-            }
-            var filter_start_time = $("#filter_start_time").val();
-            params.filter_start_time = "";
-            if(filter_start_time!==""){
-                if(/^\d\d\/\d\d\/\d\d\d\d$/.test(filter_start_time))
-                    params.filter_start_time = filter_start_time;
-                else{
-                    toastr.info("开始日期格式有误");
-                }
-            }
+            params.filter_pick_start_time    = $("#filter_pick_start_time").val();
+            params.filter_pick_end_time      = $("#filter_pick_end_time").val();
+            params.filter_delivery_start_time = $("#filter_delivery_start_time").val();
+            params.filter_delivery_end_time   = $("#filter_delivery_end_time").val();
+
             params.filter_client     = $("#filter_client").val();
             if(params.filter_client === null)
                 params.filter_client     = "";
@@ -328,6 +354,18 @@
                 halign:'center',
                 width: 100,
            },  {
+                field: 'recv',
+                title: '应收款',
+                align: 'right',
+                halign:'center',
+                width: 80,
+           },  {
+                field: 'paya',
+                title: '应付款',
+                align: 'right',
+                halign:'center',
+                width: 80,
+           },  {
                 field: 'cargo_name',
                 title: '货物名称',
                 align: 'center',
@@ -397,6 +435,18 @@
                     return '<span rel="tooltip" title="'+row.des_place+'">'+row.des_place+'</span>';
                 }
             },  {
+                field: 'if_close',
+                title: '关账',
+                align: 'center',
+                halign:'center',
+                width: 50,
+                formatter: function(index, row){
+                    if(row.if_close ==="1")
+                        return "已关";
+                    else
+                        return "未关";
+                }
+            },  {
                 field: 'remark',
                 title: '备注',
                 align: 'center',
@@ -414,10 +464,11 @@
                     //console.log(row);
                     return '<a data-no="'+row.No+'" href = "/order_edit?No='+row.No+'" title="编辑"><i class="fa fa-pencil"></i></a>' +
                            '<a data-no="'+row.No+'" class = "delete_order_button" title="删除" style="margin-left: 10px;"><i class="fa fa-trash"></i></a>' +
-                           '<a data-no="'+row.No+'" data-create_time="'+row.create_time+'" class = "delete_change_date_button" title="修改下单时间" style="margin-left: 10px;"><i class="fa fa-calendar"></i></a>';
+                           '<a data-no="'+row.No+'" data-create_time="'+row.create_time+'" class = "delete_change_date_button" title="修改下单时间" style="margin-left: 10px;"><i class="fa fa-calendar"></i></a>' +
+                           '<a data-no="'+row.No+'" data-if_close="'+row.if_close+'" class = "trigger_close_order_button" title="订单结账/反结账" style="margin-left: 10px;"><i class="fa fa-ban"></i></a>';
                 },
                 align: 'center',
-                width: 70,
+                width: 100,
             },{
                 title: '-',
             }],
@@ -465,8 +516,8 @@
 
     $body.on('click', '.delete_order_button', function(){
         var No = $(this).data('no');
-        myConfirm("是否确定删除订单： "+No+"？<br>注：<br>此操作将删除订单所有相关应收应付款以及物流信息，并且<strong>无法撤回</strong>",function(){
-            //alert("deleteIng"+No);
+        myConfirm("是否确定删除订单： "+No+"？<br>注：<br>此操作需清空应收以及应付款信息并将删除订单所有相关物流信息，并且<strong>无法撤回</strong>",function(){
+//            alert("deleteIng"+No);
             $.ajax({
                 type: "POST",
                 url: "{% url 'ope_drop_order' %}",
@@ -500,6 +551,37 @@
                     //console.log(data);
                     if(data.if_success===1){
                         toastr.success('修改成功');
+                        $('#tablecase').bootstrapTable("refresh");
+                    }else if(data.if_success===0){
+                        toastr.error(data.info);
+                    }else{}
+                },
+                error: function(){
+                    toastr.error("网络错误，请稍后再试");
+                },
+            });
+        });
+    });
+
+    $body.on('click', '.trigger_close_order_button', function(){
+        var No = $(this).data('no');
+        var if_close = $(this).data('if_close');
+        var info = "";
+        if (if_close==="1")
+            info = "是否取消订单 "+No+" 的关账操作";
+        else
+            info = "是否对订单 "+No+" 进行关账操作，关闭后将无法对此订单进行任何修改";
+
+        myConfirm(info,function(){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'ope_trigger_close_order' %}",
+                data: {No: No},
+                datatype: "html",
+                success: function (data) {
+                    //console.log(data);
+                    if(data.if_success===1){
+                        toastr.success(data.info);
                         $('#tablecase').bootstrapTable("refresh");
                     }else if(data.if_success===0){
                         toastr.error(data.info);

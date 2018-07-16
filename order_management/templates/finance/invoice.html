@@ -44,41 +44,51 @@
                                 </div>
                         <div class="card-content table-responsive ">
                             <div class="row">
-                            <div class="col-md-3 col-lg-3">
-                                <div class="input-group" title="搜索票号">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">date_range</i>
-                                    </span>
-                                    <input class="form-control" type="text" placeholder="票号" id="f_invoice">
+                                <div class="col-md-3 col-lg-3">
+                                    <div class="input-group" title="搜索票号">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">date_range</i>
+                                        </span>
+                                        <input class="form-control" type="text" placeholder="票号" id="f_invoice">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3 col-lg-3">
-                                <div class="input-group" title="创建开始日期">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">date_range</i>
-                                    </span>
-                                    <input class="datepicker form-control" type="text" placeholder="开始日期" id="f_start_time">
+                                <div class="col-md-3 col-lg-3">
+                                    <div class="input-group" title="创建开始日期">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">date_range</i>
+                                        </span>
+                                        <input class="datepicker form-control" type="text" placeholder="开始日期" id="f_start_time">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-3 col-lg-3">
-                                <div class="input-group" title="创建结束日期">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">arrow_forward</i>
-                                    </span>
-                                    <input class="datepicker form-control" type="text" placeholder="结束日期" id="f_end_time">
+                                <div class="col-md-3 col-lg-3">
+                                    <div class="input-group" title="创建结束日期">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">arrow_forward</i>
+                                        </span>
+                                        <input class="datepicker form-control" type="text" placeholder="结束日期" id="f_end_time">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="input-group" title="按客户进行搜索">
-                                    <span class="input-group-addon">
-                                        <i class="material-icons">person</i>
-                                    </span>
-                                    <select id="f_client" class="form-control" style="width: 180px"></select>
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="input-group" title="按客户进行搜索">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">person</i>
+                                        </span>
+                                        <select id="f_client" class="form-control" style="width: 180px"></select>
+                                    </div>
                                 </div>
+                                <div class="col-md-6 col-lg-3" hidden>
+                                    <div class="input-group" title="按状态进行搜索">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">search</i>
+                                        </span>
+                                        <select id="f_status" class="form-control" style="width: 180px;"></select>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-xs" id="btn_submit" style="float:right;margin-right: 20px;">Search</button>
                             </div>
-                            <button class="btn btn-primary btn-xs" id="btn_submit" style="float:right;margin-right: 20px;">Search</button>
-                                </div>
                             <table id="table_invoice" style=" table-layout: fixed;" class = "bt_table"></table>
 
                         </div>
@@ -93,6 +103,12 @@
 {% block jscode %}
 <script>
     $(function(){
+        $('.datepicker').datepicker({
+            weekStart:1, //1代表从一周周一开始，0代表从周天开始
+            autoclose:true,
+            clearBtn:true,
+            zIndexOffset: 10000,
+        });
         $("#f_client").select2({
             placeholder: "按客户进行筛选",
             allowClear: true,
@@ -113,6 +129,14 @@
             },
             minimumInputLength: 0,
         });
+        //var $fstatus =$("#f_status");
+        //$fstatus.select2({
+        //    minimumResultsForSearch: Infinity,
+        //    placeholder: "按付款状态搜索",
+        //    data: [{ id: 0,  text: "全部"},
+        //           { id: 1,  text: "已结清"},
+        //           { id: 2,  text: "未结清"}],
+        //});
 
         $('#table_invoice').bootstrapTable({
             url: "{% url 'get_invoice_list' %}",    //请求数据的地址
@@ -136,6 +160,7 @@
                 params.f_start_time = $('#f_start_time').val();
                 params.f_end_time   = $('#f_end_time').val();
                 params.f_invoice    = $('#f_invoice').val();
+                //params.f_status     = $("#f_status").val();
                 return params;
             },
             contentType: 'application/json',

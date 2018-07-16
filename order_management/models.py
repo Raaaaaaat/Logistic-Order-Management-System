@@ -73,6 +73,7 @@ class ORDER(models.Model):
     create_time    = models.DateTimeField(auto_now_add=True)
     pick_up_time   = models.DateTimeField(null=True)
     delivery_time  = models.DateTimeField(null=True)
+    if_close       = models.SmallIntegerField(null=True) #2018 7 16新增，用来标记结账
     if_delete      = models.SmallIntegerField()
     class Meta:
         permissions = (
@@ -81,7 +82,8 @@ class ORDER(models.Model):
             ("view_order_finance", "Can access information of financal certer"),
             ("view_data_center", "Can access information of data certer"),
             ("edit_order_create_time","edit create time of order objects"),
-            ("super_delete_order", "delete order inspite of limitions(dangerous)"),
+            ("close_order", "针对订单的结账操作，以及反结账操作"),
+
             # ("add_order",
             # ("change_order",
             # ("delete_order",

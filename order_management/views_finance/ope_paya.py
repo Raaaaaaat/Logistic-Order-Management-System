@@ -86,9 +86,9 @@ def get_paya_list(request):
         supplier_dic = {}
         for line in supplier_obj:
             if line.type==0: #公司供应商
-                supplier_dic[line.id] = line.No+" - "+line.co_name
+                supplier_dic[line.id] = line.co_name
             elif  line.type==1: #个人供应商
-                supplier_dic[line.id] = line.No+" - "+line.contact_name
+                supplier_dic[line.id] = line.contact_name
         rows = []
         index = int(f_offset)+1
         for line in pay_obj:
@@ -97,9 +97,9 @@ def get_paya_list(request):
             try:
                 client_obj = CLIENT.objects.get(id=client_id)
                 if client_obj.type == 0:
-                    line["client_name"] = client_obj.No + " - " + client_obj.co_name
+                    line["client_name"] = client_obj.co_name
                 else:
-                    line["client_name"] = client_obj.No + " - " + client_obj.contact_name
+                    line["client_name"] = client_obj.contact_name
             except:
                 line["client_name"] = "客户已删除"
             line["index"] = index

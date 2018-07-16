@@ -129,6 +129,9 @@
                     title: '单号',
                     align: 'center',
                     width: 120,
+                    formatter: function(index, row){
+                        return '<a href="/order_detail?No='+row.order_No+'"+ target="_blank">'+row.order_No+'</a>';
+                    }
 
                 },  {
                     field: 'target_create_time',

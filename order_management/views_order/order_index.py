@@ -3,7 +3,7 @@ from django.http import JsonResponse
 import json
 from order_management.models import ORDER
 from order_management.models import CLIENT
-from order_management.models import PAYABLES
+from order_management.models import PAYABLES, RECEIVEABLES
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
@@ -31,8 +31,13 @@ def order_index(request):
         filter_status     = json.loads(bo_data["filter_status"])
         filter_start_time = bo_data["filter_start_time"]
         filter_end_time   = bo_data["filter_end_time"]
-        limit             = bo_data["limit"]
-        offset            = bo_data["offset"]
+
+        filter_pick_start_time    = bo_data["filter_pick_start_time"]
+        filter_pick_end_time      = bo_data["filter_pick_end_time"]
+        filter_delivery_start_time = bo_data["filter_delivery_start_time"]
+        filter_delivery_end_time   = bo_data["filter_delivery_end_time"]
+        limit                     = bo_data["limit"]
+        offset                    = bo_data["offset"]
         for i in range(len(filter_status)):
             filter_status[i] = int(filter_status[i])
 
@@ -45,6 +50,14 @@ def order_index(request):
             query = query & Q(create_time__gte=datetime.datetime.strptime(filter_start_time,'%m/%d/%Y'))
         if filter_end_time != "":
             query = query & Q(create_time__lte=datetime.datetime.strptime(filter_end_time,'%m/%d/%Y')+datetime.timedelta(days=1))
+        if filter_pick_start_time != "":
+            query = query & Q(pick_up_time__gte=datetime.datetime.strptime(filter_pick_start_time,'%m/%d/%Y'))
+        if filter_pick_end_time != "":
+            query = query & Q(pick_up_time__lte=datetime.datetime.strptime(filter_pick_end_time,'%m/%d/%Y')+datetime.timedelta(days=1))
+        if filter_delivery_start_time != "":
+            query = query & Q(delivery_time__gte=datetime.datetime.strptime(filter_delivery_start_time,'%m/%d/%Y'))
+        if filter_delivery_end_time != "":
+            query = query & Q(delivery_time__lte=datetime.datetime.strptime(filter_delivery_end_time,'%m/%d/%Y')+datetime.timedelta(days=1))
         if filter_dep_city != "":
             query = query & Q(dep_city=filter_dep_city)
         if filter_des_city != "":
@@ -103,6 +116,28 @@ def order_index(request):
             else:
                 line["client_name"] = "已删除"
                 line["client_id"] = 0
+            recv_tot = 0
+            recv_flag = False
+            recv_objs = RECEIVEABLES.objects.filter(order_id=line["id"])
+            for single in recv_objs:
+                recv_flag = True
+                recv_tot = recv_tot+single.receiveables
+            if not recv_flag:
+                line["recv"] = "未设置"
+            else:
+                line["recv"] = round(recv_tot,2)
+
+            paya_tot = 0
+            paya_flag = False
+            paya_objs = PAYABLES.objects.filter(order_id=line["id"])
+            for single in paya_objs:
+                paya_flag = True
+                paya_tot = paya_tot+single.payables
+            if not paya_flag:
+                line["paya"]="未设置"
+            else:
+                line["paya"]=round(paya_tot,2)
+
         #返回表格的数据
         data = {
             "total": total,

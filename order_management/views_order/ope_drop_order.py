@@ -22,27 +22,18 @@ def ope_drop_order(request):
             if_success = 0
             info = "订单信息不存在"
         else:#2018 6 19日修改为只要没有已收已付就可以删除（原本为只有未发货可以删除）
-
-            if order_obj.status==1:
+            recv_count = RECEIVEABLES.objects.filter(order_id=order_obj.id).count()
+            paya_count = PAYABLES.objects.filter(order_id=order_obj.id).count()
+            if recv_count !=0 or paya_count!=0:
+                if_success=0
+                info = "删除订单需要提前清空收付款信息"
+            else:
                 order_id = order_obj.id
-                PAYABLES.objects.filter(order_id=order_id).delete()
-                RECEIVEABLES.objects.filter(order_id=order_id).delete()
                 LOG_TRACE.objects.filter(order_id=order_id).delete()
                 order_obj.if_delete=1
                 order_obj.save()
                 if_success = 1
-                info = ""
-            elif request.user.has_perm("order_management.super_delete_order"):
-                order_id = order_obj.id
-                PAYABLES.objects.filter(order_id=order_id).delete()
-                RECEIVEABLES.objects.filter(order_id=order_id).delete()
-                LOG_TRACE.objects.filter(order_id=order_id).delete()
-                order_obj.if_delete = 1
-                order_obj.save()
-                if_success = 1
-                info = ""
-            else:
-                if_success=0
-                info = "只有未发货的订单可以被删除"
+                info = "删除成功"
+
         return JsonResponse({'if_success':if_success, 'info': info})
 
