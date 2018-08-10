@@ -30,10 +30,19 @@ def get_receiveables(request):
             return JsonResponse({'rows': []})
         order_id = request.POST.get("order_id")
         rec_obj = RECEIVEABLES.objects.filter(order_id=order_id).values()
+
+        step_objs = SUP_STEP.objects.all()
+        step_dic = {}
+        for line in step_objs:
+            step_dic[line.id] = line.name
+
         rows = []
         for line in rec_obj:
+            if line["step"] in step_dic:
+                line["step_name"] = step_dic[line["step"]]
             rows.append(line)
         return JsonResponse({"rows":rows})
+
 @login_required
 def add_receiveables(request):
     if request.method == "POST":
@@ -41,6 +50,7 @@ def add_receiveables(request):
             return JsonResponse({"if_success":0, "info":"没有管理应收账款的权限"})
         #如果订单状态是5或者6则需要变更回来到4
         order_id = request.POST.get("order_id")
+        step = request.POST.get("step")
         order_obj = ORDER.objects.filter(id=order_id).first()
         if order_obj == None:
             if_success = 0
@@ -52,7 +62,7 @@ def add_receiveables(request):
             description = request.POST.get("description","")
             price = request.POST.get("price")
             RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
-                                    receiveables=price, received=0)
+                                    receiveables=price, received=0, step=step)
             detail = "增加 "+order_obj.No+" 应收款："+str(price)+" 描述："+description
             OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
             if_success = 1
@@ -193,7 +203,8 @@ def get_payables(request):
                 supplier_dic[line.id] = line.No+" - "+line.contact_name
         rows = []
         for line in pay_obj:
-            line["step_name"]= step_dic[line["step"]]
+            if line["step"] in step_dic:
+                line["step_name"]= step_dic[line["step"]]
             if line["supplier_id"] in supplier_dic:
                 line["supplier_name"] = supplier_dic[line["supplier_id"]]
             else:
