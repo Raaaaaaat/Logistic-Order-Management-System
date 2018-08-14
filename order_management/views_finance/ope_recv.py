@@ -69,15 +69,17 @@ def get_recv_list(request):
             for single in invoice_objs:
                 invoice_ids.append(single.id)
             query = query & Q(invoice__in=invoice_ids)
-        if f_if_total == "1":
+        if f_if_total == 1:
             query = query #搜索全部
+        else:
+            query = query & Q(status=0)
         if f_status != "0":
             if f_status == "1":
                 query = query & Q(clear_time__isnull=False)
             else:
                 query = query & Q(clear_time__isnull=True)
         else:
-            query = query & Q(status=0)
+            query = query
 
         recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset+f_limit]
         recv_count = RECEIVEABLES.objects.filter(query).count()
@@ -200,6 +202,9 @@ def recv_verify(request):
         total_to_be_received = 0
         for single in recv_ids: #统计总的未付款
             recv_obj = RECEIVEABLES.objects.get(id=single)
+            #检查是否有已经关闭的应收
+            if recv_obj.status == 1:
+                return JsonResponse({"if_success": 0, "info":"无法更改已经关闭的订单的财务分录"})
             total_to_be_received = round(total_to_be_received + recv_obj.receiveables - recv_obj.received,2)
             #如果有未开票的就直接退出
             if recv_obj.invoice == None:
@@ -254,6 +259,11 @@ def recv_cancel_verify(request):
         recv_ids = request.POST.get("recv_ids", "")
         recv_ids = recv_ids.split(",")
         count_suc = 0
+
+
+        if RECEIVEABLES.objects.filter(Q(id__in=recv_ids) & Q(status=1)).count() != 0:
+            return JsonResponse({"if_success": 0, "info": "无法更改已经关闭的订单的财务分录"})
+
         #只有開票的分錄才可以反覈銷
         if RECEIVEABLES.objects.filter(Q(id__in=recv_ids) & Q(invoice=None)).count() != 0:
             return JsonResponse({"if_success": 0, "info": "核销失败：反核销分录必须先开发票"})

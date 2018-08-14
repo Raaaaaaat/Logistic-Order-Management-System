@@ -55,6 +55,9 @@ def add_receiveables(request):
         if order_obj == None:
             if_success = 0
             info = "订单对象不存在"
+        elif order_obj.if_close==1:
+            if_success = 0
+            info = "该订单已经关闭"
         else:
             if order_obj.status > 4:
                 order_obj.status = 4
@@ -69,7 +72,7 @@ def add_receiveables(request):
             info = "添加成功"
         return JsonResponse({"if_success":if_success, "info":info})
 @login_required
-def delete_receiveables(request):
+def delete_receiveables(request): #待优化
     if request.method == "POST":
         if not request.user.has_perm("order_management.recv_manage"):
             return JsonResponse({"if_success":0, "info":"没有管理应收账款的权限"})
@@ -77,6 +80,9 @@ def delete_receiveables(request):
         #确定是否开票，如果是则不允许删除
         try:
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
+            order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+            if order_obj.if_close == 1:
+                return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if rec_obj.invoice == None:
                 devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1, tzinfo=pytz.timezone('Asia/Shanghai'))
                 if rec_obj.create_time < devider:
@@ -121,6 +127,8 @@ def update_receiveables_desc(request):
         try:
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
             order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+            if order_obj.if_close == 1:
+                return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if order_obj == None:
                 detail = "更新应收款描述：发生错误"
             else:
@@ -145,6 +153,9 @@ def update_receiveables_price(request):
         try:
 
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
+            order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
+            if order_obj.if_close == 1:
+                return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if rec_obj.invoice == None:
                 # 检查创建时间是否是上个月，如果不是就直接修改，否则递交申请给财务
                 devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1,tzinfo=pytz.timezone('Asia/Shanghai'))
@@ -217,7 +228,9 @@ def add_payables(request):
         if not request.user.has_perm("order_management.paya_manage"):
             return JsonResponse({"if_success":0, "info":"没有管理应付账款的权限"})
         order_id = request.POST.get("order_id")
-
+        order_obj = ORDER.objects.get(id=order_id)
+        if order_obj.if_close == 1:
+            return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
         step = request.POST.get("step")
         supplier_id = request.POST.get("supplier_id")
         #检查供应商的有效其是否生效
@@ -241,7 +254,7 @@ def add_payables(request):
         price = request.POST.get("price")
         PAYABLES.objects.create(status=0, order_id=order_id,description=description,
                                 payables=price, paid_cash=0, paid_oil=0, step=step, supplier_id=supplier_id)
-        order_obj = ORDER.objects.get(id=order_id)
+
         detail = "增加 " + order_obj.No + " 应付款：" + str(price) + " 供应商：" + sup_obj.No + " 描述：" + description
         OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
         return JsonResponse({"if_success":1, "info":"添加成功"})
@@ -254,6 +267,9 @@ def delete_payables(request):
         pay_id = request.POST.get("pay_id",0)
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
+            order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+            if order_obj.if_close == 1:
+                return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if pay_obj.invoice == None or pay_obj.invoice=="":
                 devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1, tzinfo=pytz.timezone('Asia/Shanghai'))
                 if pay_obj.create_time < devider:
@@ -297,6 +313,10 @@ def update_payables_info(request):
         supplier_id = request.POST.get("supplier_id")
         # 检查供应商的有效其是否生效
         sup_obj = SUPPLIER.objects.filter(id=supplier_id).first()
+        pay_obj = PAYABLES.objects.get(id=pay_id)
+        order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+        if order_obj.if_close == 1:
+            return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
         if sup_obj == None:
             return JsonResponse({"if_success": 0, "info": "供应商不存在"})
         else:
@@ -315,8 +335,7 @@ def update_payables_info(request):
         if_success = 0
         info = ""
         try:
-            pay_obj = PAYABLES.objects.get(id=pay_id)
-            order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+
             if order_obj == None:
                 detail = "更新应收款价格：发生错误"
             else:
@@ -342,6 +361,9 @@ def update_payables_price(request):
         info = ""
         try:
             pay_obj = PAYABLES.objects.get(id=pay_id)
+            order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
+            if order_obj.if_close == 1:
+                return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if pay_obj.invoice == None or pay_obj.invoice == "":
                 #检查创建时间是否是上个月，如果不是就直接修改，否则递交申请给财务
                 devider = datetime.datetime(datetime.date.today().year,datetime.date.today().month,1, tzinfo=pytz.timezone('Asia/Shanghai'))

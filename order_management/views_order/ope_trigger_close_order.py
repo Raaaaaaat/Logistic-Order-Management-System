@@ -18,6 +18,8 @@ def ope_trigger_close_order(request):
         order_obj = ORDER.objects.get(No=order_No)
         if order_obj.if_close==1: #要进行开账
             order_obj.if_close=0
+            PAYABLES.objects.filter(order_id=order_obj.id).update(status=0)
+            RECEIVEABLES.objects.filter(order_id=order_obj.id).update(status=0)
             info = "已对"+order_No+"进行开账"
         else:
             #进行检查，需要同时设置应收以及应付 并且全部结清 才可进行关账
@@ -50,6 +52,8 @@ def ope_trigger_close_order(request):
 
             if pass_flag:
                 order_obj.if_close=1
+                PAYABLES.objects.filter(order_id=order_obj.id).update(status=1)
+                RECEIVEABLES.objects.filter(order_id=order_obj.id).update(status=1)
                 info = "已对"+order_No+"进行关账"
         order_obj.save()
 
