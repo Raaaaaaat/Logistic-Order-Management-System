@@ -172,7 +172,7 @@ def paya_verify(request):
         total_to_be_paid = 0
         for single in paya_ids: #统计总的未付款
             paya_obj = PAYABLES.objects.get(id=single)
-            if paya_obj.status == 1:
+            if paya_obj.if_close == 1:
                 return JsonResponse({"if_success": 0, "info": "无法更改已经关闭的订单的财务分录"})
             total_to_be_paid = round(total_to_be_paid + paya_obj.payables - paya_obj.paid_cash - paya_obj.paid_oil, 2)
         if total_to_be_paid < paid_ammount:
@@ -223,7 +223,7 @@ def paya_cancel_verify(request):
         count_suc = 0
         list=[]
 
-        if PAYABLES.objects.filter(Q(id__in=paya_ids) & Q(status=1)).count() != 0:
+        if PAYABLES.objects.filter(Q(id__in=paya_ids) & Q(if_close=1)).count() != 0:
             return JsonResponse({"if_success": 0, "info": "无法更改已经关闭的订单的财务分录"})
 
         for single in paya_ids:

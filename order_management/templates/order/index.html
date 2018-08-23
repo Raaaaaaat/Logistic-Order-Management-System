@@ -322,7 +322,11 @@
                 align: 'center',
                 width: 80,
                 formatter: function(index, row){
-                    return order_status_switch(row.status);
+                    var style='';
+                    if(row.if_close == 1)
+                        style = ' style = "color:red;"';
+                    var msg = '<span'+style+'>'+order_status_switch(row.status)+'</span>';
+                    return msg;
                 }
             }, {
                 field: 'client_name',

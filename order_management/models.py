@@ -106,6 +106,7 @@ class PAYABLES(models.Model):
     clear_time  = models.DateTimeField(null=True)
     invoice     = models.CharField(max_length=200, null=True, default="")
     remark      = models.CharField(max_length=500, null=True)
+    if_close = models.SmallIntegerField(null=True)
     class Meta:
         permissions = (
             ("paya_manage", "Can manage(add/change/delete) payables"),
@@ -125,6 +126,7 @@ class RECEIVEABLES(models.Model):
     clear_time  = models.DateTimeField(null=True)
     invoice     = models.IntegerField(null=True)
     remark      = models.CharField(max_length=500, null=True)
+    if_close = models.SmallIntegerField(null=True)
     class Meta:
         permissions = (
             ("recv_manage",  "Can manage(add/change/delete) receiveables"),
