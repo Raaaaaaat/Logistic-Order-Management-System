@@ -36,6 +36,12 @@ def ope_add_trace(request):
         create_time    = datetime.datetime.strptime(create_time,'%Y-%m-%d %H:%M:%S')
         select_time    = datetime.datetime.strptime(select_time, '%m/%d/%Y')
 
+        #对于订单状态的效果进行控制
+        if order_obj.if_close==1 and status!= "异常":
+            info = "订单已关闭，无法再新增异常之外的物流信息"
+            return JsonResponse(
+                {'if_success': 0, 'info': info})
+
         if_success = 0
         if_update_status = False
         info       = ""

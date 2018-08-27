@@ -20,13 +20,17 @@ def ope_edit_trace(request):
         date = datetime.datetime.strptime(date, '%m/%d/%Y')
 
         trace_obj = LOG_TRACE.objects.get(id=trace_id)
+        order_obj = ORDER.objects.filter(id=trace_obj.order_id).first()
+        if order_obj.if_close==1 and trace_obj.status!= "异常":
+            info = "订单已关闭，无法再修改异常之外的物流信息"
+            return JsonResponse(
+                {'if_success': 0, 'info': info})
+
         if trace_obj.status == "提货":
-            order_obj = ORDER.objects.filter(id=trace_obj.order_id).first()
             if order_obj != None:
                 order_obj.pick_up_time = date
                 order_obj.save()
         elif trace_obj.status == "签收":
-            order_obj = ORDER.objects.filter(id=trace_obj.order_id).first()
             if order_obj != None:
                 order_obj.delivery_time = date
                 order_obj.save()

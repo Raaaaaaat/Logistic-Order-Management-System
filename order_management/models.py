@@ -82,8 +82,8 @@ class ORDER(models.Model):
             ("view_order_finance", "Can access information of financal certer"),
             ("view_data_center", "Can access information of data certer"),
             ("edit_order_create_time","edit create time of order objects"),
-            ("close_order", "针对订单的结账操作，以及反结账操作"),
-
+            ("close_order", "针对订单的关闭操作"),
+            ("open_order", "针对订单的打开操作,用于取消关闭订单的效果"),
             # ("add_order",
             # ("change_order",
             # ("delete_order",

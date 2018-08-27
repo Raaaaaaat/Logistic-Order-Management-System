@@ -27,6 +27,7 @@ def get_invoice_list(request):
         f_client     = request.GET.get('f_client')
         f_start_time = request.GET.get('f_start_time')
         f_end_time   = request.GET.get('f_end_time')
+        f_status     = request.GET.get('f_status')
         limit        = int(request.GET.get("limit"))
         offset       = int(request.GET.get("offset"))
 
@@ -39,6 +40,7 @@ def get_invoice_list(request):
             query = query & Q(client_id=f_client)
         if f_invoice != "":
             query = query & Q(invoice__contains=f_invoice)
+
 
         total = RECV_INVOICE.objects.filter(query).count()
         invoice_objs = RECV_INVOICE.objects.filter(query).order_by('-id').values()[offset:offset+limit]
@@ -66,7 +68,14 @@ def get_invoice_list(request):
             line["tot_receiveables"]=round(tot_receiveables,2)
             line["tot_received"] = round(tot_received,2)
             line["tot_torecv"] = round(tot_receiveables-tot_received,2)
-            rows.append(line)
+            if f_status == "1": #已结清
+                if line["tot_torecv"]==0:
+                    rows.append(line)
+            elif f_status == "2": #未结清
+                if line["tot_torecv"]!=0:
+                    rows.append(line)
+            else:
+                rows.append(line)
         return  JsonResponse({'rows':rows, 'total':total})
 
 @login_required

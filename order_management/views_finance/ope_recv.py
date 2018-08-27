@@ -203,8 +203,8 @@ def recv_verify(request):
         for single in recv_ids: #统计总的未付款
             recv_obj = RECEIVEABLES.objects.get(id=single)
             #检查是否有已经关闭的应收
-            if recv_obj.if_close == 1:
-                return JsonResponse({"if_success": 0, "info":"无法更改已经关闭的订单的财务分录"})
+            #if recv_obj.if_close == 1:
+            #    return JsonResponse({"if_success": 0, "info":"无法更改已经关闭的订单的财务分录"})
             total_to_be_received = round(total_to_be_received + recv_obj.receiveables - recv_obj.received,2)
             #如果有未开票的就直接退出
             if recv_obj.invoice == None:
@@ -261,8 +261,8 @@ def recv_cancel_verify(request):
         count_suc = 0
 
 
-        if RECEIVEABLES.objects.filter(Q(id__in=recv_ids) & Q(if_close=1)).count() != 0:
-            return JsonResponse({"if_success": 0, "info": "无法更改已经关闭的订单的财务分录"})
+        #if RECEIVEABLES.objects.filter(Q(id__in=recv_ids) & Q(if_close=1)).count() != 0:
+            #return JsonResponse({"if_success": 0, "info": "无法更改已经关闭的订单的财务分录"})
 
         #只有開票的分錄才可以反覈銷
         if RECEIVEABLES.objects.filter(Q(id__in=recv_ids) & Q(invoice=None)).count() != 0:

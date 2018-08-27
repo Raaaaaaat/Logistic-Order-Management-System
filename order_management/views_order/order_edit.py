@@ -55,16 +55,17 @@ def order_edit(request):
         remark         = request.POST.get("remark", "")
         try:
             order_obj = ORDER.objects.get(No=No)
-            order_obj.rec_name   = rec_name
-            order_obj.rec_tel    = rec_tel
-            order_obj.dep_city   = dep_city
-            order_obj.dep_place  = dep_place
-            order_obj.des_city   = des_city
-            order_obj.des_place  = des_place
-            order_obj.cargo_name = cargo_name
-            order_obj.cargo_weight   = cargo_weight
-            order_obj.cargo_quantity = cargo_quantity
-            order_obj.cargo_size     = cargo_size
+            if order_obj.if_close != 1:
+                order_obj.rec_name   = rec_name
+                order_obj.rec_tel    = rec_tel
+                order_obj.dep_city   = dep_city
+                order_obj.dep_place  = dep_place
+                order_obj.des_city   = des_city
+                order_obj.des_place  = des_place
+                order_obj.cargo_name = cargo_name
+                order_obj.cargo_weight   = cargo_weight
+                order_obj.cargo_quantity = cargo_quantity
+                order_obj.cargo_size     = cargo_size
             order_obj.remark         = remark
             order_obj.save()
 
@@ -87,6 +88,10 @@ def ope_edit_order_create_time(request):
         order_obj = ORDER.objects.get(No=No)
         time = localtime(order_obj.create_time)
         time = time.replace(year = create_time.year, month = create_time.month, day = create_time.day)
+        if order_obj.if_close == 1:
+            info = "订单已关闭，无法再新修改订单时间"
+            return JsonResponse(
+                {'if_success': 0, 'info': info})
         if order_obj.create_time.month != time.month:
             # 待完成：修改訂單編號
             new_No = "PO" + str(time.year) + str(time.month).zfill(2)

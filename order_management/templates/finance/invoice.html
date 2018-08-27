@@ -79,7 +79,7 @@
                                         <select id="f_client" class="form-control" style="width: 180px"></select>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3" hidden>
+                                <div class="col-md-6 col-lg-3">
                                     <div class="input-group" title="按状态进行搜索">
                                         <span class="input-group-addon">
                                             <i class="material-icons">search</i>
@@ -129,15 +129,15 @@
             },
             minimumInputLength: 0,
         });
-        //var $fstatus =$("#f_status");
-        //$fstatus.select2({
-        //    minimumResultsForSearch: Infinity,
-        //    placeholder: "按付款状态搜索",
-        //    data: [{ id: 0,  text: "全部"},
-        //           { id: 1,  text: "已结清"},
-        //           { id: 2,  text: "未结清"}],
-        //});
 
+        var $fstatus =$("#f_status");
+        $fstatus.select2({
+            minimumResultsForSearch: Infinity,
+            placeholder: "按付款状态搜索",
+            data: [{ id: 0,  text: "全部"},
+                   { id: 1,  text: "已结清"},
+                   { id: 2,  text: "未结清"}],
+        });
         $('#table_invoice').bootstrapTable({
             url: "{% url 'get_invoice_list' %}",    //请求数据的地址
             method: 'get',
@@ -160,7 +160,8 @@
                 params.f_start_time = $('#f_start_time').val();
                 params.f_end_time   = $('#f_end_time').val();
                 params.f_invoice    = $('#f_invoice').val();
-                //params.f_status     = $("#f_status").val();
+                params.f_status     = $fstatus.val();
+
                 return params;
             },
             contentType: 'application/json',
