@@ -234,7 +234,10 @@
 
             if("{{ No }}" !== ""){   //代表现在是编辑模式
                 $('#title_info').html('Edit Client');
-                $('input[name=type]').attr('disabled',true); //不允许在编辑模式修改客户类型
+                var type = $('input[name=type]:checked').val();
+
+                $('input[name=type]').attr('disabled',true);
+                $('input[name=type]').after("<input type='hidden' name='type' value='"+type+"'/>");//不允许在编辑模式修改客户类型
                 if("{{ contract_file }}"!==""){  //如果已经选择过文件就说明已经选择过了
                     $('#file_div').hide();
                     $('#refile_div').show();
