@@ -65,7 +65,7 @@ def add_receiveables(request):
             description = request.POST.get("description","")
             price = request.POST.get("price")
             RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
-                                    receiveables=price, received=0, step=step)
+                                    receiveables=price, received=0, step=step, client_id=order_obj.client_id)
             detail = "增加 "+order_obj.No+" 应收款："+str(price)+" 描述："+description
             OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
             if_success = 1
@@ -253,7 +253,7 @@ def add_payables(request):
         description = request.POST.get("description")
         price = request.POST.get("price")
         PAYABLES.objects.create(status=0, order_id=order_id,description=description,
-                                payables=price, paid_cash=0, paid_oil=0, step=step, supplier_id=supplier_id)
+                                payables=price, paid_cash=0, paid_oil=0, step=step, supplier_id=supplier_id, client_id=order_obj.client_id)
 
         detail = "增加 " + order_obj.No + " 应付款：" + str(price) + " 供应商：" + sup_obj.No + " 描述：" + description
         OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
