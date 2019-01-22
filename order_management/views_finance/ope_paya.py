@@ -9,7 +9,7 @@ import datetime,json
 from django.db.models import Q
 from django.utils.timezone import localtime
 from django.contrib.auth.decorators import login_required
-
+from django.db.models import Sum
 
 @login_required
 def get_paya_list(request):
@@ -29,7 +29,9 @@ def get_paya_list(request):
         f_status            = bo_data["f_status"]
         f_offset            = bo_data["offset"]
         f_limit             = bo_data["limit"]
-
+        group_order_id      = bo_data["group_order"]
+        group_supplier_id   = bo_data["group_supplier"]
+        group_client_id     = bo_data["group_client"]
 
         query = Q()
         if f_order_No != "":
@@ -79,9 +81,59 @@ def get_paya_list(request):
         else:
             query = query
 
-        pay_obj = PAYABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset+f_limit]
-        paya_count = PAYABLES.objects.filter(query).count()
-        #除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
+
+
+        #add in 1/21/2019
+        if group_order_id or group_client_id or group_supplier_id:
+            if group_order_id:
+                if group_client_id:
+                    if group_supplier_id:
+                        #111
+                        pay_obj = PAYABLES.objects.filter(query).values('order_id','client_id','supplier_id').annotate(payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))[f_offset:f_offset+f_limit]
+                        paya_count = PAYABLES.objects.filter(query).values('order_id','client_id','supplier_id').annotate(payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil')).count()
+                    else:
+                        #110
+                        pay_obj = PAYABLES.objects.filter(query).values('order_id', 'client_id',).annotate(
+                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))[
+                                  f_offset:f_offset + f_limit]
+                        paya_count = PAYABLES.objects.filter(query).values('order_id', 'client_id',).annotate(
+                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil')).count()
+
+                else:
+                    if group_supplier_id:
+                        #101
+                        pay_obj = PAYABLES.objects.filter(query).values('order_id', 'supplier_id').annotate(
+                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))[
+                                  f_offset:f_offset + f_limit]
+                        paya_count = PAYABLES.objects.filter(query).values('order_id','supplier_id').annotate(
+                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil')).count()
+                    else:
+                        #100
+                        pay_obj = PAYABLES.objects.filter(query).values('order_id').annotate(                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))[f_offset:f_offset + f_limit]
+                        paya_count = PAYABLES.objects.filter(query).values('order_id').annotate(                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil')).count()
+            else:
+                if group_client_id:
+                    if group_supplier_id:
+                        #011
+                        pay_obj = PAYABLES.objects.filter(query).values('client_id','supplier_id').annotate(
+                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))[
+                                  f_offset:f_offset + f_limit]
+                        paya_count = PAYABLES.objects.filter(query).values('client_id','supplier_id').annotate(
+                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil')).count()
+                    else:
+                        #010
+                        pay_obj = PAYABLES.objects.filter(query).values('client_id').annotate(payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))[f_offset:f_offset + f_limit]
+                        paya_count = PAYABLES.objects.filter(query).values('client_id').annotate(payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil')).count()
+
+                else:
+                    if group_supplier_id:
+                        #001
+                        pay_obj = PAYABLES.objects.filter(query).values('supplier_id').annotate(                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))[f_offset:f_offset + f_limit]
+                        paya_count = PAYABLES.objects.filter(query).values('supplier_id').annotate(                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil')).count()
+        else:
+            pay_obj = PAYABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset + f_limit]
+            paya_count = PAYABLES.objects.filter(query).count()
+            # 除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
 
         supplier_obj = SUPPLIER.objects.all()
@@ -94,33 +146,43 @@ def get_paya_list(request):
         rows = []
         index = int(f_offset)+1
         for line in pay_obj:
-            order_obj = ORDER.objects.get(id=line["order_id"])
-            client_id = order_obj.client_id
-            try:
-                client_obj = CLIENT.objects.get(id=client_id)
-                if client_obj.type == 0:
-                    line["client_name"] = client_obj.co_name
-                else:
-                    line["client_name"] = client_obj.contact_name
-            except:
-                line["client_name"] = "客户已删除"
-            line["index"] = index
-            index += 1
-            line["order_No"] = order_obj.No
-            line["dep_city"] = order_obj.dep_city
-            line["des_city"] = order_obj.des_city
-            line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
-            line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
-            if line["supplier_id"] in supplier_dic:
-                line["supplier_name"] = supplier_dic[line["supplier_id"]]
+            if 'order_id' in line:
+                order_obj = ORDER.objects.get(id=line["order_id"])
+                line["index"] = index
+                index += 1
+                line["order_No"] = order_obj.No
+                line["dep_city"] = order_obj.dep_city
+                line["des_city"] = order_obj.des_city
+                line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
+                line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
+                line["client_id"] = order_obj.client_id
             else:
-                line["supplier_name"] = "供应商已删除"
+                line["order_No"]=""
+            if 'client_id' in line:
+                try:
+                    client_obj = CLIENT.objects.get(id=line['client_id'])
+                    if client_obj.type == 0:
+                        line["client_name"] = client_obj.co_name
+                    else:
+                        line["client_name"] = client_obj.contact_name
+                except:
+                    line["client_name"] = "客户已删除"
+            else:
+                line["client_name"]=""
+            if 'supplier_id' in line:
+                if line["supplier_id"] in supplier_dic:
+                    line["supplier_name"] = supplier_dic[line["supplier_id"]]
+                else:
+                    line["supplier_name"] = "供应商已删除"
+            else:
+                line["supplier_name"]=""
 
-
-
-            line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
-            if line["clear_time"] != None:
-                line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+            if 'create_time' in line:
+                line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+                if line["clear_time"] != None:
+                    line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+            else: #说明是分类组合的结果，除了６个字段之外别的字段都不存在
+                line["description"]=""
             rows.append(line)
         return JsonResponse({"total":paya_count,"rows":rows})
 

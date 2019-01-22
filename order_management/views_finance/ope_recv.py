@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.utils.timezone import localtime
 from order_management.models import RECV_INVOICE
 from order_management.models import OPERATE_LOG
+from django.db.models import Sum
 
 from django.contrib.auth.decorators import login_required
 
@@ -30,6 +31,8 @@ def get_recv_list(request):
         f_status            = bo_data["f_status"]
         f_offset            = bo_data["offset"]
         f_limit             = bo_data["limit"]
+        group_order_id      = bo_data["group_order"]
+        group_client_id     = bo_data["group_client"]
 
         query = Q()
         if f_order_No != "":
@@ -81,45 +84,75 @@ def get_recv_list(request):
         else:
             query = query
 
-        recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset+f_limit]
-        recv_count = RECEIVEABLES.objects.filter(query).count()
-        #除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
+        #修改于1/21/2019
+
+
+        if group_order_id or group_client_id:
+            if group_order_id:
+                if group_client_id:
+                    #11
+                    recv_obj = RECEIVEABLES.objects.filter(query).values('order_id','client_id').annotate(receiveables=Sum('receiveables'), received=Sum('received'))[f_offset:f_offset+f_limit]
+                    recv_count = RECEIVEABLES.objects.filter(query).values('order_id','client_id').annotate(receiveables=Sum('receiveables'), received=Sum('received')).count()
+                else:
+                    # 10
+                    recv_obj = RECEIVEABLES.objects.filter(query).values('order_id').annotate(
+                        receiveables=Sum('receiveables'), received=Sum('received'))[f_offset:f_offset + f_limit]
+                    recv_count = RECEIVEABLES.objects.filter(query).values('order_id').annotate(
+                        receiveables=Sum('receiveables'), received=Sum('received')).count()
+            else:
+                if group_client_id:
+                    # 01
+                    recv_obj = RECEIVEABLES.objects.filter(query).values('client_id').annotate(
+                        receiveables=Sum('receiveables'), received=Sum('received'))[f_offset:f_offset + f_limit]
+                    recv_count = RECEIVEABLES.objects.filter(query).values('client_id').annotate(
+                        receiveables=Sum('receiveables'), received=Sum('received')).count()
+        else:
+            recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset + f_limit]
+            recv_count = RECEIVEABLES.objects.filter(query).count()
+            # 除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
         rows = []
         index = int(f_offset)+1
         for line in recv_obj:
-            order_obj = ORDER.objects.get(id=line["order_id"])
-            client_id = order_obj.client_id
-            try:
-                client_obj = CLIENT.objects.get(id=client_id)
-                if client_obj.type == 0:
-                    line["client_name"] = client_obj.co_name
-                else:
-                    line["client_name"] = client_obj.contact_name
-            except:
-                line["client_name"] = "客户已删除"
-            line["index"] = index
-            index += 1
-            line["order_No"] = order_obj.No
-            line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
-            line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
-            line["dep_city"] = order_obj.dep_city
-            line["des_city"] = order_obj.des_city
-
-
-            line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
-            if line["clear_time"] != None:
-                line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
-            invoice_id = line["invoice"]
-            if invoice_id!=None:
-                if invoice_id==0:
-                    line["invoice"] = "不出票"
-                else:
-                    try:
-                        invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
-                        line["invoice"]=invoice_obj.invoice
-                    except:
-                        line["invoice"]="已删除"
+            if 'order_id' in line:
+                order_obj = ORDER.objects.get(id=line["order_id"])
+                line["client_id"] = order_obj.client_id
+                line["index"] = index
+                index += 1
+                line["order_No"] = order_obj.No
+                line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
+                line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
+                line["dep_city"] = order_obj.dep_city
+                line["des_city"] = order_obj.des_city
+            else:
+                line["order_No"]=""
+            if 'client_id' in line:
+                try:
+                    client_obj = CLIENT.objects.get(id=line["client_id"])
+                    if client_obj.type == 0:
+                        line["client_name"] = client_obj.co_name
+                    else:
+                        line["client_name"] = client_obj.contact_name
+                except:
+                    line["client_name"] = "客户已删除"
+            else:
+                line["client_name"]=""
+            if 'create_time' in line:
+                line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+                if line["clear_time"] != None:
+                    line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+                invoice_id = line["invoice"]
+                if invoice_id!=None:
+                    if invoice_id==0:
+                        line["invoice"] = "不出票"
+                    else:
+                        try:
+                            invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
+                            line["invoice"]=invoice_obj.invoice
+                        except:
+                            line["invoice"]="已删除"
+            else:
+                line["description"] = ""
 
             rows.append(line)
         return JsonResponse({"total":recv_count,"rows":rows})

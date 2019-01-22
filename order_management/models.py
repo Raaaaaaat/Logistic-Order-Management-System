@@ -96,6 +96,7 @@ class SUP_STEP(models.Model): #供应商操作环节的列表
 class PAYABLES(models.Model):
     status      = models.SmallIntegerField() #0 未核销 1:已核销
     order_id    = models.IntegerField()
+    client_id   = models.IntegerField(null=True)
     step        = models.IntegerField()     #环节主码
     description = models.CharField(max_length=200, null=True)
     supplier_id = models.IntegerField()
@@ -118,6 +119,7 @@ class PAYABLES(models.Model):
 class RECEIVEABLES(models.Model):
     status      = models.SmallIntegerField()
     order_id    = models.IntegerField()
+    client_id   = models.IntegerField(null=True)
     step        = models.IntegerField(null=True)
     description = models.CharField(max_length=200)
     receiveables= models.FloatField(null=True)

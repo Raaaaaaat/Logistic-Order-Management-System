@@ -276,6 +276,9 @@ $(function(){
             params.f_clear_end_time    = $('#f_clear_end_time').val();
             params.f_invoice           = $('#f_invoice').val();
             params.f_status            = $fstatus.val();
+            //修改于1/21/2019
+            params.group_order = $('#table_recv input[name=recv_group_order_id]').prop('checked');
+            params.group_client = $('#table_recv input[name=recv_group_client_id]').prop('checked');
             return params;
         },
         contentType: 'application/json',
@@ -306,7 +309,7 @@ $(function(){
                 width: 80,
             }, {
                 field: 'order_No',
-                title: '单号',
+                title: '单号 <input type="checkbox" name="recv_group_order_id">',
                 align: 'center',
                 width: 120,
                 formatter: function(index, row){
@@ -314,7 +317,7 @@ $(function(){
                 }
             }, {
                 field: 'client_name',
-                title: '客户',
+                title: '客户 <input type="checkbox" name="recv_group_client_id">',
                 align: 'center',
                 width: 120,
                 formatter: function(index, row){
@@ -550,6 +553,10 @@ $(function(){
             params.f_clear_end_time    = $('#f_clear_end_time').val();
             params.f_invoice           = $('#f_invoice').val();
             params.f_status            = $fstatus.val();
+            //修改于1/21/2019 新增分类汇总功能
+            params.group_order = $('#table_paya input[name=paya_group_order_id]').prop('checked');
+            params.group_supplier = $('#table_paya input[name=paya_group_supplier_id]').prop('checked');
+            params.group_client = $('#table_paya input[name=paya_group_client_id]').prop('checked');
             return params;
         },
         contentType: 'application/json',
@@ -580,7 +587,7 @@ $(function(){
                 width: 80,
             }, {
                 field: 'order_No',
-                title: '单号',
+                title: '单号 <input type="checkbox" name="paya_group_order_id">',
                 align: 'center',
                 width: 120,
                 formatter: function(index, row){
@@ -588,7 +595,7 @@ $(function(){
                 }
             }, {
                 field: 'client_name',
-                title: '客户',
+                title: '客户 <input type="checkbox" name="paya_group_client_id">',
                 align: 'center',
                 width: 120,
                 formatter: function(index, row){
@@ -596,7 +603,7 @@ $(function(){
                 }
             },  {
                 field: 'supplier_name',
-                title: '供应商',
+                title: '供应商 <input type="checkbox" name="paya_group_supplier_id">',
                 align: 'center',
                 halign:'center',
                 width: 120,
