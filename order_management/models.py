@@ -117,7 +117,7 @@ class PAYABLES(models.Model):
 
 
 class RECEIVEABLES(models.Model):
-    status      = models.SmallIntegerField()
+    status      = models.SmallIntegerField() #沒啥用？
     order_id    = models.IntegerField()
     client_id   = models.IntegerField(null=True)
     step        = models.IntegerField(null=True)
@@ -167,11 +167,14 @@ class OPERATE_LOG(models.Model):
 class EDIT_PRICE_REQUEST(models.Model): #只有对于上一个月以及之前的订单才需要进入这个表
     time         = models.DateTimeField(auto_now_add=True)
     user         = models.CharField(max_length=50)
-    type         = models.CharField(max_length=20) #recv 或者paya代表修改这个而价格，或者recv_delete或者paya_delete
-    target_id    = models.IntegerField() #分录在各自表中的主码
+    type         = models.CharField(max_length=20) #recv 或者paya代表修改这个而价格，或者recv_delete或者paya_delete，或者recv_add,paya_add
+    target_id    = models.IntegerField() #分录在各自表中的主码, 如果爲新增模式，则代表order的id
     target_price = models.FloatField()
+    add_desc     = models.CharField(max_length=200, null=True) #新增专用，新增的分录的描述 以下新增于2019 4 15
+    add_step     = models.IntegerField(null=True)              #新增专用，环节编码
+    add_cs_id    = models.IntegerField(null=True)              #新增专用，对应供应商或者客户的id
     class Meta:
         permissions = (
-            ("handle_edit_price_request", "can accept or refuse request asking to edit price"),
+            ("handle_edit_price_request", "可以接受或者拒绝对于订单应收应付分录增加、修改、删除的请求"),
         )
         ordering = ['-id']

@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 import json,time, datetime
 import pytz
+from django.conf import settings
+
 
 @login_required
 @permission_required('order_management.view_order', login_url='/error?info=没有查看订单的权限，请联系管理员')
@@ -52,6 +54,7 @@ def add_receiveables(request):
         order_id = request.POST.get("order_id")
         step = request.POST.get("step")
         order_obj = ORDER.objects.filter(id=order_id).first()
+        #此处暂时没有检查客户是否在有效期
         if order_obj == None:
             if_success = 0
             info = "订单对象不存在"
@@ -59,17 +62,24 @@ def add_receiveables(request):
             if_success = 0
             info = "该订单已经关闭"
         else:
-            if order_obj.status > 4:
-                order_obj.status = 4
-                order_obj.save()
-            description = request.POST.get("description","")
+            #先获取两个公用参数
+            description = request.POST.get("description", "")
             price = request.POST.get("price")
-            RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
+            if order_obj.status > 4: #如果是已经出票的状态，则需要提交新增分录申请
+                EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="recv_add", target_id=order_id,
+                                                  target_price=price, add_desc=description, add_step=step, add_cs_id=order_obj.client_id)
+                if_success = 1
+                info = "由于订单已出票，无法新增应收款，已经向财务部门递交申请，"
+                #order_obj.status = 4
+                #order_obj.save()
+            else: #可以直接进行修改
+
+                RECEIVEABLES.objects.create(status=0, order_id=order_id,description=description,
                                     receiveables=price, received=0, step=step, client_id=order_obj.client_id)
-            detail = "增加 "+order_obj.No+" 应收款："+str(price)+" 描述："+description
-            OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
-            if_success = 1
-            info = "添加成功"
+                detail = "增加 "+order_obj.No+" 应收款："+str(price)+" 描述："+description
+                OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+                if_success = 1
+                info = "添加成功"
         return JsonResponse({"if_success":if_success, "info":info})
 @login_required
 def delete_receiveables(request): #待优化
@@ -84,8 +94,8 @@ def delete_receiveables(request): #待优化
             if order_obj.if_close == 1:
                 return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if rec_obj.invoice == None:
-                devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1, tzinfo=pytz.timezone('Asia/Shanghai'))
-                if rec_obj.create_time < devider:
+                jud_ret = judge_timezone_ope(rec_obj.create_time)
+                if jud_ret == 0:
                     EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="recv_delete",target_id=rec_obj.id,target_price=0)
                     # 增加日志
                     order_obj = ORDER.objects.filter(id=rec_obj.order_id).first()
@@ -150,6 +160,7 @@ def update_receiveables_price(request):
         price = request.POST.get("price")
         if_success = 0
         info = ""
+
         try:
 
             rec_obj = RECEIVEABLES.objects.get(id=rec_id)
@@ -158,8 +169,8 @@ def update_receiveables_price(request):
                 return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if rec_obj.invoice == None:
                 # 检查创建时间是否是上个月，如果不是就直接修改，否则递交申请给财务
-                devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1,tzinfo=pytz.timezone('Asia/Shanghai'))
-                if rec_obj.create_time < devider:
+                jud_ret = judge_timezone_ope(rec_obj.create_time)
+                if jud_ret==0:
                     EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="recv", target_id=rec_obj.id,
                                                       target_price=price)
                     # 增加日志
@@ -252,12 +263,23 @@ def add_payables(request):
                     return JsonResponse({"if_success": 0, "info": "供应商不在有效期"})
         description = request.POST.get("description")
         price = request.POST.get("price")
-        PAYABLES.objects.create(status=0, order_id=order_id,description=description,
-                                payables=price, paid_cash=0, paid_oil=0, step=step, supplier_id=supplier_id, client_id=order_obj.client_id)
+        #根据订单状态对于是否能修改进行限制
+        if order_obj.status > 4:  # 如果是已经出票的状态，则需要提交新增分录申请
+            EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="paya_add", target_id=order_id,
+                                              target_price=price, add_desc=description, add_step=step,
+                                              add_cs_id=supplier_id)
+            if_success = 1
+            info = "由于订单已出票，无法新增应付款，已经向财务部门递交申请"
+        else:
+            PAYABLES.objects.create(status=0, order_id=order_id,description=description,
+                                    payables=price, paid_cash=0, paid_oil=0, step=step,
+                                    supplier_id=supplier_id, client_id=order_obj.client_id)
 
-        detail = "增加 " + order_obj.No + " 应付款：" + str(price) + " 供应商：" + sup_obj.No + " 描述：" + description
-        OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
-        return JsonResponse({"if_success":1, "info":"添加成功"})
+            detail = "增加 " + order_obj.No + " 应付款：" + str(price) + " 供应商：" + sup_obj.No + " 描述：" + description
+            OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
+            if_success = 1
+            info = "添加成功"
+        return JsonResponse({"if_success":if_success, "info":info})
 
 @login_required
 def delete_payables(request):
@@ -271,8 +293,9 @@ def delete_payables(request):
             if order_obj.if_close == 1:
                 return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if pay_obj.invoice == None or pay_obj.invoice=="":
-                devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1, tzinfo=pytz.timezone('Asia/Shanghai'))
-                if pay_obj.create_time < devider:
+
+                jud_ret = judge_timezone_ope(pay_obj.create_time)
+                if jud_ret == 0:
                     EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="paya_delete", target_id=pay_obj.id,
                                                       target_price=0)
                     # 增加日志
@@ -366,8 +389,8 @@ def update_payables_price(request):
                 return JsonResponse({"if_success": 0, "info": "该订单已经关闭"})
             if pay_obj.invoice == None or pay_obj.invoice == "":
                 #检查创建时间是否是上个月，如果不是就直接修改，否则递交申请给财务
-                devider = datetime.datetime(datetime.date.today().year,datetime.date.today().month,1, tzinfo=pytz.timezone('Asia/Shanghai'))
-                if pay_obj.create_time < devider:
+                jud_ret = judge_timezone_ope(pay_obj.create_time)
+                if jud_ret == 0:
                     EDIT_PRICE_REQUEST.objects.create(user=request.user.username, type="paya", target_id=pay_obj.id, target_price=price)
                     # 增加日志
                     order_obj = ORDER.objects.filter(id=pay_obj.order_id).first()
@@ -397,3 +420,22 @@ def update_payables_price(request):
         except:
             info = "修改失败：记录不存在"
         return JsonResponse({"if_success":if_success, "info":info})
+
+def judge_timezone_ope(target_time):
+    #用来判断某一个时间的分录是否可以进行修改，如果返回1代表可以直接修改，如果返回0代表需要提交审核才可以修改
+    #判断在关账节点之前，则与上个月第一天进行比较
+    #如果在关账节点之后，则与本月第一天进行比较
+    devide_date = settings.CUS_DEVIDE_DATE
+    close_date = datetime.datetime(datetime.date.today().year, datetime.date.today().month, devide_date,
+                                tzinfo=pytz.timezone('Asia/Shanghai'))
+    now = datetime.datetime.now()
+    now = now.replace(tzinfo=pytz.timezone('Asia/Shanghai'))
+    target_time = target_time.replace(tzinfo=pytz.timezone('Asia/Shanghai'))
+    if now < close_date:
+        month_devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month - 1, 1,tzinfo=pytz.timezone('Asia/Shanghai'))
+    else:
+        month_devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1, tzinfo=pytz.timezone('Asia/Shanghai'))
+    if target_time< month_devider:
+        return 0
+    else:
+        return 1

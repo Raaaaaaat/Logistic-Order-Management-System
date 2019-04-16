@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 import json, datetime
 from django.db.models import Q
-from order_management.models import EDIT_PRICE_REQUEST
+from order_management.models import EDIT_PRICE_REQUEST, SUP_STEP
 from django.http import JsonResponse
 from django.utils.timezone import localtime
 from order_management.models import PAYABLES
@@ -42,7 +42,26 @@ def edit_price_request(request):
                     line["order_No"] = ORDER.objects.get(id=paya_obj.order_id).No
                     line["target_create_time"] = datetime.datetime.strftime(localtime(paya_obj.create_time), '%Y-%m-%d %H:%M:%S')
                     line["old_price"] = paya_obj.payables
-
+            if line["type"] =="recv_add":
+                order_obj = ORDER.objects.filter(id=line["target_id"]).first()
+                line["order_No"] = order_obj.No
+                #get step list
+                step_objs = SUP_STEP.objects.all()
+                step_dic = {}
+                for sub_line in step_objs:
+                    step_dic[sub_line.id] = sub_line.name
+                step_name = step_dic[line["add_step"]]
+                line["description"] = step_name+"-"+line["add_desc"]
+            if line["type"] =="paya_add":
+                order_obj = ORDER.objects.filter(id=line["target_id"]).first()
+                line["order_No"] = order_obj.No
+                #get step list
+                step_objs = SUP_STEP.objects.all()
+                step_dic = {}
+                for sub_line in step_objs:
+                    step_dic[sub_line.id] = sub_line.name
+                step_name = step_dic[line["add_step"]]
+                line["description"] = step_name+"-"+line["add_desc"]
             line["time"] = datetime.datetime.strftime(localtime(line["time"]), '%Y-%m-%d %H:%M:%S')
             line["index"] = index
             index += 1

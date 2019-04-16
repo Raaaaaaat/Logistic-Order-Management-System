@@ -53,7 +53,25 @@ def request_handler(request):
                         if_success = 1
                     else:
                         info = "目标分录已经被删除"
-                request_obj.delete()
+                elif type == "recv_add":
+                    order_obj = ORDER.objects.get(id=request_obj.target_id)
+                    RECEIVEABLES.objects.create(status=0, order_id=request_obj.target_id, description=request_obj.add_desc,
+                                                receiveables=request_obj.target_price, received=0, step=request_obj.add_step,
+                                                client_id=request_obj.add_cs_id)
+                    order_obj.status=4
+                    order_obj.save()
+                    if_success = 1
+                elif type == "paya_add":
+                    order_obj = ORDER.objects.get(id=request_obj.target_id)
+                    PAYABLES.objects.create(status=0, order_id=request_obj.target_id, description=request_obj.add_desc,
+                                                payables=request_obj.target_price, paid_cash=0, paid_oil=0, step=request_obj.add_step,
+                                                supplier_id=request_obj.add_cs_id, client_id=order_obj.client_id)
+                    if_success = 1
+                else:
+                    if_success=0
+                    info = "要求操作没有预先定义"
+                if if_success==1:
+                    request_obj.delete()
         elif if_accept=="0":
             request_obj = EDIT_PRICE_REQUEST.objects.filter(id=request_id).first()
             if request_obj == None:

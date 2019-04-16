@@ -121,6 +121,10 @@
                             type = "修改应付款";
                         else if (type === "paya_delete")
                             type = "删除应付款";
+                        else if (type === "paya_add")
+                            type = "增加应付款";
+                        else if (type === "recv_add")
+                            type = "增加应付款";
                         return type;
 
                     }
@@ -142,11 +146,13 @@
 
                 },  {
                     field: 'description',
-                    title: '原始描述',
+                    title: '描述',
                     align: 'left',
                     halign: 'center',
-                    width: 100,
-
+                    width: 150,
+                    formatter: function(index, row){
+                        return '<span rel="tooltip" title="'+row.description+'">'+row.description+'</span>';
+                    }
                 },  {
                     field: 'old_price',
                     title: '原始价格',
