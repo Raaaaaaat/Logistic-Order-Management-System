@@ -181,6 +181,23 @@ def get_paya_list(request):
                 line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
                 if line["clear_time"] != None:
                     line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+                #如果没有分类组合，对于票号进行整合 编辑于2019 4 16
+                invoice = line["invoice"]
+                if len(invoice)>0 and invoice[0]=="|":
+                    inv_des = "历史记录："
+                    inv_show = ""
+                    invoice = invoice[1:].split("|")
+                    len_inv = len(invoice)
+                    if len_inv%2 == 0:
+                        for i in range(int(len_inv/2)):
+                            inv_des = inv_des+"<br>" + invoice[i*2] + " : "+invoice[i*2+1]
+
+                            if inv_show != "":
+                                inv_show = inv_show+", "+invoice[i*2+1]
+                            else:
+                                inv_show = invoice[i * 2 + 1]
+                        line["invoice"]     = inv_show
+                        line["invoice_his"] = inv_des
             else: #说明是分类组合的结果，除了６个字段之外别的字段都不存在
                 line["description"]=""
             rows.append(line)
@@ -196,26 +213,32 @@ def mark_paya_invoice(request):
         paya_ids = paya_ids.split(",")
         invoice  = request.POST.get("invoice")
         paya_objs = PAYABLES.objects.filter(id__in=paya_ids)
-        if invoice == "":#删除发票
+        if invoice == "清空":#删除发票
             # 检查发票对应的应收账款，只要有一条有已收，就不允许删除发票
             list = []
             for single in paya_objs:
                 if single.paid_oil != 0 or single.paid_cash!=0:
                     return JsonResponse({"if_success": 0, "info": "有已核销的发票不允许删除，请先反核销"})
                 list.append(single.payables)
-            paya_objs.update(invoice=None)
+            paya_objs.update(invoice="")
             detail = "删除 " + str(paya_objs.count()) + " 条应付款对应的发票: "+str(list)
             OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
-        else:#新增发票
+        elif invoice != "":#新增发票
             try:
                 list = []
                 for single in paya_objs:
                     list.append(single.payables)
                 detail = "开 " + str(paya_objs.count()) + " 条应付款对应的发票: " +invoice+"应付款数目" + str(list)
                 OPERATE_LOG.objects.create(user=request.user.username, field="应付账款", detail=detail)
-                paya_objs.update(invoice=invoice)
+                for single in paya_objs:
+                    old_invoice = single.invoice
+                    dateStr = datetime.datetime.strftime(datetime.datetime.now(), '%m/%d/%Y')
+                    single.invoice=old_invoice+"|"+dateStr+"|"+invoice
+                    single.save()
             except:
                 return JsonResponse({"if_success": 0, "info":"更新失败"})
+        else:
+            return JsonResponse({"if_success": 0, "info": "不允许空发票号"})
         return JsonResponse({"if_success": 1,"info":"开票成功"})
 
 @login_required

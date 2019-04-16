@@ -663,7 +663,7 @@ $(function(){
                 width: 150,
                 formatter: function(index, row){
                     if(row.invoice != null)
-                        return '<span rel="tooltip" title="'+row.invoice+'">'+row.invoice+'</span>';
+                        return '<span rel="tooltip" title="<p align=\'left\'>'+row.invoice_his+'</p>" data-html="true" >'+row.invoice+'</span>'
                 }
             },  {
                 field: 'status',

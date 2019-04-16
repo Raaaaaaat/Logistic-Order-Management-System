@@ -78,6 +78,11 @@ function myInputInvoice(call_back_func)
                             <input type='checkbox' id='modal_checkbox'>\
                         </label> 不出票\
                     </div>\
+                    <div class='checkbox'>\
+                        <label>\
+                            <input type='checkbox' id='modal_clear_checkbox'>\
+                        </label> 清空记录\
+                    </div>\
 				</div>\
 				<div class='modal-footer'>\
 					<button type='button' class='btn btn-default' data-dismiss='modal'>取消</button>\
@@ -94,6 +99,18 @@ function myInputInvoice(call_back_func)
         else{
             $("#modal_input").val("");
             $("#modal_input").removeAttr('disabled');
+        }
+    });
+    $('#modal_clear_checkbox').change(function(){
+        if($(this).prop('checked')){
+            $("#modal_input").val("清空");
+            $("#modal_input").attr('disabled', true);
+            $('#modal_checkbox').attr('disabled', true);
+        }
+        else{
+            $("#modal_input").val("");
+            $("#modal_input").removeAttr('disabled');
+            $('#modal_checkbox').removeAttr('disabled');
         }
     });
     $('#modal_click').click(call_back_func);
