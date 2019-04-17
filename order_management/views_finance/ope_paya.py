@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.utils.timezone import localtime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+import xlsxwriter #用来导出excel文件
 
 @login_required
 def get_paya_list(request):
@@ -346,3 +347,6 @@ def paya_settle_accounts(request):
 
         return JsonResponse({"if_success": 1, "count_suc": count_suc, "count_err":count_err})
     return JsonResponse({"if_success": 0})
+
+def get_paya_excel(request):
+    return

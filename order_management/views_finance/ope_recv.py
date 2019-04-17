@@ -12,7 +12,8 @@ from order_management.models import OPERATE_LOG
 from django.db.models import Sum
 
 from django.contrib.auth.decorators import login_required
-
+import xlsxwriter
+from django.http import FileResponse
 
 @login_required
 def get_recv_list(request):
@@ -318,3 +319,207 @@ def recv_cancel_verify(request):
         detail = "对 " + str(recv_objs.count()) + " 条应收款进行反核销操作: 核销前金额分别为：" + str(log_list)
         OPERATE_LOG.objects.create(user=request.user.username, field="应收账款", detail=detail)
         return JsonResponse({"if_success": 1, "suc_num":count_suc})
+
+def get_recv_excel(request, *args, **kwargs):
+    if request.method == "POST":
+        f_order_No         = request.POST.get("f_order_No","")
+        f_client           = request.POST.get("f_client","")
+        f_pick_start_time  = request.POST.get("f_pick_start_time","")
+        f_pick_end_time    = request.POST.get("f_pick_end_time","")
+        f_clear_start_time = request.POST.get("f_clear_start_time","")
+        f_clear_end_time   = request.POST.get("f_clear_end_time","")
+        f_if_total         = request.POST.get("f_if_total","")           # 这个参数用来过滤是否将已结账的分录也展示出来
+        f_invoice       = request.POST.get("f_invoice","")
+        f_status        = request.POST.get("f_status","")
+        group_order_id  = request.POST.get("group_order","")
+        group_client_id = request.POST.get("group_client","")
+
+
+        #以下这部分粘贴自上文，需要重新粘贴
+        query = Q()
+        if f_order_No != "":
+            #搜索order表，然后找到编号包含搜索内容的obj，然后整理出其【id】再进行搜索
+            t_order_objs = ORDER.objects.filter(No__contains=f_order_No)
+            ids = []
+            for single in t_order_objs:
+                ids.append(single.id)
+            query = query & Q(order_id__in=ids)
+        if f_client != "":
+            t_order_objs = ORDER.objects.filter(client_id=f_client)
+            ids = []
+            for single in t_order_objs:
+                ids.append(single.id)
+            query = query & Q(order_id__in=ids)
+        #if f_create_start_time != "":
+        #    query = query & Q(create_time__gte=datetime.datetime.strptime(f_create_start_time, '%m/%d/%Y'))
+        #if f_create_end_time != "":
+        #    query = query & Q(create_time__lte=datetime.datetime.strptime(f_create_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+
+        if f_pick_end_time != "" or f_pick_start_time!="":
+            sub_q = Q()
+            if f_pick_start_time!="":
+                sub_q = Q(pick_up_time__gte=datetime.datetime.strptime(f_pick_start_time, '%m/%d/%Y'))
+            if f_pick_end_time!="":
+                sub_q = sub_q&Q(pick_up_time__lte=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            order_ids = ORDER.objects.filter(sub_q).values("id")
+            query = query & Q(order_id__in=order_ids)
+
+        if f_clear_start_time != "":
+            query = query & Q(clear_time__gte=datetime.datetime.strptime(f_clear_start_time, '%m/%d/%Y'))
+        if f_clear_end_time != "":
+            query = query & Q(clear_time__lte=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+        if f_invoice != "":
+            invoice_objs = RECV_INVOICE.objects.filter(invoice__contains=f_invoice)
+            invoice_ids = []
+            for single in invoice_objs:
+                invoice_ids.append(single.id)
+            query = query & Q(invoice__in=invoice_ids)
+        if f_if_total == "1":
+            query = query #搜索全部
+        else:
+            query = query & Q(status=0)
+        if f_status != "0":
+            if f_status == "1":
+                query = query & Q(clear_time__isnull=False)
+            else:
+                query = query & Q(clear_time__isnull=True)
+        else:
+            query = query
+
+        #修改于1/21/2019
+
+
+        if group_order_id=='true' or group_client_id=='true':
+            if group_order_id=='true':
+                if group_client_id=='true':
+                    #11
+                    recv_obj = RECEIVEABLES.objects.filter(query).values('order_id','client_id').annotate(receiveables=Sum('receiveables'), received=Sum('received'))
+                else:
+                    # 10
+                    recv_obj = RECEIVEABLES.objects.filter(query).values('order_id').annotate(
+                        receiveables=Sum('receiveables'), received=Sum('received'))
+            else:
+                if group_client_id=='true':
+                    # 01
+                    recv_obj = RECEIVEABLES.objects.filter(query).values('client_id').annotate(
+                        receiveables=Sum('receiveables'), received=Sum('received'))
+        else:
+            recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()
+            # 除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
+
+        rows = []
+        index = 0
+        for line in recv_obj:
+            if 'order_id' in line:
+                order_obj = ORDER.objects.get(id=line["order_id"])
+                line["client_id"] = order_obj.client_id
+                line["index"] = index
+                index += 1
+                line["order_No"] = order_obj.No
+                line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
+                line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
+                line["dep_city"] = order_obj.dep_city
+                line["des_city"] = order_obj.des_city
+            else:
+                line["order_No"]=""
+            if 'client_id' in line:
+                try:
+                    client_obj = CLIENT.objects.get(id=line["client_id"])
+                    if client_obj.type == 0:
+                        line["client_name"] = client_obj.co_name
+                    else:
+                        line["client_name"] = client_obj.contact_name
+                except:
+                    line["client_name"] = "客户已删除"
+            else:
+                line["client_name"]=""
+            if 'create_time' in line:
+                line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+                if line["clear_time"] != None:
+                    line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+                invoice_id = line["invoice"]
+                if invoice_id!=None:
+                    if invoice_id==0:
+                        line["invoice"] = "不出票"
+                    else:
+                        try:
+                            invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
+                            line["invoice"]=invoice_obj.invoice
+                        except:
+                            line["invoice"]="已删除"
+            else:
+                line["description"] = ""
+
+            rows.append(line)
+
+
+        path = "/var/www/tmr/order_management/static/tmp_file/finance/"
+        filename = "example.xlsx"
+        workbook = xlsxwriter.Workbook(path+filename)
+        worksheet = workbook.add_worksheet('sheet')
+
+        #line的实例：
+        # {'des_city': '地方', 'client_id': 2, 'description': '', 'dep_city': '水电费',
+        # 'received': 666.0, 'client_name': '吉布达伟士物流（中国）有限公司西安分公司',
+        # 'order_No': 'PO201807001', 'order_create_time': '2018-07-17',
+        # 'receiveables': 1635.0,
+        # 'order_pick_time': '2018-07-17'}
+        keys = ['接单时间','提货时间','单号','客户','起运地','目的地','描述','应收金额','已收金额','收款时间','票号','状态']
+        cell_format = workbook.add_format()
+
+        cell_format.set_bold()  # Turns bold on.
+        cell_format.set_font_size(12)
+        worksheet.write_row('A1',keys, cell_format)
+
+        num_row = 1
+
+        for line in rows:
+            if 'order_create_time' in line:
+                worksheet.write(num_row, 0, line['order_create_time'])
+            if 'order_pick_time' in line:
+                worksheet.write(num_row, 1, line['order_pick_time'])
+            if 'order_No' in line:
+                worksheet.write(num_row, 2, line['order_No'])
+            if 'client_name' in line:
+                worksheet.write(num_row, 3, line['client_name'])
+            if 'dep_city' in line:
+                worksheet.write(num_row, 4, line['dep_city'])
+            if 'des_city' in line:
+                worksheet.write(num_row, 5, line['des_city'])
+            if 'description' in line:
+                worksheet.write(num_row, 6, line['description'])
+            #这两个值一定有，不用判断
+            worksheet.write_number(num_row, 7, line['receiveables'])
+            worksheet.write_number(num_row, 8, line['received'])
+            if 'order_pick_time' in line:
+                worksheet.write(num_row, 9, line['order_pick_time'])
+            if 'invoice' in line:
+                worksheet.write(num_row, 10, line['invoice'])
+            if 'status' in line:
+                if line['status']=='0':
+                    i_status = '未结账'
+                else:
+                    i_status = '已结账'
+                worksheet.write(num_row, 11, i_status)
+            num_row = num_row+1
+
+        data = [
+            ['2017-9-1', '2017-9-2', '2017-9-3', '2017-9-4', '2017-9-5', '2017-9-6'],
+            [10, 40, 50, 20, 10, 50],
+            [30, 60, 70, 50, 40, 30],
+        ]  # 自己造的数据
+
+        worksheet.set_column('A:B', 12)
+        worksheet.set_column('C:C', 13)
+        worksheet.set_column('D:D', 25)
+        worksheet.set_column('G:G', 12)
+        worksheet.set_column('J:J', 12)
+        worksheet.set_column('H:I', 10)
+
+        workbook.close()
+
+        file = open(path+filename, 'rb')
+        response = FileResponse(file)
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment;filename="'+filename+'"'
+        return response

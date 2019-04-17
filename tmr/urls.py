@@ -92,6 +92,9 @@ urlpatterns = [
     path('delete_invoice/',       tmr_views.delete_invoice,      name='delete_invoice'),
     path('get_invoice_recv_bill/',tmr_views.get_invoice_recv_bill,name='get_invoice_recv_bill'),
 
+    path('get_paya_excel/',        tmr_views.get_paya_excel,       name='get_paya_excel'),
+    path('get_recv_excel/',        tmr_views.get_recv_excel,       name='get_recv_excel'),
+
     #manage part
     path('operate_log/',         tmr_views.operate_log_index,   name='operate_log'),
     path('get_order_dropped/',   tmr_views.get_order_dropped,   name='get_order_dropped'),

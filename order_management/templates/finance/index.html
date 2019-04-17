@@ -139,6 +139,7 @@
                                 <div class="" id="page_recv" {% if type == 'paya' %}hidden{% endif %}>
                                     <div class="col-sm-12" style ="align-items:Center;">
                                         <button class="btn btn-primary btn-xs" id="btn_recv_submit" style="float:right;margin-right: 20px;">Search</button>
+                                        <button class="btn btn-primary btn-xs" id="btn_recv_export" style="float:right;margin-right: 20px;">导出Excel</button>
                                         <button class="btn btn-primary btn-xs" id="btn_recv_mark_invoice">出票</button>
                                         <button class="btn btn-primary btn-xs" id="btn_recv_verify">核销</button>
                                         <button class="btn btn-primary btn-xs" id="btn_recv_cancel_verify">反核销</button>
@@ -149,6 +150,7 @@
                                 <div class="" id="page_paya" {% if type != 'paya' %}hidden{% endif %}>
                                     <div class="col-sm-12" style ="align-items:Center;">
                                         <button class="btn btn-primary btn-xs" id="btn_paya_submit" style="float:right;margin-right: 20px;">Search</button>
+                                        <button class="btn btn-primary btn-xs" id="btn_paya_export" style="float:right;margin-right: 20px;">导出Excel</button>
                                         <button class="btn btn-primary btn-xs" id="btn_paya_mark_invoice">出票</button>
                                         <button class="btn btn-primary btn-xs" id="btn_paya_verify">核销</button>
                                         <button class="btn btn-primary btn-xs" id="btn_paya_cancel_verify">反核销</button>
@@ -247,6 +249,38 @@ $(function(){
             toastr.success('刷新成功');
 
         });
+    $('#btn_recv_export').click(function(){
+        //编辑于2019 4 16 ，与下面params的取值方法保持一致
+        var f_if_total = $('#f_if_total').prop('checked') ? 1 : 0;
+        var f_order_No = $('#f_order_No').val();
+            if($("#f_client").val()!=null)
+                var f_client     = $("#f_client").val();
+            else
+                var f_client     = "";
+        var f_pick_start_time = $('#f_pick_start_time').val();
+        var f_pick_end_time   = $('#f_pick_end_time').val();
+        var f_clear_start_time  = $('#f_clear_start_time').val();
+        var f_clear_end_time    = $('#f_clear_end_time').val();
+        var f_invoice           = $('#f_invoice').val();
+        var f_status            = $fstatus.val();
+        var group_order = $('#table_recv input[name=recv_group_order_id]').prop('checked');
+        var group_client = $('#table_recv input[name=recv_group_client_id]').prop('checked');
+        var data = {
+            f_if_total: f_if_total,
+            f_order_No: f_order_No,
+            f_client: f_client,
+            f_pick_start_time: f_pick_start_time,
+            f_pick_end_time: f_pick_end_time,
+            f_clear_start_time: f_clear_start_time,
+            f_clear_end_time: f_clear_end_time,
+            f_invoice: f_invoice,
+            f_status: f_status,
+            group_order: group_order,
+            group_client: group_client,
+        };
+        $.StandardPost("{% url 'get_recv_excel' %}",data);
+    });
+
     $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
     //receiveables part
     $('#table_recv').bootstrapTable({
