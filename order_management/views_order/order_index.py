@@ -106,11 +106,11 @@ def order_index(request):
                 line['remark'] = ""
             else:
                 line['remark'] = line['remark'].replace("\r\n", "<br>")
-            line["create_time"] = datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+            line["create_time"] = datetime.datetime.strftime((line["create_time"]), '%Y-%m-%d')
             if line["pick_up_time"] != None:
-                line["pick_up_time"] = datetime.datetime.strftime(localtime(line["pick_up_time"]), '%Y-%m-%d')
+                line["pick_up_time"] = datetime.datetime.strftime((line["pick_up_time"]), '%Y-%m-%d')
             if line["delivery_time"] != None:
-                line["delivery_time"] = datetime.datetime.strftime(localtime(line["delivery_time"]), '%Y-%m-%d')
+                line["delivery_time"] = datetime.datetime.strftime((line["delivery_time"]), '%Y-%m-%d')
             if line["client_id"] in client_names:
                 line["client_name"] = client_names[line["client_id"]]
             else:

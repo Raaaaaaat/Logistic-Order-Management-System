@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 import datetime
-from django.utils.timezone import localtime
 
 @login_required
 @permission_required('order_management.change_order', login_url='/error?info=没有修改订单的权限，请联系管理员')
@@ -86,7 +85,7 @@ def ope_edit_order_create_time(request):
         create_time = datetime.datetime.strptime(create_time, '%Y-%m-%d')
         #獲取訂單對象 然後，直接改訂單創建時間
         order_obj = ORDER.objects.get(No=No)
-        time = localtime(order_obj.create_time)
+        time = order_obj.create_time
         time = time.replace(year = create_time.year, month = create_time.month, day = create_time.day)
         if order_obj.if_close == 1:
             info = "订单已关闭，无法再新修改订单时间"

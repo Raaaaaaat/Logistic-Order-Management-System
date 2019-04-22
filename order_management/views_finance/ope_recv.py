@@ -6,7 +6,6 @@ from order_management.models import SUPPLIER
 from order_management.models import CLIENT
 import datetime,json
 from django.db.models import Q
-from django.utils.timezone import localtime
 from order_management.models import RECV_INVOICE
 from order_management.models import OPERATE_LOG
 from django.db.models import Sum
@@ -121,8 +120,9 @@ def get_recv_list(request):
                 line["index"] = index
                 index += 1
                 line["order_No"] = order_obj.No
-                line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
-                line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
+                line["order_create_time"] = datetime.datetime.strftime((order_obj.create_time), '%Y-%m-%d')
+                if order_obj.pick_up_time != None:
+                    line["order_pick_time"] = datetime.datetime.strftime((order_obj.pick_up_time), '%Y-%m-%d')
                 line["dep_city"] = order_obj.dep_city
                 line["des_city"] = order_obj.des_city
             else:
@@ -139,9 +139,9 @@ def get_recv_list(request):
             else:
                 line["client_name"]=""
             if 'create_time' in line:
-                line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+                line["create_time"] =datetime.datetime.strftime((line["create_time"]), '%Y-%m-%d')
                 if line["clear_time"] != None:
-                    line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+                    line["clear_time"] = datetime.datetime.strftime((line["clear_time"]), '%Y-%m-%d %H:%M:%S')
                 invoice_id = line["invoice"]
                 if invoice_id!=None:
                     if invoice_id==0:
@@ -416,8 +416,9 @@ def get_recv_excel(request, *args, **kwargs):
                 line["index"] = index
                 index += 1
                 line["order_No"] = order_obj.No
-                line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
-                line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
+                line["order_create_time"] = datetime.datetime.strftime((order_obj.create_time), '%Y-%m-%d')
+                if order_obj.pick_up_time!=None:
+                    line["order_pick_time"] = datetime.datetime.strftime((order_obj.pick_up_time), '%Y-%m-%d')
                 line["dep_city"] = order_obj.dep_city
                 line["des_city"] = order_obj.des_city
             else:
@@ -434,9 +435,9 @@ def get_recv_excel(request, *args, **kwargs):
             else:
                 line["client_name"]=""
             if 'create_time' in line:
-                line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+                line["create_time"] =datetime.datetime.strftime((line["create_time"]), '%Y-%m-%d')
                 if line["clear_time"] != None:
-                    line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+                    line["clear_time"] = datetime.datetime.strftime((line["clear_time"]), '%Y-%m-%d %H:%M:%S')
                 invoice_id = line["invoice"]
                 if invoice_id!=None:
                     if invoice_id==0:

@@ -5,7 +5,6 @@ from order_management.models import CLIENT
 from order_management.models import ORDER
 from order_management.models import RECEIVEABLES
 from django.db.models import Q
-from django.utils.timezone import localtime
 import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
@@ -55,7 +54,7 @@ def get_invoice_list(request):
                     line["client_name"] = client_obj.No + " - " + client_obj.contact_name
             except:
                 line["client_name"] = "客户已删除"
-            line["create_time"] = datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d %H:%M:%S')
+            line["create_time"] = datetime.datetime.strftime(line["create_time"], '%Y-%m-%d %H:%M:%S')
             line["index"] = index
             index += 1
             #统计总已收款以及应收款
@@ -88,7 +87,7 @@ def edit_invoice(request):
         remark     = request.POST.get("remark")
         try:
             invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
-            detail = "修改应收账款发票: 开票时间： " + datetime.datetime.strftime(localtime(invoice_obj.create_time), '%Y-%m-%d %H:%M:%S') + " 修改前票号：" + str(invoice_obj.invoice) + " 修改后票号： " + str(invoice) + " 修改前备注：" + str(invoice_obj.remark) + " 修改后备注： " + str(remark)
+            detail = "修改应收账款发票: 开票时间： " + datetime.datetime.strftime(invoice_obj.create_time, '%Y-%m-%d %H:%M:%S') + " 修改前票号：" + str(invoice_obj.invoice) + " 修改后票号： " + str(invoice) + " 修改前备注：" + str(invoice_obj.remark) + " 修改后备注： " + str(remark)
             OPERATE_LOG.objects.create(user=request.user.username, field="票务中心", detail=detail)
             invoice_obj.invoice = invoice
             invoice_obj.remark = remark
@@ -135,7 +134,7 @@ def delete_invoice(request):
                     #待办，此处应增加对于完成订单的控制
             except:
                 continue
-        detail = "删除应收账款发票: 开票时间： " + datetime.datetime.strftime(localtime(invoice_obj.create_time), '%Y-%m-%d %H:%M:%S') + "删除前票号：" + str(invoice_obj.invoice) + " 删除前备注：" + str(invoice_obj.remark)
+        detail = "删除应收账款发票: 开票时间： " + datetime.datetime.strftime(invoice_obj.create_time, '%Y-%m-%d %H:%M:%S') + "删除前票号：" + str(invoice_obj.invoice) + " 删除前备注：" + str(invoice_obj.remark)
         OPERATE_LOG.objects.create(user=request.user.username, field="票务中心", detail=detail)
         invoice_obj.delete()
         return  JsonResponse({"if_success":1})
@@ -150,8 +149,8 @@ def get_invoice_recv_bill(request):
             line["dep_city"] = order_obj.dep_city
             line["des_city"] = order_obj.des_city
             line["order_No"] = order_obj.No
-            line["pick_up_time"]  = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
-            line["delivery_time"] = datetime.datetime.strftime(localtime(order_obj.delivery_time), '%Y-%m-%d')
+            line["pick_up_time"]  = datetime.datetime.strftime(order_obj.pick_up_time, '%Y-%m-%d')
+            line["delivery_time"] = datetime.datetime.strftime(order_obj.delivery_time, '%Y-%m-%d')
         data = []
         for line in recv_objs:
             data.append(line)

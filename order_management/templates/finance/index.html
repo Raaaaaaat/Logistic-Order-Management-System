@@ -680,7 +680,13 @@ $(function(){
                 align: 'center',
                 halign:'center',
                 formatter: function(index, row){
-                    return row.paid_cash+"/"+row.paid_oil;
+                    if(row.pay_log  != ""){
+                        var log = row.pay_log;
+                        log = log.slice(1);
+                        log = "<p align='left'>"+log.replace(/\|/g,"<Br>")+"</p>"
+                        return '<span rel="tooltip" title="'+log+'" data-html="true" >'+row.paid_cash+"/"+row.paid_oil+'</span>';}
+                    else
+                        return row.paid_cash+"/"+row.paid_oil;
                 },
                 width: 80,
             },  {

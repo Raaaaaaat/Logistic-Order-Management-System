@@ -20,11 +20,11 @@ class CLIENT(models.Model):
     remark         = models.CharField(max_length=500, null=True)
     class Meta:
         permissions=(
-            ("view_client",            "Can access information of client"),
+            ("view_client",            "允许查看客户的信息"),
             #("add_client",             "Can insert new client"),
             #("change_client",          "Can change normal info of client"),
-            ("change_client_contract", "Can edit contract of client"),
-            ("change_client_tax",      "Can edit tax_id of client"),
+            ("change_client_contract", "允许更改客户的合同信息"),
+            ("change_client_tax",      "允许变更客户的税号"),
             #("delete_client",          "Can delete a client"),
         )
 
@@ -47,11 +47,11 @@ class SUPPLIER(models.Model):
     remark         = models.CharField(max_length=500, null=True)
     class Meta:
         permissions=(
-            ("view_supplier",            "Can access information of supplier"),
+            ("view_supplier",            "允许查看供应商的信息"),
             #("add_supplier",             "Can insert new supplier"),
             #("change_supplier",          "Can change normal info of supplier"),
-            ("change_supplier_contract", "Can edit contract of supplier"),
-            ("change_supplier_tax",      "Can edit tax_id of supplier"),
+            ("change_supplier_contract", "允许更改供应商的合同信息"),
+            ("change_supplier_tax",      "允许变更供应商的税号"),
             #("delete_supplier",          "Can delete a supplier"),
         )
 
@@ -77,11 +77,11 @@ class ORDER(models.Model):
     if_delete      = models.SmallIntegerField()
     class Meta:
         permissions = (
-            ("view_order", "Can access information of orders"),
-            ("view_trash_order", "Can access information of orders dropped"),
-            ("view_order_finance", "Can access information of financal certer"),
-            ("view_data_center", "Can access information of data certer"),
-            ("edit_order_create_time","edit create time of order objects"),
+            ("view_order", "允许查看订单的基本信息"),
+            ("view_trash_order", "允许查看被废弃订单的历史信息"),
+            ("view_order_finance", "允许进入财务中心"),
+            ("view_data_center", "允许进入数据中心"),
+            ("edit_order_create_time","允许编辑订单的下单时间"),
             ("close_order", "针对订单的关闭操作"),
             ("open_order", "针对订单的打开操作,用于取消关闭订单的效果"),
             # ("add_order",
@@ -106,8 +106,9 @@ class PAYABLES(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
     invoice     = models.CharField(max_length=200, null=True, default="")
-    remark      = models.CharField(max_length=500, null=True)
-    if_close = models.SmallIntegerField(null=True)
+    #remark      = models.CharField(max_length=500, null=True)
+    pay_log     = models.CharField(max_length=500, null=True, default="") #增加于2019 4 21，用于记录核销操作的时间
+    if_close    = models.SmallIntegerField(null=True)
     class Meta:
         permissions = (
             ("paya_manage", "Can manage(add/change/delete) payables"),
@@ -127,7 +128,7 @@ class RECEIVEABLES(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     clear_time  = models.DateTimeField(null=True)
     invoice     = models.IntegerField(null=True)
-    remark      = models.CharField(max_length=500, null=True)
+    #remark      = models.CharField(max_length=500, null=True)
     if_close = models.SmallIntegerField(null=True)
     class Meta:
         permissions = (
@@ -160,7 +161,7 @@ class OPERATE_LOG(models.Model):
     detail = models.CharField(max_length=500, null=True)
     class Meta:
         permissions = (
-            ("view_operate_log", "can view operate log"),
+            ("view_operate_log", "允许查看所有的操作日志"),
         )
         ordering = ['-id']
 
@@ -178,3 +179,8 @@ class EDIT_PRICE_REQUEST(models.Model): #只有对于上一个月以及之前的
             ("handle_edit_price_request", "可以接受或者拒绝对于订单应收应付分录增加、修改、删除的请求"),
         )
         ordering = ['-id']
+
+class USER_FEEDBACK(models.Model):
+    time        = models.DateTimeField(auto_now_add=True)
+    user        = models.CharField(max_length=50)
+    description = models.CharField(max_length=500, null=True)

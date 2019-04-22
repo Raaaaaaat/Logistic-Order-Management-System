@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 import datetime,time
-from django.utils.timezone import localtime
 
 
 @login_required
@@ -47,7 +46,7 @@ def get_order_dropped(request):
                 line['remark'] = ""
             else:
                 line['remark'] = line['remark'].replace("\r\n", "<br>")
-            line["create_time"] = datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+            line["create_time"] = datetime.datetime.strftime(line["create_time"], '%Y-%m-%d')
             if line["client_id"] in client_names:
                 line["client_name"] = client_names[line["client_id"]]
             else:

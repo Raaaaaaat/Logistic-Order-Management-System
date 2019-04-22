@@ -426,15 +426,12 @@ def judge_timezone_ope(target_time):
     #判断在关账节点之前，则与上个月第一天进行比较
     #如果在关账节点之后，则与本月第一天进行比较
     devide_date = settings.CUS_DEVIDE_DATE
-    close_date = datetime.datetime(datetime.date.today().year, datetime.date.today().month, devide_date,
-                                tzinfo=pytz.timezone('Asia/Shanghai'))
+    close_date = datetime.datetime(datetime.date.today().year, datetime.date.today().month, devide_date)
     now = datetime.datetime.now()
-    now = now.replace(tzinfo=pytz.timezone('Asia/Shanghai'))
-    target_time = target_time.replace(tzinfo=pytz.timezone('Asia/Shanghai'))
     if now < close_date:
-        month_devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month - 1, 1,tzinfo=pytz.timezone('Asia/Shanghai'))
+        month_devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month - 1, 1)
     else:
-        month_devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1, tzinfo=pytz.timezone('Asia/Shanghai'))
+        month_devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1)
     if target_time< month_devider:
         return 0
     else:

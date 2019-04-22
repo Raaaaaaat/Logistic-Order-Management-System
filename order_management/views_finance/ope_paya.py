@@ -7,10 +7,10 @@ from order_management.models import CLIENT
 from order_management.models import OPERATE_LOG
 import datetime,json
 from django.db.models import Q
-from django.utils.timezone import localtime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 import xlsxwriter #用来导出excel文件
+import time
 
 @login_required
 def get_paya_list(request):
@@ -154,8 +154,8 @@ def get_paya_list(request):
                 line["order_No"] = order_obj.No
                 line["dep_city"] = order_obj.dep_city
                 line["des_city"] = order_obj.des_city
-                line["order_create_time"] = datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d')
-                line["order_pick_time"] = datetime.datetime.strftime(localtime(order_obj.pick_up_time), '%Y-%m-%d')
+                line["order_create_time"] = datetime.datetime.strftime(order_obj.create_time, '%Y-%m-%d')
+                line["order_pick_time"] = datetime.datetime.strftime(order_obj.pick_up_time, '%Y-%m-%d')
                 line["client_id"] = order_obj.client_id
             else:
                 line["order_No"]=""
@@ -179,9 +179,9 @@ def get_paya_list(request):
                 line["supplier_name"]=""
 
             if 'create_time' in line:
-                line["create_time"] =datetime.datetime.strftime(localtime(line["create_time"]), '%Y-%m-%d')
+                line["create_time"] =datetime.datetime.strftime(line["create_time"], '%Y-%m-%d')
                 if line["clear_time"] != None:
-                    line["clear_time"] = datetime.datetime.strftime(localtime(line["clear_time"]), '%Y-%m-%d %H:%M:%S')
+                    line["clear_time"] = datetime.datetime.strftime(line["clear_time"], '%Y-%m-%d %H:%M:%S')
                 #如果没有分类组合，对于票号进行整合 编辑于2019 4 16
                 invoice = line["invoice"]
                 if len(invoice)>0 and invoice[0]=="|":
@@ -199,8 +199,10 @@ def get_paya_list(request):
                                 inv_show = invoice[i * 2 + 1]
                         line["invoice"]     = inv_show
                         line["invoice_his"] = inv_des
+
             else: #说明是分类组合的结果，除了６个字段之外别的字段都不存在
-                line["description"]=""
+                line["description"] = ""
+                line["pay_log"]     = ""
             rows.append(line)
         return JsonResponse({"total":paya_count,"rows":rows})
 
@@ -274,9 +276,13 @@ def paya_verify(request):
                 if paid_type=="0":
                     list.append("描述："+paya_obj.description+"："+str(paya_obj.paid_cash)+"->"+str(round(paya_obj.paid_cash+paid_ammount,2)))
                     paya_obj.paid_cash += paid_ammount
+                    #加于2019 4 21
+                    paya_obj.pay_log = paya_obj.pay_log + "|"+time.strftime("%Y/%m/%d: ", time.localtime())+"核销现金"+str(round(paid_ammount,2))
                 else:
                     list.append("描述："+paya_obj.description+"："+str(paya_obj.paid_oil) + "->" + str(round(paya_obj.paid_oil + paid_ammount,2)))
                     paya_obj.paid_oil += paid_ammount
+                    paya_obj.pay_log = paya_obj.pay_log + "|" + time.strftime("%Y/%m/%d: ",
+                                                 time.localtime()) + "核销油卡" + str(round(paid_ammount, 2))
                 if paya_obj.payables == round(paya_obj.paid_cash + paya_obj.paid_oil,2):
                     paya_obj.clear_time=datetime.datetime.now()
                 paya_obj.save()
@@ -286,9 +292,13 @@ def paya_verify(request):
                 if paid_type=="0":
                     list.append("描述："+paya_obj.description+"："+str(paya_obj.paid_cash) + "->" + str(round(paya_obj.paid_cash + max_to_be_paid,2)))
                     paya_obj.paid_cash += max_to_be_paid
+                    paya_obj.pay_log = paya_obj.pay_log + "|" + \
+                                        time.strftime("%Y/%m/%d: ",time.localtime()) + "核销现金" + str(round(paid_ammount, 2))
                 else:
                     list.append("描述："+paya_obj.description+"："+str(paya_obj.paid_oil) + "->" + str(round(paya_obj.paid_oil + max_to_be_paid,2)))
                     paya_obj.paid_oil += max_to_be_paid
+                    paya_obj.pay_log = paya_obj.pay_log + "|" + \
+                                       time.strftime("%Y/%m/%d: ", time.localtime()) + "核销油卡" + str(round(paid_ammount, 2))
                 paya_obj.clear_time = datetime.datetime.now()
                 paya_obj.save()
         if paid_type=="0":
@@ -317,6 +327,8 @@ def paya_cancel_verify(request):
             if paya_obj.status==0:
                 list.append("描述："+paya_obj.description+" 应付："+str(paya_obj.payables)+" 已付油卡："+str(paya_obj.paid_oil)+" 已付现金："+str(paya_obj.paid_cash))
                 paya_obj.clear_time=None
+                paya_obj.pay_log = paya_obj.pay_log + "|" + \
+                                   time.strftime("%Y/%m/%d: ", time.localtime()) + "反核销"
                 paya_obj.paid_cash=0
                 paya_obj.paid_oil=0
                 paya_obj.save()

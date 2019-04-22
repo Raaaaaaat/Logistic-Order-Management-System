@@ -200,6 +200,25 @@
             });
         });
 
+        $('#bug_report').click(function(){
+            myInputContent("报告错误","bug描述：",function(){
+                var bug = $('#modal_input').val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'ope_receive_bug' %}",
+                    data: {bug: bug},
+                    datatype: "html",
+                    success: function (data) {
+                        if(data.if_success == 1){
+                            toastr.success("提交成功");
+                        }else{
+                            toastr.error(data.info);
+                        }
+                    },
+                });
+            });
+        });
+
         var pop_info = "{{ info }}";
         if(pop_info != ""){
             toastr.info(pop_info);

@@ -5,7 +5,6 @@ import json, datetime
 from django.db.models import Q
 from order_management.models import EDIT_PRICE_REQUEST
 from django.http import JsonResponse
-from django.utils.timezone import localtime
 from order_management.models import PAYABLES
 from order_management.models import RECEIVEABLES
 from order_management.models import ORDER

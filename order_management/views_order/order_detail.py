@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404
 from order_management.models import ORDER
 from order_management.models import CLIENT
 from order_management.models import PAYABLES
-from django.utils.timezone import localtime
 import datetime
 
 from django.contrib.auth.decorators import login_required
@@ -37,7 +36,7 @@ def order_detail(request):
             'id':          order_obj.id,
             'No':          No,
             'status':      order_obj.status,
-            'create_time': datetime.datetime.strftime(localtime(order_obj.create_time), '%Y-%m-%d %H:%M:%S'),
+            'create_time': datetime.datetime.strftime(order_obj.create_time, '%Y-%m-%d %H:%M:%S'),
             'dep_city':    order_obj.dep_city,
             'des_city':    order_obj.des_city,
             'dep_place':   order_obj.dep_place,

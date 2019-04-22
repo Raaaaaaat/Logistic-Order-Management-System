@@ -5,7 +5,6 @@ import json, datetime
 from django.db.models import Q
 from order_management.models import EDIT_PRICE_REQUEST, SUP_STEP
 from django.http import JsonResponse
-from django.utils.timezone import localtime
 from order_management.models import PAYABLES
 from order_management.models import RECEIVEABLES
 from order_management.models import ORDER
@@ -33,14 +32,14 @@ def edit_price_request(request):
                 if recv_obj!=None: #已删除
                     line["description"] = recv_obj.description
                     line["order_No"] = ORDER.objects.get(id=recv_obj.order_id).No
-                    line["target_create_time"] = datetime.datetime.strftime(localtime(recv_obj.create_time), '%Y-%m-%d %H:%M:%S')
+                    line["target_create_time"] = datetime.datetime.strftime((recv_obj.create_time), '%Y-%m-%d %H:%M:%S')
                     line["old_price"] = recv_obj.receiveables
             if line["type"] == "paya" or line["type"]=="paya_delete":
                 paya_obj =PAYABLES.objects.filter(id=line["target_id"]).first()
                 if paya_obj!=None: #已删除
                     line["description"] = paya_obj.description
                     line["order_No"] = ORDER.objects.get(id=paya_obj.order_id).No
-                    line["target_create_time"] = datetime.datetime.strftime(localtime(paya_obj.create_time), '%Y-%m-%d %H:%M:%S')
+                    line["target_create_time"] = datetime.datetime.strftime((paya_obj.create_time), '%Y-%m-%d %H:%M:%S')
                     line["old_price"] = paya_obj.payables
             if line["type"] =="recv_add":
                 order_obj = ORDER.objects.filter(id=line["target_id"]).first()
@@ -62,7 +61,7 @@ def edit_price_request(request):
                     step_dic[sub_line.id] = sub_line.name
                 step_name = step_dic[line["add_step"]]
                 line["description"] = step_name+"-"+line["add_desc"]
-            line["time"] = datetime.datetime.strftime(localtime(line["time"]), '%Y-%m-%d %H:%M:%S')
+            line["time"] = datetime.datetime.strftime((line["time"]), '%Y-%m-%d %H:%M:%S')
             line["index"] = index
             index += 1
             rows.append(line)

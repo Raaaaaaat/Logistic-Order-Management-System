@@ -5,7 +5,6 @@ import json, datetime
 from django.db.models import Q
 from order_management.models import OPERATE_LOG
 from django.http import JsonResponse
-from django.utils.timezone import localtime
 
 @login_required
 @permission_required('order_management.view_operate_log', login_url='/error?info=没有查看操作日志的权限，请联系管理员')
@@ -40,7 +39,7 @@ def operate_log_index(request):
         rows = []
         index = 1
         for line in data:
-            line["time"] = datetime.datetime.strftime(localtime(line["time"]), '%Y-%m-%d %H:%M:%S')
+            line["time"] = datetime.datetime.strftime(line["time"], '%Y-%m-%d %H:%M:%S')
             line["index"] = index
             index += 1
             rows.append(line)

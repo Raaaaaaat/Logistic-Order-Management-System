@@ -100,6 +100,7 @@ urlpatterns = [
     path('get_order_dropped/',   tmr_views.get_order_dropped,   name='get_order_dropped'),
     path('edit_price_request/',  tmr_views.edit_price_request,  name='edit_price_request'),
     path('request_handler/',     tmr_views.request_handler,     name='request_handler'),
+    path('ope_receive_bug/',       tmr_views.ope_receive_bug,       name='ope_receive_bug'),
 
     #graph part
     path('graph_client/',          tmr_views.graph_client,   name='graph_client'),

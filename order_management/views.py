@@ -5,6 +5,7 @@ from django.shortcuts import render
 from order_management.views_user.log_in_index import *
 from order_management.views_user.log_out import *
 from order_management.views_user.page_index import *
+from order_management.views_user.ope_receive_bug import *
 
 from order_management.views_client.client_index import *
 from order_management.views_client.client_get_table_data import *
@@ -46,6 +47,7 @@ from order_management.views_manage.operate_log_index import *
 from order_management.views_manage.get_order_dropped import *
 from order_management.views_manage.edit_price_request import *
 from order_management.views_manage.request_handler import *
+
 
 from order_management.views_graph.graph_client import *
 from order_management.views_graph.graph_supplier import *
