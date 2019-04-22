@@ -149,8 +149,10 @@ def get_invoice_recv_bill(request):
             line["dep_city"] = order_obj.dep_city
             line["des_city"] = order_obj.des_city
             line["order_No"] = order_obj.No
-            line["pick_up_time"]  = datetime.datetime.strftime(order_obj.pick_up_time, '%Y-%m-%d')
-            line["delivery_time"] = datetime.datetime.strftime(order_obj.delivery_time, '%Y-%m-%d')
+            if order_obj.pick_up_time != None:
+                line["pick_up_time"]  = datetime.datetime.strftime(order_obj.pick_up_time, '%Y-%m-%d')
+            if order_obj.delivery_time != None:
+                line["delivery_time"] = datetime.datetime.strftime(order_obj.delivery_time, '%Y-%m-%d')
         data = []
         for line in recv_objs:
             data.append(line)
