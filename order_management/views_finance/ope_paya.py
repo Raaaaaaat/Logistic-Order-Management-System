@@ -294,12 +294,12 @@ def paya_verify(request):
                     list.append("描述："+paya_obj.description+"："+str(paya_obj.paid_cash) + "->" + str(round(paya_obj.paid_cash + max_to_be_paid,2)))
                     paya_obj.paid_cash += max_to_be_paid
                     paya_obj.pay_log = paya_obj.pay_log + "|" + \
-                                        time.strftime("%Y/%m/%d: ",time.localtime()) + "核销现金" + str(round(paid_ammount, 2))
+                                        time.strftime("%Y/%m/%d: ",time.localtime()) + "核销现金" + str(round(max_to_be_paid, 2))
                 else:
                     list.append("描述："+paya_obj.description+"："+str(paya_obj.paid_oil) + "->" + str(round(paya_obj.paid_oil + max_to_be_paid,2)))
                     paya_obj.paid_oil += max_to_be_paid
                     paya_obj.pay_log = paya_obj.pay_log + "|" + \
-                                       time.strftime("%Y/%m/%d: ", time.localtime()) + "核销油卡" + str(round(paid_ammount, 2))
+                                       time.strftime("%Y/%m/%d: ", time.localtime()) + "核销油卡" + str(round(max_to_be_paid, 2))
                 paya_obj.clear_time = datetime.datetime.now()
                 paya_obj.save()
         if paid_type=="0":
