@@ -20,11 +20,11 @@ class CLIENT(models.Model):
     remark         = models.CharField(max_length=500, null=True)
     class Meta:
         permissions=(
-            ("view_client",            "允许查看客户的信息"),
+            ("view_client",            "允许查看客户的信息 "),
             #("add_client",             "Can insert new client"),
             #("change_client",          "Can change normal info of client"),
-            ("change_client_contract", "允许更改客户的合同信息"),
-            ("change_client_tax",      "允许变更客户的税号"),
+            ("change_client_contract", "允许更改客户的合同信息 "),
+            ("change_client_tax",      "允许变更客户的税号 "),
             #("delete_client",          "Can delete a client"),
         )
 
@@ -48,7 +48,6 @@ class SUPPLIER(models.Model):
     class Meta:
         permissions=(
             ("view_supplier",            "允许查看供应商的信息"),
-            #("add_supplier",             "Can insert new supplier"),
             #("change_supplier",          "Can change normal info of supplier"),
             ("change_supplier_contract", "允许更改供应商的合同信息"),
             ("change_supplier_tax",      "允许变更供应商的税号"),
@@ -111,9 +110,9 @@ class PAYABLES(models.Model):
     if_close    = models.SmallIntegerField(null=True)
     class Meta:
         permissions = (
-            ("paya_manage", "Can manage(add/change/delete) payables"),
-            ("paya_invoice","Can manage(add/change/delete) payables invoice"),
-            ("paya_verify", "Can verify and unverify payables"),
+            ("paya_manage", "可以查看以及操作应付账款条目"),
+            ("paya_invoice","可以对应付账款的进行开票操作"),
+            ("paya_verify", "可以对应付账款进行核销操作"),
         )
 
 
@@ -132,9 +131,9 @@ class RECEIVEABLES(models.Model):
     if_close = models.SmallIntegerField(null=True)
     class Meta:
         permissions = (
-            ("recv_manage",  "Can manage(add/change/delete) receiveables"),
-            ("recv_invoice", "Can view list of receiveables invoice"),#打开票务管理的权限
-            ("recv_verify",  "Can verify and unverify receiveables"),
+            ("recv_manage",  "可以查看以及操作应收账款条目"),
+            ("recv_invoice", "可以对应收账款的进行开票操作以及进行票务管理"),#打开票务管理的权限
+            ("recv_verify",  "可以对应收账款进行核销操作"),
         )
 
 

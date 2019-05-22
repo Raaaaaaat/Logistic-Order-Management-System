@@ -114,6 +114,8 @@ def get_recv_list(request):
         rows = []
         index = int(f_offset)+1
         for line in recv_obj:
+            line["receiveables"] = round(line["receiveables"], 2)
+            line["received"] = round(line["received"], 2)
             if 'order_id' in line:
                 order_obj = ORDER.objects.get(id=line["order_id"])
                 line["client_id"] = order_obj.client_id
@@ -455,16 +457,11 @@ def get_recv_excel(request, *args, **kwargs):
 
 
         path = "/var/www/tmr/order_management/static/tmp_file/finance/"
-        filename = "example.xlsx"
+        filename = "rece_export.xlsx"
         workbook = xlsxwriter.Workbook(path+filename)
         worksheet = workbook.add_worksheet('sheet')
 
-        #line的实例：
-        # {'des_city': '地方', 'client_id': 2, 'description': '', 'dep_city': '水电费',
-        # 'received': 666.0, 'client_name': '吉布达伟士物流（中国）有限公司西安分公司',
-        # 'order_No': 'PO201807001', 'order_create_time': '2018-07-17',
-        # 'receiveables': 1635.0,
-        # 'order_pick_time': '2018-07-17'}
+
         keys = ['接单时间','提货时间','单号','客户','起运地','目的地','描述','应收金额','已收金额','收款时间','票号','状态']
         cell_format = workbook.add_format()
 
@@ -504,11 +501,6 @@ def get_recv_excel(request, *args, **kwargs):
                 worksheet.write(num_row, 11, i_status)
             num_row = num_row+1
 
-        data = [
-            ['2017-9-1', '2017-9-2', '2017-9-3', '2017-9-4', '2017-9-5', '2017-9-6'],
-            [10, 40, 50, 20, 10, 50],
-            [30, 60, 70, 50, 40, 30],
-        ]  # 自己造的数据
 
         worksheet.set_column('A:B', 12)
         worksheet.set_column('C:C', 13)

@@ -280,6 +280,46 @@ $(function(){
         };
         $.StandardPost("{% url 'get_recv_excel' %}",data);
     });
+    $('#btn_paya_export').click(function(){
+
+
+        //编辑于2019 5 22 ，与下面params的取值方法保持一致
+        var f_if_total = $('#f_if_total').prop('checked') ? 1 : 0;
+        var f_order_No = $('#f_order_No').val();
+        if($("#f_client").val()!=null)
+            var f_client     = $("#f_client").val();
+        else
+            var f_client     = "";
+        if($("#f_supplier").val()!=null)
+                var f_supplier     = $("#f_supplier").val();
+            else
+                var f_supplier     = "";
+        var f_pick_start_time = $('#f_pick_start_time').val();
+        var f_pick_end_time   = $('#f_pick_end_time').val();
+        var f_clear_start_time  = $('#f_clear_start_time').val();
+        var f_clear_end_time    = $('#f_clear_end_time').val();
+        var f_invoice           = $('#f_invoice').val();
+        var f_status            = $fstatus.val();
+        var group_order = $('#table_paya input[name=paya_group_order_id]').prop('checked');
+        var group_client = $('#table_paya input[name=paya_group_client_id]').prop('checked');
+        var group_supplier = $('#table_paya input[name=paya_group_supplier_id]').prop('checked');
+        var data = {
+            f_if_total: f_if_total,
+            f_order_No: f_order_No,
+            f_client: f_client,
+            f_supplier: f_supplier,
+            f_pick_start_time: f_pick_start_time,
+            f_pick_end_time: f_pick_end_time,
+            f_clear_start_time: f_clear_start_time,
+            f_clear_end_time: f_clear_end_time,
+            f_invoice: f_invoice,
+            f_status: f_status,
+            group_order: group_order,
+            group_client: group_client,
+            group_supplier: group_supplier,
+        };
+        $.StandardPost("{% url 'get_paya_excel' %}",data);
+    });
 
     $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
     //receiveables part

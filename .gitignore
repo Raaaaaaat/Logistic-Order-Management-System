@@ -105,4 +105,4 @@ migrations/
 !migrations/__init__.py
 .idea/workspace.xml
 settings.py
-static/tmp_file/finance/
+/order_management/static/tmp_file/

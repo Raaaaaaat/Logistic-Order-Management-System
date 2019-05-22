@@ -21,3 +21,4 @@ class ClientTestCase(TestCase):
 
         c = CLIENT.objects.get(No="C001")
         self.assertEqual(c.contact_name, 'horace')
+        return
