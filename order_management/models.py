@@ -113,6 +113,7 @@ class PAYABLES(models.Model):
             ("paya_manage", "可以查看以及操作应付账款条目"),
             ("paya_invoice","可以对应付账款的进行开票操作"),
             ("paya_verify", "可以对应付账款进行核销操作"),
+            ("paya_unverify", "可以对应付账款进行反核销操作"),
             ("edit_paya_invoice", "对于应付款的发票内容进行单独修改"),
         )
 
@@ -135,6 +136,7 @@ class RECEIVEABLES(models.Model):
             ("recv_manage",  "可以查看以及操作应收账款条目"),
             ("recv_invoice", "可以对应收账款的进行开票操作以及进行票务管理"),#打开票务管理的权限
             ("recv_verify",  "可以对应收账款进行核销操作"),
+            ("recv_unverify", "可以对应收账款进行反核销操作"),
         )
 
 

@@ -318,7 +318,7 @@ def paya_verify(request):
 @login_required
 def paya_cancel_verify(request):
     if request.method == "POST":
-        if not request.user.has_perm("order_management.paya_verify"):
+        if not request.user.has_perm("order_management.paya_unverify"):
             return JsonResponse({"if_success":0, "info":"没有进行此操作的权限，请联系管理员"})
         paya_ids = request.POST.get("paya_ids", "")
         paya_ids = paya_ids.split(",")

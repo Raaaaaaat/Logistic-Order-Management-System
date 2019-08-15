@@ -290,7 +290,7 @@ def recv_verify(request):
 @login_required
 def recv_cancel_verify(request):
     if request.method == "POST":
-        if not request.user.has_perm("order_management.recv_verify"):
+        if not request.user.has_perm("order_management.recv_unverify"):
             return JsonResponse({"if_success": 0, "info":"没有进行此操作的权限"})
         recv_ids = request.POST.get("recv_ids", "")
         recv_ids = recv_ids.split(",")
