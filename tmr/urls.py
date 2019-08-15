@@ -90,7 +90,8 @@ urlpatterns = [
     path('get_invoice_list/',     tmr_views.get_invoice_list,    name='get_invoice_list'),
     path('edit_invoice/',         tmr_views.edit_invoice,        name='edit_invoice'),
     path('delete_invoice/',       tmr_views.delete_invoice,      name='delete_invoice'),
-    path('get_invoice_recv_bill/',tmr_views.get_invoice_recv_bill,name='get_invoice_recv_bill'),
+    path('get_invoice_recv_bill/', tmr_views.get_invoice_recv_bill, name='get_invoice_recv_bill'),
+    path('edit_paya_invoice/',     tmr_views.edit_paya_invoice,     name='edit_paya_invoice'),
 
     path('get_paya_excel/',        tmr_views.get_paya_excel,       name='get_paya_excel'),
     path('get_recv_excel/',        tmr_views.get_recv_excel,       name='get_recv_excel'),

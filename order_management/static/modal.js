@@ -191,6 +191,31 @@ function myInputContent(title, note, call_back_func)
     $('#popModal').modal();
 }
 
+function myEditContent(title, note, old, call_back_func)
+{
+    var modalHtml = "\
+		<div class='modal-dialog'>\
+			<div class='modal-content'>\
+				<div class='modal-header'>\
+				    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\
+				    <h4 class=\"modal-title\">"+title+"</h4>\
+				</div>\
+				<div class='modal-body'>\
+					<p>"+note+"</p>\
+					<input type='text' id='modal_input'>\
+				</div>\
+				<div class='modal-footer'>\
+					<button type='button' class='btn btn-default' data-dismiss='modal'>取消</button>\
+					<button type='button' class='btn btn-default' id='modal_click' data-dismiss='modal'>确认</button>\
+				</div>\
+			</div>\
+	    </div>";
+    $('#popModal').html(modalHtml);
+    $('#modal_input').val(old);
+    $('#modal_click').click(call_back_func);
+    $('#popModal').modal();
+}
+
 function myInputTwoContent(title, note1, note2, default1, default2, call_back_func)
 {
     var modalHtml = "\

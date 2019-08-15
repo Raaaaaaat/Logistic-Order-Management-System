@@ -113,6 +113,9 @@ def delete_invoice(request):
             invoice_obj = RECV_INVOICE.objects.get(id=invoice_id)
         except:
             return JsonResponse({"if_success":0, "info":"发票不存在"})
+        #检查是否有删除开过票的发票的权限
+        if not request.user.has_perm("order_management.delete_recv_edited_invoice"):
+            return JsonResponse({"if_success": 0, "info": "没有修改后发票的权限，请联系管理员"})
 
         recv_objs = RECEIVEABLES.objects.filter(invoice=invoice_id)
         #检查发票对应的应收账款，只要有一条有已收，就不允许删除发票

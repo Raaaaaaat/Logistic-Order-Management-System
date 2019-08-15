@@ -113,6 +113,7 @@ class PAYABLES(models.Model):
             ("paya_manage", "可以查看以及操作应付账款条目"),
             ("paya_invoice","可以对应付账款的进行开票操作"),
             ("paya_verify", "可以对应付账款进行核销操作"),
+            ("edit_paya_invoice", "对于应付款的发票内容进行单独修改"),
         )
 
 
@@ -152,7 +153,11 @@ class RECV_INVOICE(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     remark      = models.CharField(max_length=100, null=True)
     create_user = models.CharField(max_length=100)
-
+    class Meta:
+        permissions = (
+            #("delete_recv_invoice", "删除申请中的发票"),
+            ("delete_recv_edited_invoice", "删除已经更正票号的发票"),
+        )
 class OPERATE_LOG(models.Model):
     time   = models.DateTimeField(auto_now_add=True)
     user   = models.CharField(max_length=50)

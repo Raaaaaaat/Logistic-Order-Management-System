@@ -62,14 +62,14 @@ def get_paya_list(request):
             if f_pick_start_time!="":
                 sub_q = Q(pick_up_time__gte=datetime.datetime.strptime(f_pick_start_time, '%m/%d/%Y'))
             if f_pick_end_time!="":
-                sub_q = sub_q&Q(pick_up_time__lte=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+                sub_q = sub_q&Q(pick_up_time__lt=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
             order_ids = ORDER.objects.filter(sub_q).values("id")
             query = query & Q(order_id__in=order_ids)
 
         if f_clear_start_time != "":
             query = query & Q(clear_time__gte=datetime.datetime.strptime(f_clear_start_time, '%m/%d/%Y'))
         if f_clear_end_time != "":
-            query = query & Q(clear_time__lte=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            query = query & Q(clear_time__lt=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
         if f_invoice != "":
             query = query & Q(invoice__contains=f_invoice)
         if f_if_total == 1:
@@ -134,7 +134,7 @@ def get_paya_list(request):
                         pay_obj = PAYABLES.objects.filter(query).values('supplier_id').annotate(                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))[f_offset:f_offset + f_limit]
                         paya_count = PAYABLES.objects.filter(query).values('supplier_id').annotate(                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil')).count()
         else:
-            pay_obj = PAYABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset + f_limit]
+            pay_obj = PAYABLES.objects.filter(query).order_by('-order_id').values()[f_offset:f_offset + f_limit]
             paya_count = PAYABLES.objects.filter(query).count()
             # 除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
@@ -410,14 +410,14 @@ def get_paya_excel(request):
             if f_pick_start_time!="":
                 sub_q = Q(pick_up_time__gte=datetime.datetime.strptime(f_pick_start_time, '%m/%d/%Y'))
             if f_pick_end_time!="":
-                sub_q = sub_q&Q(pick_up_time__lte=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+                sub_q = sub_q&Q(pick_up_time__lt=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
             order_ids = ORDER.objects.filter(sub_q).values("id")
             query = query & Q(order_id__in=order_ids)
 
         if f_clear_start_time != "":
             query = query & Q(clear_time__gte=datetime.datetime.strptime(f_clear_start_time, '%m/%d/%Y'))
         if f_clear_end_time != "":
-            query = query & Q(clear_time__lte=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            query = query & Q(clear_time__lt=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
         if f_invoice != "":
             query = query & Q(invoice__contains=f_invoice)
         if f_if_total == 1:
@@ -485,7 +485,7 @@ def get_paya_excel(request):
                         #001
                         pay_obj = PAYABLES.objects.filter(query).values('supplier_id').annotate(                            payables=Sum('payables'), paid_cash=Sum('paid_cash'), paid_oil=Sum('paid_oil'))
         else:
-            pay_obj = PAYABLES.objects.filter(query).order_by('-id').values()
+            pay_obj = PAYABLES.objects.filter(query).order_by('-order_id').values()
 
             # 除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
@@ -623,3 +623,20 @@ def get_paya_excel(request):
         response['Content-Type'] = 'application/octet-stream'
         response['Content-Disposition'] = 'attachment;filename="'+filename+'"'
         return response
+
+
+@login_required
+def edit_paya_invoice(request):
+    if not request.user.has_perm("order_management.edit_paya_invoice"):
+        return JsonResponse({"if_success": 0, "info": "没有进行此操作的权限，请联系管理员"})
+    if request.method == "POST":
+        paya_id = request.POST.get("id")
+        paya_new_content = request.POST.get("paya_new","")
+        paya_obj = PAYABLES.objects.get(id=paya_id)
+        paya_obj.invoice = paya_new_content
+        paya_obj.save()
+        return JsonResponse({"if_success": 1})
+    else: #use GET method to get original invoice content
+        paya_id = request.GET.get("id")
+        paya_obj = PAYABLES.objects.get(id=paya_id)
+        return JsonResponse({"content":paya_obj.invoice})

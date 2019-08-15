@@ -58,14 +58,14 @@ def get_recv_list(request):
             if f_pick_start_time!="":
                 sub_q = Q(pick_up_time__gte=datetime.datetime.strptime(f_pick_start_time, '%m/%d/%Y'))
             if f_pick_end_time!="":
-                sub_q = sub_q&Q(pick_up_time__lte=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+                sub_q = sub_q&Q(pick_up_time__lt=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
             order_ids = ORDER.objects.filter(sub_q).values("id")
             query = query & Q(order_id__in=order_ids)
 
         if f_clear_start_time != "":
             query = query & Q(clear_time__gte=datetime.datetime.strptime(f_clear_start_time, '%m/%d/%Y'))
         if f_clear_end_time != "":
-            query = query & Q(clear_time__lte=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            query = query & Q(clear_time__lt=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
         if f_invoice != "":
             invoice_objs = RECV_INVOICE.objects.filter(invoice__contains=f_invoice)
             invoice_ids = []
@@ -107,7 +107,7 @@ def get_recv_list(request):
                     recv_count = RECEIVEABLES.objects.filter(query).values('client_id').annotate(
                         receiveables=Sum('receiveables'), received=Sum('received')).count()
         else:
-            recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()[f_offset:f_offset + f_limit]
+            recv_obj = RECEIVEABLES.objects.filter(query).order_by('-order_id').values()[f_offset:f_offset + f_limit]
             recv_count = RECEIVEABLES.objects.filter(query).count()
             # 除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
@@ -362,14 +362,14 @@ def get_recv_excel(request, *args, **kwargs):
             if f_pick_start_time!="":
                 sub_q = Q(pick_up_time__gte=datetime.datetime.strptime(f_pick_start_time, '%m/%d/%Y'))
             if f_pick_end_time!="":
-                sub_q = sub_q&Q(pick_up_time__lte=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+                sub_q = sub_q&Q(pick_up_time__lt=datetime.datetime.strptime(f_pick_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
             order_ids = ORDER.objects.filter(sub_q).values("id")
             query = query & Q(order_id__in=order_ids)
 
         if f_clear_start_time != "":
             query = query & Q(clear_time__gte=datetime.datetime.strptime(f_clear_start_time, '%m/%d/%Y'))
         if f_clear_end_time != "":
-            query = query & Q(clear_time__lte=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
+            query = query & Q(clear_time__lt=datetime.datetime.strptime(f_clear_end_time, '%m/%d/%Y')+datetime.timedelta(days=1))
         if f_invoice != "":
             invoice_objs = RECV_INVOICE.objects.filter(invoice__contains=f_invoice)
             invoice_ids = []
@@ -406,7 +406,7 @@ def get_recv_excel(request, *args, **kwargs):
                     recv_obj = RECEIVEABLES.objects.filter(query).values('client_id').annotate(
                         receiveables=Sum('receiveables'), received=Sum('received'))
         else:
-            recv_obj = RECEIVEABLES.objects.filter(query).order_by('-id').values()
+            recv_obj = RECEIVEABLES.objects.filter(query).order_by('-order_id').values()
             # 除了表内基本信息，还有联合查询step 以及supplier的信息（由id查询name）
 
         rows = []

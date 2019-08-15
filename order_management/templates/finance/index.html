@@ -595,6 +595,10 @@ $(function(){
     });
 
     //payables part
+    function operation_formatter(index, row){
+        //console.log(row);
+        return '<a class="edit_paya_invoice_button"   data-id="'+row.id+'" title="修改票号"><i class="fa fa-pencil"></i></a>';
+    }
     $('#table_paya').bootstrapTable({
         url: "{% url 'get_paya_list' %}",    //请求数据的地址
         toolbar: "#pay_info_summary",
@@ -761,6 +765,12 @@ $(function(){
                         return row.status;
                 }
             }, {
+                title: '操作',
+                visible: false,
+                formatter: operation_formatter,
+                align: 'center',
+                width: 80,
+            }, {
                 title: '-'
             }],
         onPostBody: function(){
@@ -781,6 +791,40 @@ $(function(){
         onUncheckAll: function(rows){
             fresh_count_pay_price();
         },
+    });
+    var $body = $('body');
+    //绑定编辑按钮动作事件
+    $body.on('click', '.edit_paya_invoice_button', function(){
+        //使用 $('.edit_button').click(function(){})这样的绑定方法无效因为绑事件的语句执行的时候该div还没有生成，所以只能全局绑定
+        var id = $(this).data('id')
+        $.ajax({
+                type: "GET",
+                url: "{% url 'edit_paya_invoice' %}",
+                data: {id: id},
+                datatype: "html",
+                success: function (data) {//这里检查data.info的值，如果删除成功就为1，否则为0，2代表没有权限，在这里做一样的判断
+                    myEditContent("修改发票内容","严格按照文本格式修改：", data.content,function(){
+                        //todo
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'edit_paya_invoice' %}",
+                            data: {id: id, paya_new:$('#modal_input').val()},
+                            datatype: "html",
+                            success: function (data){
+                                if(data.if_success=="1"){
+                                    toastr.success("修改成功");
+                                    $('#table_paya').bootstrapTable('refresh');
+                                }
+                                else
+                                    toastr.error(data.info);
+                            },
+                        });
+                    })
+                },
+                error: function(){
+                    toastr.error("信息错误，请稍后再试");
+                },
+        });
     });
     function fresh_count_pay_price(){
         var table_data = $('#table_paya').bootstrapTable("getSelections");
