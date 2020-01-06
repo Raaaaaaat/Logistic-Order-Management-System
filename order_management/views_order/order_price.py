@@ -429,7 +429,14 @@ def judge_timezone_ope(target_time):
     close_date = datetime.datetime(datetime.date.today().year, datetime.date.today().month, devide_date)
     now = datetime.datetime.now()
     if now < close_date:
-        month_devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month - 1, 1)
+
+        a = datetime.date.today().year
+        b = datetime.date.today().month-1
+        if b<1:
+            a=a-1
+            b=12
+        month_devider = datetime.datetime(a, b, 1)
+
     else:
         month_devider = datetime.datetime(datetime.date.today().year, datetime.date.today().month, 1)
     if target_time< month_devider:
